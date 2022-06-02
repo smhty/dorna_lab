@@ -7,6 +7,22 @@
 	{% include "jog/motion.html" %}
 	<!-- /motion info -->
 
+	<!--motor/set_joint -->
+	<table class="table table-sm pl-2 pr-2 mb-0 table-borderless" style="width:100%">
+		<tbody>
+			<tr>
+			  	<td class="border-right border-bottom text-center" style="width: 50%">
+			        <div class="custom-control custom-switch mt-auto mb-auto">
+						<input type="checkbox" class="custom-control-input motor_c" id="motor_c" data-key = {{cmd["motor"]}} data-cmd = {{cmd["motor"]}} >
+						<label class="custom-control-label" for="motor_c">Motors</label>
+			        </div>			  		
+			  	</td>
+			    <td class="border-bottom p-0">
+					<button type="button" class="btn btn-light rounded-0 w-100" data-toggle="modal" data-target="#set_joint_modal" value="Set joint">Set Joint</button>
+			    </td>
+			</tr>	  
+		</tbody>
+	</table>
 	<!-- jog joint_xyz -->
 	<nav>
 	  <div class="nav nav-pills bg-light m-2" id="nav-tab" role="tablist">
