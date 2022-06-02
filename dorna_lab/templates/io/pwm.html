@@ -1,0 +1,42 @@
+<details>
+  <summary class="bg-light border-bottom pl-2 pr-2 ">PWMs</summary>
+
+    <table class="table table-hover table-sm pl-2 pr-2 mb-0">
+      <tbody>
+        {% for i in range(5) %}
+          <tr >
+            <td class="border-top-0 border-bottom" scope="row">
+              <div class="custom-control custom-switch">
+                <input type="checkbox" class="custom-control-input pwm_c" data-key="pwm{{i}}" id="pwm_c_{{i}}" data-cmd ={{cmd["pwm"]}}>
+                <label class="custom-control-label font-weight-bold" for="pwm_c_{{i}}">pwm{{i}}</label>
+              </div>
+            <td class="border-top-0 border-bottom">
+              <div class="input-group input-group-sm">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="inputGroup-sizing-sm">Frequency</span>
+                  <span class="input-group-text freq_v" data-key="pwm{{i}}" id="inputGroup-sizing-sm">000.000</span>
+                </div>
+                <input type="number" class="form-control width_75 freq_n" data-key="pwm{{i}}" data-item="freq{{i}}" aria-label="j0" aria-describedby="inputGroup-sizing-sm" value="0" step="0.001"  data-path="1" data-type="joint" data-space="joint">
+              </div>      
+            </td>
+            <td class="border-top-0 border-bottom">
+              <div class="input-group input-group-sm">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="inputGroup-sizing-sm">Duty Cycle</span>
+                  <span class="input-group-text dc_v" data-key="pwm{{i}}" id="inputGroup-sizing-sm">000.000</span>
+                </div>
+                <input type="number" class="form-control width_75 dc_n" data-key="pwm{{i}}" data-item="duty{{i}}" aria-label="j0" aria-describedby="inputGroup-sizing-sm" value="0" step="0.001"  data-path="1" data-type="joint" data-space="joint">
+              </div>      
+            </td>
+            <td class="border-top-0 border-bottom">
+              <button type="button" class="btn btn-primary btn-sm pwm_b" data-cmd="pwm" data-key="pwm{{i}}">
+              <i class="fal fa-check"></i>
+              Set
+              </button>              
+            </td>
+          </tr>
+        {% endfor %}     
+      </tbody>
+    </table>  
+
+</details>

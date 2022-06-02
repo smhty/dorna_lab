@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    {% include "header.html" %}
+  </head>
+  <body class="p-0">
+    {% include "top.html" %}
+    <!--notification-->
+    {% include "notification/main.html" %}      
+    <div class="container-fluid stretch p-0">        
+      <div class="tab-content  h-100" id="pills-tabContent">    
+        <div class="tab-pane fade show active h-100" id="pills-main" role="tabpanel" aria-labelledby="pills-main-tab">    
+          {% include "main.html" %}
+        </div>            
+        <div class="tab-pane fade h-100" id="pills-programming" role="tabpanel" aria-labelledby="pills-programming-tab">
+          {% include "program/main.html" %}
+        </div>  
+        <div class="tab-pane fade h-100" id="pills-setting" role="tabpanel" aria-labelledby="pills-setting-tab">
+          {% include "setting/main.html" %}
+        </div>         
+      </div>
+    </div>
+  <!-- Modals -->
+  {% include "connection.html" %}
+  {% include "alarm.html" %}
+  {% include "file/main.html" %}
+  {% include "sessions/main.html" %}
+
+  </body>
+  {% include "add_on.html" %}
+
+</html>

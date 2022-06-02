@@ -1,0 +1,20 @@
+<div class="flex" style="">
+	<!--side_bar-->
+	<nav class="nav d-flex flex-column flex-shrink-0 border-right bg-light" style="width: 4.5rem;">
+		{% include "side_bar/main.html" %}	
+	</nav>
+	<!--/side_bar-->
+	<!--graphic-->
+	<div class="d-flex stretch view_3d flex-grow-1 snap" style=";min-width: 500px; ">
+		<!--path, script, notification-->
+		{% include "path_design/main.html" %}
+		{% include "script/main.html" %}
+		{% include "io/main.html" %}
+	</div>
+	<!--/graphic-->
+	
+	<!--jog_panel-->
+	{% include "jog/main.html" %}
+	<!--/jog_panel-->
+
+</div>

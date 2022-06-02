@@ -1,0 +1,68 @@
+<table style="margin: auto;width: 50% !important; ">
+  <tbody>
+    <!--scale-->
+    {% for i in [["vel", 250] ,["accel", 5000], ["jerk", 25000]]%}
+    <tr>
+      <td colspan="2">
+        <div class="d-flex flex-row">
+          <div class="align-self-center text-capitalize" style="width: 50px">{{i[0]}}</div>
+          <div class="align-self-center flex-grow-1">
+            <input type="range" class="custom-range bind {{i[0]}}_s_s" min="0" max={{i[1]}} value= {{i[1]*0.1}} data-key="{{i[0]}}" data-bind=".{{i[0]}}_s_v" data-value = "joint">
+          </div>
+          <div class="align-self-center pl-2">
+            <input type="number" class="form-control bind {{i[0]}}_s_v tiny text-center vaj_s_v" step="0.01" min="0" max={{i[1]}} value= {{i[1]*0.1}} data-key="{{i[0]}}" data-bind=".{{i[0]}}_s_s" data-cmd={{cmd["jmove"]}} data-value = "joint"> 
+          </div>
+        </div>         
+      </td>
+    </tr>
+    {% endfor%}          
+    <!--/scale-->
+    <!--discrete jog-->
+    <tr>
+      <td>
+        <input type="number" class="form-control jog_d_v small text-center" step="0.001" min="0" max="" value="0" data-cmd={{cmd["jmove"]}}>        
+      </td>      
+      <td>
+        <div class="input-group">
+            <div class="input-group-text flex-grow-1">
+              <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input jog_d_c" id="check_jog_d_c_joint" data-key="joint" data-cmd={{cmd["jmove"]}}>
+                <label class="custom-control-label" for="check_jog_d_c_joint">Discrete Jog Mode</label>
+              </div>
+            </div>
+        </div>      
+      </td>      
+    </tr>
+    <!--/discrete jog-->
+    <!--buttons-->
+    {% for i in [["j0","0"],["j1","1"], ["j2","2"],["j3","3"], ["j4","4"], ["j5","5"], ["j6","6"], ["j7","7"]] %}
+    <tr class="jog_form" data-key = "{{i[1]}}">
+      <td>
+        <input type="number" class="text-center form-control bind go_v small" value="0" step="0.001" data-key="{{i[0]}}" data-cmd={{cmd["jmove"]}} data-item = "joint" data-type= "joint">
+      </td>      
+      <td>
+        <button type="button" class="jog_b btn btn-primary jog_b_{{i[0]}}m" data-key={{i[0]}} data-value=-1 tab="joint" data-cmd={{cmd["jmove"]}} data-type="joint">- {{i[0]}}
+        </button>
+        <button type="button" class="jog_b btn btn-primary jog_b_{{i[0]}}p" data-key={{i[0]}} data-value=1 tab="joint" data-cmd={{cmd["jmove"]}} data-type="joint">+ {{i[0]}}
+        </button>
+      </td>      
+    </tr>
+    {% endfor %}
+    <tr>
+      <td>
+        <button class="btn btn-primary go_b small" type="button" data-type= "joint" data-cmd={{cmd["jmove"]}}>Go</button>
+      </td>      
+      <td>
+        <div class="input-group">
+            <div class="input-group-text flex-grow-1">
+              <div class="custom-control custom-checkbox">
+                <input type="checkbox" class="custom-control-input jog_r_c" id="check_jog_r_c_joint" data-cmd={{cmd["jmove"]}} data-type="joint">
+                <label class="custom-control-label" for="check_jog_r_c_joint">Relative Move</label>
+              </div>
+            </div>
+        </div>      
+      </td>      
+    </tr>    
+    <!--buttons-->   
+  </tbody>
+</table>

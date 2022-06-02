@@ -1,0 +1,228 @@
+:root {
+
+  --width_in: 105px;
+  --width_jog: 75px;
+  --width_tiny: 75px;
+  --width_very_tiny: 50px;
+
+}
+
+/****io****/
+/*
+* {
+  border-radius: 2px !important;
+}
+*/
+
+.io_td{
+  padding: 0px;
+  width: 38px;
+  text-align: center;
+}
+
+.io_0{
+  background-color: rgb(255, 240, 240);
+  color: rgb(255, 70, 70);
+  /*border: 1px solid rgb(255, 70, 70);*/
+
+}
+.io_1{
+  background-color: rgb(229, 241, 251);
+  color: rgb(0, 120, 215);
+  /*border: 1px solid rgb(0, 120, 215);*/
+}
+
+
+/****alarm****/
+.alarm_li{
+  display: none;
+}
+
+/****input****/
+[class*="small"]{
+  max-width: var(--width_in);
+  min-width: var(--width_in);
+}
+
+[class*="tiny"]{
+  max-width: var(--width_tiny);
+  min-width: var(--width_tiny);
+  /*
+  padding: 0px;
+  font-size: 12px;
+  */
+}
+
+[class*="width_50"]{
+  max-width: 50px;
+  min-width: 50px;
+}
+
+[class*="width_75"]{
+  max-width: 75px;
+  min-width: 75px;
+}
+
+[class*="width_100"]{
+  max-width: 100px;
+  min-width: 100px;
+}
+
+[class*="width_150"]{
+  max-width: 150px;
+  min-width: 150px;
+}
+
+button[class*="jog_b"]{
+  /*max-width: var(--width_jog);
+  min-width: var(--width_jog);
+  */
+  width: 48.7%;
+}
+
+/*split*/
+.flex {
+    display: flex;
+    flex-direction: row;
+}
+
+/*sticky footer*/
+html {
+  position: relative;
+  min-height: 100%;
+}
+body {
+  /* Margin bottom by footer height */
+  padding-top: 57px;
+  padding-bottom: 60px;
+  height: 100vh;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  /* Set the fixed height of the footer here */
+  height: 60px;
+  line-height: 60px; /* Vertically center the text there */
+  background-color: #f5f5f5;
+}
+
+/*overflow*/
+.stretch{
+  height: calc(100vh - 69px);
+  overflow-y: auto;
+  overflow-x: auto; 
+}
+
+/*script*/
+
+.script_stat_1 {
+  background-color: #ff7; 
+}
+
+
+.CodeMirror-gutters {
+  background-color: #f8f9fa
+}
+
+.CodeMirror {
+  height: -webkit-fill-available;
+  width: -webkit-fill-available;
+}
+
+.CodeMirror-scroll {
+  overflow-y: none;
+  overflow-x: none;
+}
+
+/* small font */
+.small_font + .CodeMirror {
+  font-size: 12px;
+}
+
+
+
+/*3d viewer*/
+.view_3d{
+  overflow: hidden;
+  background-color: #aaaaaa;
+  }
+
+/* joint info */
+.joint_info{
+  font-family: Monospace;
+  font-size: 12px;
+  line-height: 24px;
+}
+
+/* alert*/
+.alert{
+  z-index: 101;
+  position: absolute; 
+  width: 100%;
+}
+
+/*
+.ui-resizable-handle{
+  background-color: #dee2e6;
+}
+*/
+
+/* =========== controller =========== */
+.table td {
+    vertical-align: middle;
+}
+
+/* ============= alert ============= */
+.alert-messages {
+  position: fixed;
+  z-index: 100;
+  left: 0;
+  bottom: 0;
+}
+
+/* ============= jog section ============= 
+.nav-tabs .nav-link.active {
+  background-color: transparent;
+  border-bottom-color: #f8f9fa;
+  border-top-width: 3px;
+  border-top-color: #000;
+  border-radius: 0px;
+}
+*/
+.nav_item_top{
+  min-width: 120px;
+}
+
+.nav_item_halt{
+  min-width: 72px;
+}
+
+.toast{
+  min-width: 350px;
+}
+
+.note{
+  z-index: 100;
+  position: absolute; 
+  bottom: 0; 
+  left: 56px;  
+}
+/* ============= blockly ============= */
+.blocklyMainBackground
+{
+  stroke-width:  0px;
+}
+
+
+/* ============= list ============= */
+.list-group-item.active {
+  color: inherit;
+  background-color: inherit;
+  border-left-width: 20px;
+}
+
+/* ============= flex ============= */
+.flex-even {
+  flex: 1;
+}

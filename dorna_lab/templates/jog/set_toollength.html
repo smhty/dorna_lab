@@ -1,0 +1,37 @@
+<div class="modal fade" id="set_toolhead_modal" tabindex="-1" role="dialog" aria-labelledby="set_toolhead_modal" aria-hidden="true">  
+  <div class="modal-dialog modal-dialog-scrollable" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalScrollableTitle">Set tool length</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        
+        <table class="table .table-sm">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col">Current length</th>
+              <th scope="col">New length</th>
+              <th scope="col"></th>
+            </tr>
+          </thead>         
+          <tbody>
+            <tr>
+              <td>
+                <input type="number" class="form-control toollength_v small text-center" value="0" data-key={{cmd["toollength"]}} disabled>
+              </td>
+              <td>
+                <input type="number" class="form-control toollength_v small text-center toollength_n_v" value="0" step="0.01" data-key={{cmd["toollength"]}} placeholder= "0" step="0.01" min="0">                
+              </td>                
+              <td>
+                <button type="button" class="set_toollength_b btn btn-primary btn-block" data-cmd={{cmd["toollength"]}}>Set length</button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

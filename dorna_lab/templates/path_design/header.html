@@ -1,0 +1,42 @@
+<div class="d-flex border-bottom bg-light">
+	<div class="path_design_file_v mt-auto mb-auto ml-2 mr-2">xxx.py</div>
+	<div class="border-right flex-grow-1"></div>
+	<!-- visible -->	        
+  <div class="custom-control custom-switch mt-auto mb-auto ml-2">
+    <input type="checkbox" class="custom-control-input path_design_visible_c" id="path_design_visible_c" checked>
+    <label class="custom-control-label" for="path_design_visible_c">Model Vis</label>
+  </div>	        	
+
+	<!-- ghost tool length -->
+	<div class="border-right ml-2 mr-2"></div>
+	<div class="input-group input-group-sm mt-auto mb-auto mr-2" style="max-width: 200px">
+		<div class="input-group-prepend">
+		<span class="input-group-text" id="inputGroup-sizing-sm">Model Tool Length</span>
+		</div>
+		<input type="number" class="form-control fghost_prm_v ghost_toolhead_v" aria-label="ghosttoollength" aria-describedby="inputGroup-sizing-sm"
+		value="0" step="0.01" data-key="toolhead" min="0">				
+	</div>
+	<div class="border-left">
+		<button type="button" class="btn btn-light path_design_play_b rounded-0">
+			<i class="fas fa-play"></i>
+			Play
+		</button>
+	</div>
+	<div class="border-left">
+		<button id="btnGroupDrop2" type="button" class="btn btn-light rounded-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-h"></i>
+		</button>
+		<div class="dropdown-menu" aria-labelledby="btnGroupDrop2">
+			<button class="dropdown-item make_script_b"><i class="fal fa-arrow-right pr-2"></i>Convert to script</button>
+			<div class="dropdown-divider"></div>					
+			<button class="dropdown-item path_new_b"><i class="fal fa-plus pr-2"></i>New File</button>
+			<button class="dropdown-item path_open_b"><i class="fal fa-file pr-2"></i>Open File...</button>	
+			<button class="dropdown-item path_save_b"><i class="fal fa-save pr-2"></i>Save</button>
+			<button class="dropdown-item path_save_as_b"><i class="fal fa-save pr-2"></i>Save as</button>
+			<div class="dropdown-divider"></div>
+			<button class="dropdown-item path_download_b"><i class="fal fa-download pr-2"></i>Download</button>
+			<button class="dropdown-item path_upload_b"><i class="fal fa-upload pr-2"></i>Upload</button>
+			<div class="dropdown-divider"></div>
+			<button class="dropdown-item path_delete_b "><i class="fal fa-trash-alt pr-2"></i>Delete</button>
+		</div>	
+	</div>															     
+</div>				

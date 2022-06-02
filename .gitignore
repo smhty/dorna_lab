@@ -1,0 +1,7 @@
+dorna_lab/flaskr.sqlite
+dorna_lab/tool/__pycache__/shell.cpython-39.pyc
+dorna_lab/tool/__pycache__/folder.cpython-39.pyc
+dorna_lab/tool/__pycache__/db.cpython-39.pyc
+dorna_lab/__pycache__/tornado_jinja_mixin.cpython-39.pyc
+dorna_lab/__pycache__/config.cpython-39.pyc
+*.pyc

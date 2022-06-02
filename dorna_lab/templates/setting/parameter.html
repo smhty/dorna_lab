@@ -1,0 +1,129 @@
+<!--aux axes-->
+<details>
+  <summary class="bg-secondary border-bottom pl-2 pr-2 text-white">Auxiliary Axes</summary>
+    
+    <div class="card mt-2 mb-2 alert-primary">
+      <div class="card-body">
+        <h5 class="card-title">Notice</h5>
+        <p class="card-text">For Dorna rail, set the ratio parameter to <strong>75</strong>.
+        </p>
+      </div>
+    </div>
+
+    <table class="table table-hover table-sm pl-2 pr-2 mb-0">
+      <tbody>
+        {% for i in range(5,8) %}
+          <tr >
+            <td class="border-top-0 border-bottom" style="width:35%">
+              <div class="custom-control custom-switch">
+                <input type="checkbox" class="custom-control-input axis_c" data-cmd="{{cmd["axis"]}}" data-key="axis{{i}}" id="axis_c_{{i}}">
+                <label class="custom-control-label" for="axis_c_{{i}}">Axis {{i}}</label>
+              </div>
+            <td class="border-top-0 border-bottom">
+              <div class="input-group input-group-sm">
+                <div class="input-group-prepend">
+                  <span class="input-group-text">Ratio</span>
+                  <input type="number" class="input-group-text small text-left ratio_v" value="0" data-key=axis{{i}} disabled>
+                </div>
+                <input class="form-control small text-left ratio_n" type="number" value="0" data-key=axis{{i}} data-item="ratio{{i}}" placeholder= "0" step="1" min="0" list="data_list_ratio_{{i}}">
+                <small class="pl-1 mt-auto mb-auto">(unit / motor turn)</small>
+              </div>                    
+            </td>            
+            <td class="border-top-0 border-bottom">
+              <button type="button" class="btn btn-primary btn-sm axis_b btn-block" data-cmd={{cmd["axis"]}} data-key="axis{{i}}">
+              <i class="fal fa-check"></i>
+              Set
+              </button>              
+            </td>
+          </tr>
+        {% endfor %}     
+      </tbody>
+    </table>  
+
+</details>
+<!--TCP-->
+<details>
+  <summary class="bg-secondary border-bottom pl-2 pr-2 text-white">Tool Length (TCP)</summary>
+    <table class="table table-hover table-sm pl-2 pr-2 mb-0">
+      <tbody>
+          <tr >
+            <td class="border-top-0 border-bottom" style="width:35%">
+              Tool Length in Z Direction
+            </td>
+            <td class="border-top-0 border-bottom">
+              <div class="input-group input-group-sm">
+                <div class="input-group-prepend">
+                  <input type="number" class="input-group-text toollength_v small text-left" value="0" data-key={{cmd["toollength"]}} disabled>
+                </div>
+                <input class="form-control toollength_n  small text-left" type="number" value="0" step="0.01" data-key={{cmd["toollength"]}} placeholder= "0" step="0.01" min="0">
+                <small class="pl-1 mt-auto mb-auto">(mm)</small>
+              </div>                    
+            </td>
+            <td class="border-top-0 border-bottom">
+              <button type="button" class="btn btn-primary btn-sm btn-block set_toollength_b" data-cmd={{cmd["toollength"]}} data-key="ratio{{i}}">
+              <i class="fal fa-check"></i>
+              Set
+              </button>              
+            </td>                                  
+          </tr>                    
+      </tbody>
+    </table>  
+</details>
+<!--gravity-->
+<details>
+  <summary class="bg-secondary border-bottom pl-2 pr-2 text-white">Gravity Compensation</summary>
+    <table class="table table-hover table-sm pl-2 pr-2 mb-0">
+      <tbody>
+          <tr >
+            <td class="border-top-0 border-bottom" colspan="3">
+              <div class="custom-control custom-switch">
+                <input type="checkbox" class="custom-control-input gravity_c" data-key="gravity" id="gravity" data-cmd ={{cmd["gravity"]}}>
+                <label class="custom-control-label" for="gravity">Gravity Compensation</label>
+              </div>               
+            </td>                                 
+          </tr> 
+          <tr >
+            <td class="border-top-0 border-bottom" style="width:35%">
+              Payload Mass
+            </td>
+            <td class="border-top-0 border-bottom">
+              <div class="input-group input-group-sm">
+                <div class="input-group-prepend">
+                  <input type="number" class="input-group-text gravity_m_v small text-left" value="0" data-key="m" disabled>
+                </div>
+                <input class="form-control gravity_m_n small text-left" type="number" value="0" step="0.01" data-key="m" placeholder= "0" step="0.01" min="0">
+                <small class="pl-1 mt-auto mb-auto">(g)</small>
+              </div>                    
+            </td>
+            <td class="border-top-0 border-bottom"></td>                                 
+          </tr>
+          {% for i in ["x","y","z"] %}
+            <tr >
+              <td class="border-top-0 border-bottom">
+                Center of Mass in {{i.upper()}} Direction
+              </td>
+              <td class="border-top-0 border-bottom">
+                <div class="input-group input-group-sm">
+                  <div class="input-group-prepend">
+                    <input type="number" class="input-group-text gravity_m_v small text-left" value="0" data-key={{i}} disabled>
+                  </div>
+                  <input class="form-control gravity_m_n  small text-left" type="number" value="0" step="0.01" data-key={{i}} placeholder= "0" step="0.01" min="0">
+                  <small class="pl-1 mt-auto mb-auto">(mm)</small>
+                </div>                    
+              </td>
+              <td class="border-top-0 border-bottom"></td>                                
+            </tr>
+          {% endfor %}   
+          <tr >
+            <td class="border-top-0 border-bottom"></td>
+            <td class="border-top-0 border-bottom"></td>
+            <td class="border-top-0 border-bottom">
+              <button type="button" class="set_gravity_b btn btn-primary btn-block btn-sm" data-cmd={{cmd["gravity"]}}>
+                <i class="fal fa-check"></i>
+                Set All
+              </button>
+            </td>  
+          </tr>                                                 
+      </tbody>
+    </table>  
+</details>

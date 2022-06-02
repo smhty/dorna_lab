@@ -1,0 +1,11 @@
+include README.md
+include setup.py
+include LICENSE
+
+recursive-include dorna_lab/templates *	
+recursive-include dorna_lab/static *	
+
+
+include dorna_lab/*.yaml
+include dorna_lab/*.py
+include dorna_lab/*.json

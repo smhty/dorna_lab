@@ -1,0 +1,37 @@
+<table class="table table-sm pl-2 pr-2 mb-0 table-borderless border-top" style="width:100%">
+	<tbody>
+		<tr>
+		  	<td class="border-right border-bottom" style="width: 50%">
+		        <div class="custom-control custom-switch mt-auto mb-auto">
+					<input type="checkbox" class="custom-control-input motor_c" id="motor_c" data-key = {{cmd["motor"]}} data-cmd = {{cmd["motor"]}} >
+					<label class="custom-control-label" for="motor_c">Motors</label>
+		        </div>			  		
+		  	</td>
+		    <td class="border-bottom p-0">
+				<button type="button" class="btn btn-light rounded-0 w-100" data-toggle="modal" data-target="#set_joint_modal" value="Set joint">Set Joint</button>
+		    </td>
+		</tr>
+		<tr>
+		  	<td class="border-right border-bottom" style="width: 50%">
+		        <div class="custom-control custom-switch mt-auto mb-auto">
+		          <input type="checkbox" class="custom-control-input graphic_switch" id="graphic_switch" checked>
+		          <label class="custom-control-label" for="graphic_switch">3D Model</label>
+		        </div>			  		
+		  	</td>
+		    <td class="border-bottom">
+				<div class="input-group input-group-sm flex-grow-1">
+					<select class="form-control controller-select-form">
+						<option value=0 selected>--Controller--</option>
+						<option value=1 >Keyboard</option>
+						<option value=2 >Joystick</option>
+					</select>	
+				</div>				
+		    </td>
+		</tr>	  
+	</tbody>
+</table>
+<!--/set_joint / motor-->	
+<!--modal-->
+{%include "jog/set_joint.html" %}
+{%include "jog/gamepad.html" %}
+<!--modal-->

@@ -1,0 +1,157 @@
+<!-- modal -->
+<div class="modal fade bd-example-modal-sm controller-modal" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" data-keyboard="false" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-top">
+        <div class="modal-content">
+            <div class="modal-header modal-header-controller">
+                <h5 class="modal-title" id="staticBackdropLabel">
+                    Press any button
+                </h5>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- main -->
+<!-- more info -->
+<p class="text-justify">Use this section to connect a keyboard or joystick to the robot. Set your desired keyboard or joystick functionality or simply use the default settings. Please check your joystick's button and axis names from <a href="https://gamepad-tester.com/" target="_blank">Gamepad tester</a> 
+</p>
+<!-- <img  src="../static/assets/svg/Dualshock_4_Layout.svg" class="w-75 mx-auto d-block" alt="gamepad info">-->
+<div class="card">
+  <div class="card-body">
+    <h5 class="card-title">Default Assignment</h5>
+    <p class="card-text">Click the following button to restore the keyboard and joystick assignments to their default values.</p>
+    <button type="button" class="btn btn-primary set_default_b">Set to Default</button>
+  </div>
+</div>
+<br>
+<ul class="nav nav-tabs nav-controller" id="myTab" role="tablist">
+    <li class="nav-item">
+        <a class="nav-link text-black-50 active set_clear_controllers" data-toggle="tab" href="#joint-setting-table" role="tab" aria-controls="tab-joint" aria-selected="true">Joint</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-black-50 set_clear_controllers" data-toggle="tab" href="#line-setting-table" role="tab" aria-controls="tab-line" aria-selected="false">Line</a>
+    </li>
+    <li class="nav-item">
+        <a class="nav-link text-black-50 set_clear_controllers" data-toggle="tab" href="#commands-setting-table" role="tab" aria-controls="tab-command" aria-selected="false">Command</a>
+    </li>
+</ul>
+<div class="tab-content" id="myTabContent">
+    <!-- joint table -->
+    <div class="tab-pane fade show active" id="joint-setting-table" role="tabpanel" aria-labelledby="joint-tab">
+        <table class="table table-sm">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col" style="vertical-align: middle;">Button</th>
+                    {% for i in [["0", "Keyboard"], ["1", "Gamepad"]] %}
+                    <th scope="col">
+                        <div class="dropdown">
+                                {{i[1]}}
+                            <button class="btn text-light dropdown-toggle" type="button" id="dropdownMenuButton{{i[0]}}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton{{i[0]}}">
+                                <button class="dropdown-item clear-all">Clear all</button>
+                                <!--<button class="dropdown-item set-default">Set all to default</button>-->
+                            </div>
+                        </div>
+                    </th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in [["+ j0", "j0p"], ["- j0", "j0m"], ["+ j1", "j1p"], ["- j1", "j1m"], ["+ j2", "j2p"], ["- j2", "j2m"], ["+ j3", "j3p"], ["- j3", "j3m"], ["+ j4", "j4p"], ["- j4", "j4m"], ["+ j5", "j5p"], ["- j5", "j5m"], ["+ j6", "j6p"], ["- j6", "j6m"], ["+ j7", "j7p"], ["- j7", "j7m"]] %}
+                    <tr>
+                        <td class="{{i[1]}}">{{i[0]}}</td>
+                        {% for j in [["keyboard", "joint-keyboard", 0], ["gamepad", "joint-gamepad", 1]] %}
+                        <td>
+                            {% if j[2] % 2 == 0 -%}
+                            <button type="button" class="btn btn-light" disabled>SPACE</button>
+                            +
+                            {%- endif %}
+                            <button type="button" class="btn btn-light my-button my-button-{{j[0]}} my-button-{{j[1]}} my-button-joint-tab" data-toggle="modal" data-target=".bd-example-modal-sm"></button>
+                            <button class="btn eraser-button"><i class="far fa-trash-alt fa-sm"></i></button>
+                        </td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <!-- line table -->
+    <div class="tab-pane fade" id="line-setting-table" role="tabpanel" aria-labelledby="line-tab">
+        <table class="table table-sm">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col" style="vertical-align: middle;">Button</th>
+                    {% for i in [["2", "Keyboard"], ["3", "Gamepad"]] %}
+                    <th scope="col">
+                        <div class="dropdown">
+                                {{i[1]}}
+                            <button class="btn text-light dropdown-toggle" type="button" id="dropdownMenuButton{{i[0]}}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton{{i[0]}}">
+                                <button class="dropdown-item clear-all">Clear all</button>
+                                <!--<button class="dropdown-item set-default">Set all to default</button>-->
+                            </div>
+                        </div>
+                    </th>
+                    {% endfor %}
+                </tr>   
+            </thead>
+            <tbody>
+                {% for i in [["+ x", "xp"], ["- x", "xm"], ["+ y", "yp"], ["- y", "ym"], ["+ z", "zp"], ["- z", "zm"], ["+ a", "ap"], ["- a", "am"], ["+ b", "bp"], ["- b", "bm"], ["+ c", "cp"], ["- c", "cm"], ["+ d", "dp"], ["- d", "dm"], ["+ e", "ep"], ["- e", "em"]] %}
+                    <tr>
+                        <td class="{{i[1]}}">{{i[0]}}</td>
+                        {% for j in [["keyboard", "line-keyboard", 0], ["gamepad", "line-gamepad", 1]] %}
+                        <td>
+                            {% if j[2] % 2 == 0 -%}
+                            <button type="button" class="btn btn-light" disabled>SPACE</button>
+                            +
+                            {%- endif %}
+                            <button type="button" class="btn btn-light my-button my-button-{{j[0]}} my-button-{{j[1]}} my-button-line-tab" data-toggle="modal" data-target=".bd-example-modal-sm"></button>
+                            <button class="btn eraser-button"><i class="far fa-trash-alt fa-sm"></i></button>
+                        </td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+     <!-- commands table -->
+    <div class="tab-pane fade " id="commands-setting-table" role="tabpanel" aria-labelledby="commands-tab">
+        <table class="table table-sm">
+            <thead class="thead-dark">
+                <tr>
+                    <th scope="col" style="vertical-align: middle;">Button</th>
+                    {% for i in [["4", "Keyboard"], ["5", "Gamepad"]] %}
+                    <th scope="col">
+                        <div class="dropdown">
+                                {{i[1]}}
+                            <button class="btn text-light dropdown-toggle" type="button" id="dropdownMenuButton{{i[0]}}" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton{{i[0]}}">
+                                <button class="dropdown-item clear-all">Clear all</button>
+                                <!--<button class="dropdown-item set-default">Set all to default</button>-->
+                            </div>
+                        </div>
+                    </th>
+                    {% endfor %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for i in [["Halt", "halt"],["Play Script", "play_script"],["Motor on/off", "motor"],["Record jmove", "record_joint"],["Record lmove", "record_line"]] %}
+                    <tr>
+                        <td class="{{i[1]}}">{{i[0]}}</td>
+                        {% for j in [["keyboard", "command-keyboard", 0], ["gamepad", "command-gamepad", 1]] %}
+                        <td>
+                            {% if j[2] % 2 == 0 -%}
+                            <button type="button" class="btn btn-light" disabled>SPACE</button>
+                            +
+                            {%- endif %}
+                            <button type="button" class="btn btn-light my-button my-button-{{j[0]}} my-button-{{j[1]}} my-button-command-tab" data-toggle="modal" data-target=".bd-example-modal-sm"></button>
+                            <button class="btn eraser-button"><i class="far fa-trash-alt fa-sm"></i></button>
+                        </td>
+                        {% endfor %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+

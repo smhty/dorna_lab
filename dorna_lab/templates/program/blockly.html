@@ -1,0 +1,1120 @@
+<!--blockly-->       
+<div id="blocklyArea" class="w-75" style="">
+	<div id="blocklyDiv"></div>
+</div>
+<!--/blockly-->   
+
+<!--xml-->
+<xml id="toolbox" style="display: none">
+
+  <category name="General" colour="100">
+
+    <category name="Logic" colour=130>
+      <block type="controls_if"></block>
+      <block type="logic_compare"></block>
+      <block type="logic_operation"></block>
+      <block type="logic_negate"></block>
+      <block type="logic_boolean"></block>
+      <!--<block type="logic_null" disabled="true"></block>-->
+      <block type="logic_ternary"></block>
+    </category>
+
+    <category name="Loops" colour=160>
+      <block type="controls_repeat_ext">
+        <value name="TIMES">
+          <shadow type="math_number">
+            <field name="NUM">10</field>
+          </shadow>
+        </value>
+      </block>
+      <!--<block type="controls_repeat" disabled="true"></block>-->
+      <block type="controls_whileUntil"></block>
+      <block type="controls_for">
+        <value name="FROM">
+          <shadow type="math_number">
+            <field name="NUM">1</field>
+          </shadow>
+        </value>
+        <value name="TO">
+          <shadow type="math_number">
+            <field name="NUM">10</field>
+          </shadow>
+        </value>
+        <value name="BY">
+          <shadow type="math_number">
+            <field name="NUM">1</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="controls_forEach"></block>
+      <block type="controls_flow_statements"></block>
+    </category>
+
+    <category name="Variables"  custom="VARIABLE" colour="190"></category> <!--categorystyle="variable_category"-->
+
+    <category name="Tag" colour="220">
+      <label text="One Line Comment"></label>
+      <block type="comment"></block>
+      <label text="Multiline Comment"></label>
+      <block type="comment_statement"></block>
+    </category> 
+    <category name="Python" colour="280">
+        <label text="Raw Python Code Field"></label>
+        <block type="code"></block>
+
+        <label text="Call a function"></label>
+        <block type="function_call">
+          <field name="func">robot.halt</field>
+            <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                  <block type="label_text"><field name="label">accel</field> </block>
+                </value>
+                <value name="input">
+                  <block type="num_1_inf_1"><field name="NUM">1</field> </block>
+                </value>
+              </block>
+          </value>
+
+
+        </block>
+
+        <label text="List Item / Dictionary Key"></label>
+        <block type="dic_key">
+          <value name="var">
+            <block type="label_text"><field name="label">a</field> </block>
+          </value>
+          <value name="key">
+            <block type="num_0_inf_1"><field name="NUM">0</field> </block>
+          </value>
+        </block>
+        <block type="dic_key">
+          <value name="var">
+            <block type="label_text"><field name="label">a</field> </block>
+          </value>
+          <value name="key">
+            <block type="text"><field name="TEXT">key</field></block>
+          </value>
+        </block>
+
+        </block>
+
+        <label text="String"></label>
+        <block type="text"><field name="TEXT">Text</field></block>
+
+        <label text="Set"></label>
+        <block type="set">
+          <value name="a">
+            <block type="label_text"><field name="label">a</field> </block>
+          </value>
+          <value name="b">
+            <block type="num_0_inf_1"><field name="NUM">0</field> </block>
+          </value>
+
+        </block>
+
+        <label text="Define Function"></label>
+        <block type="method"></block>
+
+    </category>
+
+    <category name="Lists" colour="280">
+      <block type="lists_create_with">
+        <mutation items="0"></mutation>
+      </block>
+      <block type="lists_create_with"></block>
+      <block type="lists_repeat">
+        <value name="NUM">
+          <shadow type="math_number">
+            <field name="NUM">5</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="lists_length"></block>
+      <block type="lists_isEmpty"></block>
+      <!--
+      <block type="lists_indexOf">
+        <value name="VALUE">
+          <block type="variables_get">
+            <field name="VAR">list</field>
+          </block>
+        </value>
+      </block>
+      <block type="lists_getIndex">
+        <value name="VALUE">
+          <block type="variables_get">
+            <field name="VAR">list</field>
+          </block>
+        </value>
+      </block>
+      <block type="lists_setIndex">
+        <value name="LIST">
+          <block type="variables_get">
+            <field name="VAR">list</field>
+          </block>
+        </value>
+      </block>
+      <block type="lists_getSublist">
+        <value name="LIST">
+          <block type="variables_get">
+            <field name="VAR">list</field>
+          </block>
+        </value>
+      </block>
+      <block type="lists_split">
+        <value name="DELIM">
+          <shadow type="text">
+            <field name="TEXT">,</field>
+          </shadow>
+        </value>
+      </block>
+      <block type="lists_sort"></block>
+      <block type="lists_reverse"></block>
+    -->
+    </category>
+
+<category name="Math" colour=310>
+  <block type="math_number" gap="32">
+    <field name="NUM">123</field>
+  </block>
+  <block type="math_arithmetic">
+    <value name="A">
+      <shadow type="math_number">
+        <field name="NUM">1</field>
+      </shadow>
+    </value>
+    <value name="B">
+      <shadow type="math_number">
+        <field name="NUM">1</field>
+      </shadow>
+    </value>
+  </block>
+  <block type="math_single">
+    <value name="NUM">
+      <shadow type="math_number">
+        <field name="NUM">9</field>
+      </shadow>
+    </value>
+  </block>
+  <block type="math_trig">
+    <value name="NUM">
+      <shadow type="math_number">
+        <field name="NUM">45</field>
+      </shadow>
+    </value>
+  </block>
+  <block type="math_constant"></block>
+  <block type="math_number_property">
+    <value name="NUMBER_TO_CHECK">
+      <shadow type="math_number">
+        <field name="NUM">0</field>
+      </shadow>
+    </value>
+  </block>
+  <block type="math_round">
+    <value name="NUM">
+      <shadow type="math_number">
+        <field name="NUM">3.1</field>
+      </shadow>
+    </value>
+  </block>
+  <block type="math_on_list"></block>
+  <block type="math_modulo">
+    <value name="DIVIDEND">
+      <shadow type="math_number">
+        <field name="NUM">64</field>
+      </shadow>
+    </value>
+    <value name="DIVISOR">
+      <shadow type="math_number">
+        <field name="NUM">10</field>
+      </shadow>
+    </value>
+  </block>
+  <block type="math_constrain">
+    <value name="VALUE">
+      <shadow type="math_number">
+        <field name="NUM">50</field>
+      </shadow>
+    </value>
+    <value name="LOW">
+      <shadow type="math_number">
+        <field name="NUM">1</field>
+      </shadow>
+    </value>
+    <value name="HIGH">
+      <shadow type="math_number">
+        <field name="NUM">100</field>
+      </shadow>
+    </value>
+  </block>
+  <block type="math_random_int">
+    <value name="FROM">
+      <shadow type="math_number">
+        <field name="NUM">1</field>
+      </shadow>
+    </value>
+    <value name="TO">
+      <shadow type="math_number">
+        <field name="NUM">100</field>
+      </shadow>
+    </value>
+  </block>
+  <block type="math_random_float"></block>
+  <block type="math_atan2">
+    <value name="X">
+      <shadow type="math_number">
+        <field name="NUM">1</field>
+      </shadow>
+    </value>
+    <value name="Y">
+      <shadow type="math_number">
+        <field name="NUM">1</field>
+      </shadow>
+    </value>
+  </block>
+</category>
+
+  </category>
+
+
+  <category name="Dorna" colour="0" toolboxitemid="Dorna-cat">
+    <category name="Move" colour="30">
+      <label text="Joint Move"></label>
+        <block type="jmove">  
+          <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                  <block type="coord_list"><field name="label">j0</field> </block>
+                </value>
+                <value name="input">
+                  <block type="math_number"><field name="NUM">0.0</field> </block>
+                </value>
+              </block>
+          </value> 
+          <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                  <block type="rapid_list"><field name="label">vel</field> </block>
+                </value>
+                <value name="input">
+                  <block type="num_0_inf_0"><field name="NUM">0.0</field> </block>
+                </value>
+              </block>
+          </value> 
+
+          <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                  <block type="val_list"><field name="label">rel</field> </block>
+                </value>
+                <value name="input">
+                  <block type="num_0_1_1"><field name="NUM">0.0</field> </block>
+                </value>
+              </block>
+          </value> 
+          <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                   <block type="label_text"><field name="label">timeout</field> </block>
+                </value>
+                <value name="input">
+                  <block type="math_number"><field name="NUM">-1</field> </block>
+                </value>
+              </block>
+          </value> 
+        </block>
+
+        <sep gap="32"></sep>
+        <label text="Line Move"></label>
+
+        <block type="lmove">  
+          <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                  <block type="coord_list"><field name="label">x</field> </block>
+                </value>
+                <value name="input">
+                  <block type="math_number"><field name="NUM">0.0</field> </block>
+                </value>
+              </block>
+          </value> 
+          <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                  <block type="rapid_list"><field name="label">vel</field> </block>
+                </value>
+                <value name="input">
+                  <block type="num_0_inf_0"><field name="NUM">0.0</field> </block>
+                </value>
+              </block>
+          </value> 
+
+          <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                  <block type="val_list"><field name="label">rel</field> </block>
+                </value>
+                <value name="input">
+                  <block type="num_0_1_1"><field name="NUM">0.0</field> </block>
+                </value>
+              </block>
+          </value> 
+          <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                   <block type="label_text"><field name="label">timeout</field> </block>
+                </value>
+                <value name="input">
+                  <block type="math_number"><field name="NUM">-1</field> </block>
+                </value>
+              </block>
+          </value> 
+        </block>
+
+        <sep gap="32"></sep>
+        <label text="Circle Move"></label>
+
+          <block type="cmove">
+            <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                   <block type="label_text"><field name="label">turn</field> </block>
+                </value>
+                <value name="input">
+                  <block type="num_0_inf_1"><field name="NUM">0</field> </block>
+                </value>
+              </block>
+          </value> 
+            <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                  <block type="mcoord_list"><field name="label">mj0</field> </block>
+                </value>
+                <value name="input">
+                  <block type="math_number"><field name="NUM">10.0</field> </block>
+                </value>
+              </block>
+          </value>   
+          <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                  <block type="coord_list"><field name="label">j0</field> </block>
+                </value>
+                <value name="input">
+                  <block type="math_number"><field name="NUM">0.0</field> </block>
+                </value>
+              </block>
+          </value> 
+          <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                  <block type="rapid_list"><field name="label">vel</field> </block>
+                </value>
+                <value name="input">
+                  <block type="num_0_inf_0"><field name="NUM">0.0</field> </block>
+                </value>
+              </block>
+          </value> 
+
+          <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                  <block type="val_list"><field name="label">rel</field> </block>
+                </value>
+                <value name="input">
+                  <block type="num_0_1_1"><field name="NUM">0.0</field> </block>
+                </value>
+              </block>
+          </value> 
+          <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                   <block type="label_text"><field name="label">timeout</field> </block>
+                </value>
+                <value name="input">
+                  <block type="math_number"><field name="NUM">-1</field> </block>
+                </value>
+              </block>
+          </value> 
+        </block>
+    </category>
+
+    <category name="Stop" colour="60">
+      <label text="Halt"></label>
+        <block type="halt">          
+          <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                  <block type="label_text"><field name="label">accel</field> </block>
+                </value>
+                <value name="input">
+                  <block type="num_1_inf_1"><field name="NUM">1</field> </block>
+                </value>
+              </block>
+          </value>
+        </block>
+        <sep gap="32"></sep>
+        <label text="Alarm"></label>
+        <block type="get_alarm"></block>
+        <sep gap="5"></sep>
+        <block type="set_alarm">
+          <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                  <block type="label_text"><field name="label">enable</field> </block>
+                </value>
+                <value name="input">
+                  <block type="num_0_1_1"><field name="NUM">0.0</field> </block>
+                </value>
+              </block>
+          </value>
+        </block>
+    </category>
+
+    <category name="Joint and TCP" colour="90">
+      <label text="Joint"></label>
+      <block type="get_all_joint"></block>
+      <sep gap="5"></sep>
+      <block type="get_joint">
+        <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                   <block type="label_text"><field name="label">index</field> </block>
+                </value>
+                <value name="input">
+                  <block type="8_drpdown"><field name="label">0</field> </block>
+                </value>
+              </block>
+          </value>
+      </block>
+      <sep gap="5"></sep>
+      <block type="set_joint">
+          <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                   <block type="label_text"><field name="label">val</field> </block>
+                </value>
+                <value name="input">
+                  <block type="math_number"><field name="NUM">0</field> </block>
+                </value>
+              </block>
+          </value> 
+            <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                   <block type="label_text"><field name="label">index</field> </block>
+                </value>
+                <value name="input">
+                  <block type="8_drpdown"><field name="label">0</field> </block>
+                </value>
+              </block>
+          </value>
+        </block>
+
+      <sep gap="32"></sep>
+      <label text="Pose"></label>
+      <block type="get_all_pose"></block>
+      <sep gap="5"></sep>
+      <block type="get_pose">
+        <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                   <block type="label_text"><field name="label">index</field> </block>
+                </value>
+                <value name="input">
+                  <block type="8_drpdown"><field name="label">0</field> </block>
+                </value>
+              </block>
+          </value>
+      </block>
+      <sep gap="32"></sep>
+      <label text="Toollength"></label>
+      <block type="get_toollength"></block>
+      <sep gap="5"></sep>
+      <block type="set_toollength">
+          <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                  <block type="label_text"><field name="label">length</field> </block>
+                </value>
+                <value name="input">
+                  <block type="num_0_inf_0"><field name="NUM">0</field> </block>
+                </value>
+              </block>
+          </value>
+      </block>
+    </category>
+
+    <category name="I/O" colour="120">
+      <label text="Output"></label>
+        <block type="get_all_output"></block>
+        <sep gap="5"></sep>
+        <block type="get_output">
+          <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                   <block type="label_text"><field name="label">index</field> </block>
+                </value>
+                <value name="input">
+                  <block type="16_drpdown"><field name="label">0</field> </block>
+                </value>
+              </block>
+          </value>
+        </block>
+        <sep gap="5"></sep>
+        <block type="set_output">
+            <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                   <block type="label_text"><field name="label">queue</field> </block>
+                </value>
+                <value name="input">
+                  <block type="num_0_1_1"><field name="NUM">1</field> </block>
+                </value>
+              </block>
+          </value>
+           <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                   <block type="label_text"><field name="label">val</field> </block>
+                </value>
+                <value name="input">
+                  <block type="num_0_1_1"><field name="NUM">0.0</field> </block>
+                </value>
+              </block>
+          </value> 
+            <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                   <block type="label_text"><field name="label">index</field> </block>
+                </value>
+                <value name="input">
+                  <block type="16_drpdown"><field name="label">0</field> </block>
+                </value>
+              </block>
+          </value>
+        </block>
+
+        <sep gap="32"></sep>
+        <label text="Input"></label>
+         <block type="get_all_input"></block>
+        <sep gap="5"></sep>
+        <block type="get_input">
+            <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                   <block type="label_text"><field name="label">index</field> </block>
+                </value>
+                <value name="input">
+                  <block type="16_drpdown"><field name="label">0</field> </block>
+                </value>
+              </block>
+          </value>
+        </block>
+
+        <sep gap="32"></sep>
+        <label text="PWM"></label>
+          <block type="get_pwm">
+            <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                   <block type="label_text"><field name="label">index</field> </block>
+                </value>
+                <value name="input">
+                  <block type="5_drpdown"><field name="label">0</field> </block>
+                </value>
+              </block>
+          </value>
+        </block>
+        <sep gap="5"></sep>
+        <block type="get_freq">
+            <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                   <block type="label_text"><field name="label">index</field> </block>
+                </value>
+                <value name="input">
+                  <block type="5_drpdown"><field name="label">0</field> </block>
+                </value>
+              </block>
+          </value>
+        </block>
+        <sep gap="5"></sep>
+        <block type="get_duty">
+            <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                   <block type="label_text"><field name="label">index</field> </block>
+                </value>
+                <value name="input">
+                  <block type="5_drpdown"><field name="label">0</field> </block>
+                </value>
+              </block>
+          </value>
+        </block>
+        <sep gap="5"></sep>
+        <block type="set_pwm">
+          <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                   <block type="label_text"><field name="label">queue</field> </block>
+                </value>
+                <value name="input">
+                  <block type="num_0_1_1"><field name="NUM">1</field> </block>
+                </value>
+              </block>
+          </value>
+            <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                   <block type="label_text"><field name="label">enable</field> </block>
+                </value>
+                <value name="input">
+                  <block type="num_0_1_1"><field name="NUM">1</field> </block>
+                </value>
+              </block>
+          </value> 
+            <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                   <block type="label_text"><field name="label">index</field> </block>
+                </value>
+                <value name="input">
+                  <block type="5_drpdown"><field name="label">0</field> </block>
+                </value>
+              </block>
+          </value>
+        </block>
+        <sep gap="5"></sep>
+        <block type="set_freq">
+            <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                   <block type="label_text"><field name="label">queue</field> </block>
+                </value>
+                <value name="input">
+                  <block type="num_0_1_1"><field name="NUM">1</field> </block>
+                </value>
+              </block>
+          </value>
+            <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                   <block type="label_text"><field name="label">freq</field> </block>
+                </value>
+                <value name="input">
+                  <block type="num_freq"><field name="NUM">0</field> </block>
+                </value>
+              </block>
+          </value> 
+            <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                   <block type="label_text"><field name="label">index</field> </block>
+                </value>
+                <value name="input">
+                  <block type="5_drpdown"><field name="label">0</field> </block>
+                </value>
+              </block>
+          </value>
+        </block>
+        <sep gap="5"></sep>
+        <block type="set_duty">
+            <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                   <block type="label_text"><field name="label">queue</field> </block>
+                </value>
+                <value name="input">
+                  <block type="num_0_1_1"><field name="NUM">1</field> </block>
+                </value>
+              </block>
+          </value>
+            <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                   <block type="label_text"><field name="label">val</field> </block>
+                </value>
+                <value name="input">
+                  <block type="num_duty"><field name="NUM">0</field> </block>
+                </value>
+              </block>
+          </value> 
+            <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                   <block type="label_text"><field name="label">index</field> </block>
+                </value>
+                <value name="input">
+                  <block type="5_drpdown"><field name="label">0</field> </block>
+                </value>
+              </block>
+          </value>
+        </block>
+
+        <sep gap="32"></sep>
+        <label text="ADC"></label>
+        <block type="get_adc">
+            <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                   <block type="label_text"><field name="label">index</field> </block>
+                </value>
+                <value name="input">
+                  <block type="5_drpdown"><field name="label">0</field> </block>
+                </value>
+              </block>
+          </value>
+        </block>  
+    </category>
+
+    <category name="Wait" colour="150">
+      <label text="Wait for Input Pin"></label>
+        <block type="probe">
+          <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                   <block type="label_text"><field name="label">val</field> </block>
+                </value>
+                <value name="input">
+                  <block type="num_0_1_1"><field name="NUM">0</field> </block>
+                </value>
+              </block>
+          </value> 
+            <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                   <block type="label_text"><field name="label">index</field> </block>
+                </value>
+                <value name="input">
+                  <block type="16_drpdown"><field name="label">0</field> </block>
+                </value>
+              </block>
+          </value>
+        </block>
+      <label text="Wait for Encoder Index"></label>
+        <block type="iprobe">
+          <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                   <block type="label_text"><field name="label">val</field> </block>
+                </value>
+                <value name="input">
+                  <block type="num_0_1_1"><field name="NUM">0</field> </block>
+                </value>
+              </block>
+          </value> 
+            <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                   <block type="label_text"><field name="label">index</field> </block>
+                </value>
+                <value name="input">
+                  <block type="8_drpdown"><field name="label">0</field> </block>
+                </value>
+              </block>
+          </value>
+        </block>
+
+      <label text="Sleep in Seconds"></label>
+        <block type="sleep">
+          <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                  <block type="label_text"><field name="label">val</field> </block>
+                </value>
+                <value name="input">
+                  <block type="num_0_inf_0"><field name="NUM">0</field> </block>
+                </value>
+              </block>
+          </value>
+        </block>
+
+    </category>
+
+    <category name="Setting" colour="180">
+      <label text="Motor"></label>
+        <block type="get_motor"></block>
+        <sep gap="5"></sep>
+        <block type="set_motor">
+          <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                  <block type="label_text"><field name="label">enable</field> </block>
+                </value>
+                <value name="input">
+                  <block type="num_0_1_1"><field name="NUM">1</field> </block>
+                </value>
+              </block>
+          </value>
+        </block>
+
+      <sep gap="32"></sep>
+      <label text="Gravity Compensation"></label>
+        <block type="get_gravity"></block>
+        <sep gap="5"></sep>
+        <block type="set_gravity">
+          <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                  <block type="label_text"><field name="label">z</field> </block>
+                </value>
+                <value name="input">
+                  <block type="num_0_inf_0"><field name="NUM">0</field> </block>
+                </value>
+              </block>
+          </value>
+          <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                  <block type="label_text"><field name="label">y</field> </block>
+                </value>
+                <value name="input">
+                  <block type="num_0_inf_0"><field name="NUM">0</field> </block>
+                </value>
+              </block>
+          </value>
+          <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                  <block type="label_text"><field name="label">x</field> </block>
+                </value>
+                <value name="input">
+                  <block type="num_0_inf_0"><field name="NUM">0</field> </block>
+                </value>
+              </block>
+          </value>
+          <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                  <block type="label_text"><field name="label">mass</field> </block>
+                </value>
+                <value name="input">
+                  <block type="num_0_inf_0"><field name="NUM">0</field> </block>
+                </value>
+              </block>
+          </value>
+          <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                  <block type="label_text"><field name="label">enable</field> </block>
+                </value>
+                <value name="input">
+                  <block type="num_0_1_1"><field name="NUM">1</field> </block>
+                </value>
+              </block>
+          </value>
+        </block>
+
+      <sep gap="32"></sep>
+      <label text="Auxiliary Axes"></label>
+      <block type="get_axis">
+        <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                   <block type="label_text"><field name="label">index</field> </block>
+                </value>
+                <value name="input">
+                  <block type="5_8_drpdown"><field name="label">5</field> </block>
+                </value>
+              </block>
+          </value>
+      </block>
+      <sep gap="5"></sep>
+      <block type="set_axis">
+          <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                   <block type="label_text"><field name="label">ratio</field> </block>
+                </value>
+                <value name="input">
+                  <block type="num_0_inf_0"><field name="NUM">0</field> </block>
+                </value>
+              </block>
+          </value> 
+            <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                   <block type="label_text"><field name="label">index</field> </block>
+                </value>
+                <value name="input">
+                  <block type="5_8_drpdown"><field name="label">5</field> </block>
+                </value>
+              </block>
+          </value>
+        </block>
+
+      <sep gap="32"></sep>
+      <label text="PID"></label>
+      <block type="get_pid"></block>
+      <sep gap="5"></sep>
+      <block type="set_pid">
+          <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                   <block type="label_text"><field name="label">duration</field> </block>
+                </value>
+                <value name="input">
+                  <block type="num_1_inf_1"><field name="NUM">3000</field> </block>
+                </value>
+              </block>
+          </value> 
+            <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                   <block type="label_text"><field name="label">treshold</field> </block>
+                </value>
+                <value name="input">
+                  <block type="num_1_inf_1"><field name="NUM">75</field> </block>
+                </value>
+              </block>
+          </value>
+        </block>
+        <block type="reset_pid"></block>
+    </category>
+
+    <category name="Info" colour="210">
+        <label text="Firmware Version"></label>
+        <block type="version"></block>
+
+        <sep gap="32"></sep>
+        <label text="Device ID"></label>
+        <block type="uid"></block>
+    </category>
+
+    <category name="Messages" colour="240">
+        <block type="val">
+          <value name="inputs">
+              <block type="key_in">
+                <value name="key">
+                  <block type="val_list"><field name="label">in0</field> </block>
+                </value>
+              </block>
+          </value> 
+        </block>
+
+        <sep gap="32"></sep>
+        <block type="recv"></block>
+        <sep gap="32"></sep>
+        <block type="track_cmd"></block>
+
+    </category>
+
+    <category name="Connection" colour="270">
+        <block type="connect">
+          <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                  <block type="label_text"><field name="label">port</field> </block>
+                </value>
+                <value name="input">
+                  <block type="num_1_inf_1"><field name="NUM">443</field> </block>
+                </value>
+              </block>
+          </value>
+            <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                  <block type="label_text"><field name="label">host</field> </block>
+                </value>
+                <value name="input">
+                  <block type="text"><field name="TEXT">localhost</field></block>
+                </value>
+              </block>
+          </value>
+        </block>
+        <sep gap="32"></sep>  
+        <block type="close"></block>
+    </category>
+
+    <category name="Play" colour="300">
+      <label text="Play a Command"></label>
+        <block type="play">  
+          <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                  <block type="label_text"><field name="label">msg</field> </block>
+                </value>
+                <value name="input">
+                  <block type="text"><field name="TEXT"></field></block>
+                </value>
+              </block>
+          </value>
+          <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                   <block type="label_text"><field name="label">timeout</field> </block>
+                </value>
+                <value name="input">
+                  <block type="math_number"><field name="NUM">-1</field> </block>
+                </value>
+              </block>
+          </value>
+        </block>
+
+        <sep gap="32"></sep>  
+        <label text="Play a Script File"></label>
+
+        <block type="play_script"> 
+          <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                   <block type="label_text"><field name="label">timeout</field> </block>
+                </value>
+                <value name="input">
+                  <block type="math_number"><field name="NUM">-1</field> </block>
+                </value>
+              </block>
+          </value> 
+          <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                  <block type="label_text"><field name="label">script_path</field> </block>
+                </value>
+                <value name="input">
+                  <block type="text"><field name="TEXT"></field></block>
+                </value>
+              </block>
+          </value>
+        </block>
+
+    </category>
+
+    <category name="Log" colour="330">
+        <block type="log">
+            <value name="inputs">
+              <block type="set_label">
+                <value name="label">
+                  <block type="label_text"><field name="label">msg</field> </block>
+                </value>
+                <value name="input">
+                  <block type="text"><field name="TEXT">Hello World!</field></block>
+                </value>
+              </block>
+          </value>
+        </block>       
+    </category> 
+<!--
+    <category name="Labels" colour="360">
+      <block type="set_label">
+        <value name="label">
+          <block type="val_list"><field name="label">j0</field> </block>
+        </value>
+        <value name="input">
+          <block type="math_number"><field name="NUM">0.0</field> </block>
+        </value>
+      </block>
+    
+      <block type="val_list"><field name="label">j0</field> </block>
+      <block type="cmd_list"><field name="label">jmove</field> </block>
+      <block type="output_list"><field name="label">out0</field> </block>
+      <block type="pwm_list"><field name="label">pwm0</field> </block>
+      <block type="probe_list"><field name="label">in0</field> </block>
+      <block type="label_text"><field name="label">port</field> </block>
+      <block type="5_drpdown"><field name="label">1</field> </block>
+      <block type="8_drpdown"><field name="label">1</field> </block>
+    </category>
+-->
+  </category> 
+</xml>

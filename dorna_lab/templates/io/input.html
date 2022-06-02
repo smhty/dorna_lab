@@ -1,0 +1,25 @@
+<details>
+  <summary class="bg-light border-bottom pl-2 pr-2">Inputs</summary>
+
+    <table class="table table-hover table-sm pl-2 pr-2 mb-0">
+      <tbody>
+        {% for i in [0, 4, 8, 12] %}
+          <tr >
+            {% for j in range(4) %}
+              {% if j==3 %}
+                <td class="border-top-0 border-bottom">  
+              {% else %}
+                <td class="border-top-0 border-bottom border-right">
+              {% endif %}                        
+                <div class="custom-control custom-switch">
+                  <input type="checkbox" class="custom-control-input in_c" data-key="in{{i+j}}" id="in_c_{{i+j}}">
+                  <label class="custom-control-label font-weight-bold" for="in_c_{{i+j}}">in{{i+j}}</label>
+                </div>        
+              </td>
+            {% endfor %}
+          </tr>  
+        {% endfor %}
+      </tbody>
+    </table>  
+
+</details>

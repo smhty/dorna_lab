@@ -1,0 +1,58 @@
+	<!--top-->
+	<div class="d-flex border-bottom bg-light">
+		<!-- editor-->
+		<div class="border-right">
+			<div class="input-group input-group-sm pr-2 pl-2 pt-1 pb-1">
+				<select class="form-control editor-select-form editor_s" data-display="editor_panel">
+					<option value="blockly_panel" selected="">Blockly</option>
+					<option value="python_panel">Python</option>
+				</select>	
+			</div>			
+		</div>
+
+		<!-- file name-->
+		<div class="mt-auto mb-auto ml-2 mr-2">
+			<span class="blockly_file_v"></span><span class="blockly_process_id_v"></span>
+		</div>
+		
+	  
+	  <!--running
+		<button type="button" class="btn btn-light process_kill_modal_b rounded-0 border-right"> 
+		  Process ID: <span class="blockly_process_id_v">None</span>
+		</button>
+		-->
+	  
+		<div class="flex-grow-1"></div>
+
+		<!--process-->
+    <button type="button" class="btn btn-light sessions_b rounded-0 border-left border-right">
+      <i class="far fa-list-alt"></i>
+      Sessions
+      
+    </button>
+
+		<button type="button" class="btn btn-light blockly_play_b rounded-0 border-right">
+      <i class="fas fa-play"></i>
+      Play
+		</button>
+
+		<button type="button" class="btn btn-light rounded-0 border-right blockly_kill_b">
+      <i class="fas fa-times"></i>
+      Kill
+		</button>
+	  	<!--file action-->
+		<button id="btnGroupDrop2" type="button" class="btn btn-light rounded-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-h"></i>
+		</button>
+		<div class="dropdown-menu" aria-labelledby="btnGroupDrop2" style="">
+			<button class="dropdown-item blockly_new_b"><i class="fal fa-plus pr-2"></i>New File</button>
+			<button class="dropdown-item blockly_open_b"><i class="fal fa-file pr-2"></i>Open File...</button>	
+			<button class="dropdown-item blockly_save_b"><i class="fal fa-save pr-2"></i>Save</button>
+      <button class="dropdown-item blockly_save_as_b"><i class="fal fa-save pr-2"></i>Save as</button>
+			<div class="dropdown-divider"></div>
+			<button class="dropdown-item blockly_download_b"><i class="fal fa-download pr-2"></i>Download</button>
+			<button class="dropdown-item blockly_upload_b"><i class="fal fa-upload pr-2"></i>Upload</button>
+			<div class="dropdown-divider"></div>
+			<button class="dropdown-item blockly_delete_b "><i class="fal fa-trash-alt pr-2"></i>Delete</button>
+		</div>	
+	</div>  
+	<!--/top-->

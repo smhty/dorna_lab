@@ -1,0 +1,36 @@
+<div class="d-flex justify-content-around joint_info border-bottom p-2" >
+	<table>
+	  <tbody>
+	    <tr>
+	    	<td colspan="2">
+	    		<button type="button" class="btn btn-light border btn-sm p-0 pr-2 pl-2 btn-block rec_p_b rec_joint_b" title="Record position" data-item= "joint" data-cmd={{cmd["jmove"]}}>Record</button>
+	    	</td>
+	    </tr> 		  	
+	    {% for i in [["j0", "deg","0"], ["j1", "deg","1"], ["j2", "deg","2"], ["j3", "deg","3"], ["j4", "deg","4"], ["j5", "deg","5"], ["j6", "deg","6"], ["j7", "deg","7"]]%}
+	    <tr class="position_form" data-key = "{{i[2]}}">
+	      <td class="text-right">{{i[0]}}({{i[1]}}):</td>
+	      <td>
+	        <span id="motion_r_id_{{i[0]}}" class="joint_v motion_v" data-key="{{i[0]}}">000.000</span>    
+	      </td>
+	    </tr>
+	    {% endfor %}     
+	  </tbody>
+	</table>
+	<table>
+	  <tbody>
+	    <tr>
+	    	<td colspan="2">
+	    		<button type="button" class="btn btn-light border btn-sm p-0 pr-2 pl-2 btn-block rec_p_b rec_line_b" title="Record position" data-item= "xyz" data-cmd={{cmd["lmove"]}}>Record</button>
+	    	</td>
+	    </tr>		  	
+	    {% for i in [["x", "mm","0"], ["y", "mm","1"], ["z", "mm","2"], ["a", "deg","3"], ["b", "deg","4"], ["c", "deg","5"], ["d", "deg","6"], ["e", "deg","7"]]%}
+	    <tr class="position_form" data-key = "{{i[2]}}">
+	      <td class="text-right">{{i[0]}}({{i[1]}}):</td>
+	      <td>
+	        <span id="motion_r_id_{{i[0]}}" class="xyz_v motion_v" data-key="{{i[0]}}">000.000</span>    
+	      </td>      
+	    </tr>
+	    {% endfor %}	       		    		           
+	  </tbody>
+	</table>
+</div>

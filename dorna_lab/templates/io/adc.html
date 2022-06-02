@@ -1,0 +1,21 @@
+<details>
+  <summary class="bg-light border-bottom pl-2 pr-2">ADCs</summary>
+
+    <table class="table table-hover table-sm pl-2 pr-2 mb-0">
+      <tbody>
+        <tr >
+          {% for i in range(5) %}
+            {% if i==4 %}
+              <td class="border-top-0 border-bottom">  
+            {% else %}
+              <td class="border-top-0 border-bottom border-right">
+            {% endif %}                        
+                <strong>adc{{i}}</strong>
+                <input type="text" class="adc_v tiny text-center" value="0" data-key="adc{{i}}" disabled>
+            </td>           
+          {% endfor %}
+        </tr>  
+      </tbody>
+    </table>  
+
+</details>

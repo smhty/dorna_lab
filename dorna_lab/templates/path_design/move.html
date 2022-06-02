@@ -1,0 +1,137 @@
+<!--top-->
+
+
+<!-- Position-->
+<details>
+  <summary class="bg-light border-bottom pl-2 pr-2">Position</summary> 
+	<!-- point -->
+	<table class="table table-sm pl-2 pr-2 mb-0 table-hover table-borderless border-bottom" style="width:100%">
+	  <tr>
+	  	<td style="width: 30%">Point</td>
+	    <td>
+			<div class="input-group input-group-sm">
+			  <select class="form-control path_design_point_s" data-id = -1>
+			  </select>
+			  <div class="input-group-append">
+			    <button class="btn btn-primary sync_pos_b" type="button"><i class="fas fa-sync"></i> Sync Position</button>
+			  </div>
+			</div>					
+       
+	    </td>
+	  </tr>	  
+	</table>
+
+	<!-- control -->
+	<table class="table table-sm pl-2 pr-2 mb-0 table-hover table-borderless border-bottom" style="width:100%">
+	  <tr>
+	  	<td style="width: 30%">Control Type</td>
+	    <td>
+	      {% for i in [["xyz", 2], ["joint", 1], ["a & b", 3]] %}
+	        <div class="form-check form-check-inline form-control-sm">
+	          <input class="form-check-input path_design_point_ct_r" name="ct_r" type="radio" id="ct_r_{{i[1]}}" value= {{i[1]}}>
+	          <label class="form-check-label" for="ct_r_{{i[1]}}">{{i[0]}}</label>
+	        </div>
+	      {% endfor%}        
+	    </td>
+	  </tr>	  
+	</table>
+
+	<!--sync position-->		
+	<table class="table table-sm pl-2 pr-2 mb-0 table-hover table-borderless border-bottom" style="width:100%">
+		  {% for i in [["j0", "x","0"], ["j1", "y","1"], ["j2", "z","2"], ["j3", "a","3"], ["j4", "b","4"], ["j5", "c","5"], ["j6", "d","6"], ["j7", "e","7"]] %}
+		  <tr class="path_design_point_form" data-key = "{{i[2]}}">
+		  	<td>
+				<div class="input-group input-group-sm">
+				  <div class="input-group-prepend">
+				    <span class="input-group-text" id="inputGroup-sizing-sm">{{i[0]}}</span>
+				  </div>
+				  <input type="number" class="form-control path_design_point_prm_v" aria-label="{{i[0]}}" aria-describedby="inputGroup-sizing-sm"
+				  value="0" step="0.001" data-key="{{i[0]}}" data-path = 1 data-type="joint" data-space="joint" >
+				</div>	  		
+		  	</td>
+		  	<td>
+				<div class="input-group input-group-sm">
+				  <div class="input-group-prepend">
+				    <span class="input-group-text" id="inputGroup-sizing-sm">{{i[1]}}</span>
+				  </div>
+				  <input type="number" class="form-control path_design_point_prm_v" aria-label="{{i[1]}}" aria-describedby="inputGroup-sizing-sm"
+				  value="0" step="0.001" data-key="{{i[1]}}" data-path = 1 data-type="xyz" data-space="xyz">
+				</div>	  		
+		  	</td>                  
+		  </tr>
+		{% endfor %} 	
+	</table>		
+</details>	
+
+<!-- motion parameter-->
+<details>
+  <summary class="bg-light border-bottom pl-2 pr-2">Parameters</summary>
+
+    <table class="table table-sm pl-2 pr-2 mb-0 table-hover table-borderless border-bottom">
+      <tbody>
+		  <!--vel accel jerk-->
+		  {% for i in [["Velocity", "vel",100], ["Acceleration", "accel",100], ["Jerk", "jerk",100]] %}
+			  <tr>
+			    <td width="34%">
+					<div class="custom-control custom-checkbox mr-sm-2">
+						<input type="checkbox" class="custom-control-input path_design_prm_c" id="path_design_prm_c_{{i[1]}}" data-key="{{i[1]}}">
+						<label class="custom-control-label" for="path_design_prm_c_{{i[1]}}">{{i[0]}}</label>
+					</div>	    	
+			    </td>
+			    <td colspan="2">
+					<input type="number" class="form-control form-control-sm path_design_prm_v" aria-label="{{i[1]}}" aria-describedby="inputGroup-sizing-sm"
+					value="{{i[2]}}" step="0.001" data-key="{{i[1]}}">
+			    </td>
+			  </tr>
+		  {% endfor %}
+
+		  <div class="custom_control_turn_line">
+			<td width="34%">
+				<div class="custom-control custom-checkbox mr-sm-2 custom_control_turn_check">
+					<input type="checkbox" class="custom-control-input path_design_prm_c" id="path_design_prm_c_turn" data-key="turn">
+					<label class="custom-control-label custom_control_turn_label" for="path_design_prm_c_turn" data-toggle="tooltip" data-placement="top" title="Number of additional turns you wish the move-circle command goes" >Turn</label>
+				</div>	    	
+		    </td>
+		    <td colspan="2">
+				<input type="number" class="form-control form-control-sm path_design_prm_v custom_control_turn_input" aria-label="turn" aria-describedby="inputGroup-sizing-sm"
+				value="0" step="1" data-key="turn">
+		    </td>
+		  </div>
+
+		  <!--continuity params-->
+		  {% for i in [["Continuity", "cont",0]] %}
+		  <tr>
+		    <td width="34%">
+				<div class="custom-control custom-checkbox mr-sm-2">
+					<input type="checkbox" class="custom-control-input path_design_prm_c" id="path_design_prm_c_{{i[1]}}" data-key="{{i[1]}}">
+					<label class="custom-control-label" for="path_design_prm_c_{{i[1]}}">{{i[0]}}</label>
+				</div>	    	
+		    </td>
+		    <td colspan="2">
+				<div class="input-group input-group-sm">
+					<select class="form-control path_design_prm_v" aria-label="{{i[1]}}" aria-describedby="inputGroup-sizing-sm" data-key="{{i[1]}}">
+					    <option value="0">0</option>
+					    <option value="1">1</option>
+					</select>		          
+				</div>			    	
+		    </td>
+		  </tr>
+		  {% endfor %}
+		  {% for i in [["Corner", "corner",30]] %}
+		  <tr>
+		    <td width="34%">
+				<div class="custom-control custom-checkbox mr-sm-2">
+					<input type="checkbox" class="custom-control-input path_design_prm_c" id="path_design_prm_c_{{i[1]}}" data-key="{{i[1]}}">
+					<label class="custom-control-label" for="path_design_prm_c_{{i[1]}}">{{i[0]}}</label>
+				</div>	    	
+		    </td>
+		    <td colspan="2">
+				<input type="number" class="form-control form-control-sm path_design_prm_v" aria-label="{{i[1]}}" aria-describedby="inputGroup-sizing-sm"
+				value="{{i[2]}}" step="0.001" data-key="{{i[1]}}">
+		    </td>
+		  </tr>
+		  {% endfor %}  
+      </tbody>
+    </table>  
+
+</details>

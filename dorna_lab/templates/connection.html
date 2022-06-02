@@ -1,0 +1,27 @@
+<div class="modal fade" id="connection_modal" tabindex="-1" role="dialog" aria-labelledby="connection_modal" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="connection_modalLabel">Connection</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="form-group">
+            <label for="exampleInputEmail1">Websocket Status</label>
+            <input type="text" class="form-control ws_stat_v"  id="ws-status-val" value="Disconnected" disabled>
+          </div>
+          <div class="form-group">
+            <label for="exampleInputEmail1">Websocket URL</label>
+            <input type="url" value="ws://dorna:443" placeholder="ws://dorna:443" class="form-control robot_url ">
+            <small id="emailHelp" class="form-text text-muted">Connect to the websocket feed via port 443 of the robot, ws://robot_ip_address:443</small>
+          </div>
+          <button type="button" class="btn btn-primary connect_b">Connect</button>
+          <button type="button" class="btn btn-secondary disconnect_b">Disconnect</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

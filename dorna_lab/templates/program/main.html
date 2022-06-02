@@ -1,0 +1,22 @@
+<div class="d-flex flex-column stretch">
+  <!--header-->
+  {% include "program/header.html" %}
+
+  <div class="d-flex flex-grow-1 editor_panel blockly_panel">
+    <!--blockly-->   
+    {% include "program/blockly.html" %}  
+
+    <div class="d-flex flex-column w-25 border-left">
+      <!--python-->
+      {% include "program/python_viewer.html" %}      
+    </div>
+  </div>
+  <div class="d-none flex-column flex-grow-1 bg-primary editor_panel python_panel" style="min-height: 0; height: 500px;display: none;">
+    <!--python editor-->
+    {% include "program/python_editor.html" %} 
+  </div>  
+  <!--shell-->
+  <div class="border-bottom"></div>
+  {% include "program/shell.html" %}
+
+</div>

@@ -1,0 +1,82 @@
+<div class="text-center pb-2">
+  <h3 href="dorna.ai" target="_blank">Dorna Lab</h3>
+  by <a href="https://dorna.ai" target="_blank">Dorna Robotics</a>       
+</div>
+<details open>
+  <summary class="bg-secondary border-bottom pl-2 pr-2 text-white">Device</summary>
+    <table class="table table-hover table-sm pl-2 pr-2 mb-0">
+      <tbody>
+          <tr>
+            <td class="border-top-0 border-bottom">
+              Device ID
+            </td>            
+            <td class="uid_v border-top-0 border-bottom" data-key="{{cmd["uid"]}}" colspan="2"></td>
+          </tr>        
+          <tr>
+            <td class="border-top-0 border-bottom">
+              Hardware
+            </td>            
+            <td class="border-top-0 border-bottom" colspan="2">
+              Dorna 2
+            </td>            
+          </tr>
+          <tr class="table-active">
+            <td class="border-top-0 border-bottom">
+            </td>            
+            <td class="version_v border-top-0 border-bottom"><strong>Current version</strong></td>
+            <td class="version_v border-top-0 border-bottom"><strong>Latest version</strong></td>
+          </tr>          
+          <tr>
+            <td class="border-top-0 border-bottom">
+              Firmware Version
+            </td>            
+            <td class="version_v border-top-0 border-bottom" data-key="{{cmd["version"]}}"></td>
+            <td class="version_v server border-top-0 border-bottom" data-target="server">No Internet</td>
+          </tr>
+          <tr>
+            <td class="border-top-0 border-bottom">
+              Dorna Lab Version
+            </td>            
+            <td class="version_v border-top-0 border-bottom" data-key="dorna_lab">{{data["dorna_lab"]}}</td>
+            <td class="version_v dorna_lab border-top-0 border-bottom" data-target="dorna_lab">No Internet</td>
+          </tr>
+          <tr>
+            <td class="border-top-0 border-bottom">
+              API Version
+            </td>            
+            <td class="version_v border-top-0 border-bottom" data-key="api">{{data["api"]}}</td>
+            <td class="version_v api border-top-0 border-bottom" data-target="api">No Internet</td>
+          </tr>
+      </tbody>
+    </table>  
+</details>
+<details>
+  <summary class="bg-secondary border-bottom pl-2 pr-2 text-white">Update</summary>
+    <!--
+    <div class="card mt-2 mb-2 alert-primary">
+      <div class="card-body">
+        <h5 class="card-title">Notice</h5>
+        <p class="card-text">Make sure to read and follow the <a class="alert-link" href="https://doc.dorna.ai/docs/guides/update-robot/" target="_blank">instruction link</a> before running the update.
+        </p>
+        <button type="button" class="update_b btn btn-primary" data-value="{{config['update']}}">Update</button>
+        <samp><small class="mt-2 p-2 bg-light update_msg d-none">None</small></samp>     
+      </div>
+    </div>
+    -->
+    <div class="card mt-2 mb-2 alert-primary">
+      <div class="card-body">
+        <h5 class="card-title outdate" style="display: none;">New Updates Available</h5>
+        <h5 class="card-title update" style="display: none;">Up to Date</h5>
+        <h5 class="card-title internet" style="display: none;">No Internet Access on the Controller</h5>
+        
+        <p class="card-text outdate" style="display: none;">Follow the guidelines <a class="alert-link" href="https://doc.dorna.ai/docs/guides/update-robot/" target="_blank">here</a> to get the latest update on your system.
+        </p>
+        <p class="card-text update" style="display: none;">Your controller is up to date.</p>
+        <p class="card-text update" style="display: none;">For more information check <a class="alert-link" href="https://doc.dorna.ai/docs/guides/update-robot/" target="_blank">here</a>.
+        </p>
+        <p class="card-text internet" style="display: none;">For more information check <a class="alert-link" href="https://doc.dorna.ai/docs/guides/update-robot/" target="_blank">here</a>.
+        </p>        
+        <button type="button" class="update_b_check btn btn-primary">Check for Updates...</button>
+      </div>
+    </div>    
+</details>
