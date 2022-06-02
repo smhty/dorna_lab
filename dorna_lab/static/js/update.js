@@ -32,17 +32,16 @@ function update_check(data) {
 		for (let key of Object.keys(data)) {
 			// latest version
 			let latest = data[key]
-			$(`.version_v[data-target=${key}]`).text(latest)
+			$(`.version_v[data-latest=${key}]`).text(latest)
 
 			// current version
-			let current = $(`.version_v[data-key=${key}]`).text()
+			let current = $(`.version_v[data-current=${key}]`).text()
 			
 			if (latest !== current){
 				outdate = true
 				break
 			}
 		}
-
 		// show update message
 		if(outdate){
 			$(".outdate").show()

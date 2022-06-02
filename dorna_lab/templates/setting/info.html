@@ -30,22 +30,22 @@
             <td class="border-top-0 border-bottom">
               Firmware Version
             </td>            
-            <td class="version_v border-top-0 border-bottom" data-key="{{cmd["version"]}}"></td>
-            <td class="version_v server border-top-0 border-bottom" data-target="server">N.A.</td>
+            <td class="version_v border-top-0 border-bottom" data-key="{{cmd["version"]}}" data-current="server"></td>
+            <td class="version_v server border-top-0 border-bottom" data-latest="server">N.A.</td>
           </tr>
           <tr>
             <td class="border-top-0 border-bottom">
               Dorna Lab Version
             </td>            
-            <td class="version_v border-top-0 border-bottom" data-key="dorna_lab">{{data["dorna_lab"]}}</td>
-            <td class="version_v dorna_lab border-top-0 border-bottom" data-target="dorna_lab">N.A.</td>
+            <td class="version_v border-top-0 border-bottom" data-key="dorna_lab" data-current="dorna_lab">{{data["dorna_lab"]}}</td>
+            <td class="version_v dorna_lab border-top-0 border-bottom" data-latest="dorna_lab">N.A.</td>
           </tr>
           <tr>
             <td class="border-top-0 border-bottom">
               API Version
             </td>            
-            <td class="version_v border-top-0 border-bottom" data-key="api">{{data["api"]}}</td>
-            <td class="version_v api border-top-0 border-bottom" data-target="api">N.A.</td>
+            <td class="version_v border-top-0 border-bottom" data-key="api" data-current="api">{{data["api"]}}</td>
+            <td class="version_v api border-top-0 border-bottom" data-latest="api">N.A.</td>
           </tr>
       </tbody>
     </table>  
@@ -65,17 +65,27 @@
     -->
     <div class="card mt-2 mb-2 alert-primary">
       <div class="card-body">
-        <h5 class="card-title outdate" style="display: none;">New Updates Available</h5>
-        <h5 class="card-title update" style="display: none;">Up to Date</h5>
-        <h5 class="card-title internet" style="display: none;">No Internet Access on the Controller</h5>
         
-        <p class="card-text outdate" style="display: none;">Follow the guidelines <a class="alert-link" href="https://doc.dorna.ai/docs/guides/update-robot/" target="_blank">here</a> to get the latest update on your system.
-        </p>
-        <p class="card-text update" style="display: none;">Your controller is up to date.</p>
-        <p class="card-text update" style="display: none;">For more information check <a class="alert-link" href="https://doc.dorna.ai/docs/guides/update-robot/" target="_blank">here</a>.
-        </p>
-        <p class="card-text internet" style="display: none;">For more information check <a class="alert-link" href="https://doc.dorna.ai/docs/guides/update-robot/" target="_blank">here</a>.
-        </p>        
+        <!--outdate-->
+        <div class="outdate mb-3" style="display: none;">
+          <h5 class="card-title">New Updates Available</h5>
+          <p class="card-text">Follow the guidelines <a class="alert-link" href="https://doc.dorna.ai/docs/guides/update-robot/" target="_blank">here</a> to get the latest update on the robot.
+          </p>
+        </div>
+
+        <!--update-->
+        <div class="update mb-3" style="display: none;">
+          <h5 class="card-title">Up to Date</h5>
+          <p class="card-text">The robot is up to date. For more information check <a class="alert-link" href="https://doc.dorna.ai/docs/guides/update-robot/" target="_blank">here</a>.
+          </p>
+        </div>
+
+        <!--no internet-->
+        <div class="internet mb-3"  style="display: none;">
+          <h5 class="card-title">No Internet Access on the Controller</h5>          
+          <p class="card-text">For more information check <a class="alert-link" href="https://doc.dorna.ai/docs/guides/update-robot/" target="_blank">here</a>.
+          </p>
+        </div>                          
         <button type="button" class="update_b_check btn btn-primary">Check for Updates...</button>
       </div>
     </div>    
