@@ -6,7 +6,7 @@ import asyncio
 import tornado.ioloop
 import tornado.web
 import tornado.websocket
-from tornado_jinja_mixin import BaseHandler
+from f_to_t import BaseHandler
 
 from dorna2 import Dorna, __version__ as V_API
 from tool import db,folder,shell, update
