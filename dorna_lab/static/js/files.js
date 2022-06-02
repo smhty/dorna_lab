@@ -41,6 +41,7 @@ function btn_drp_down_file(item) {
       <button class="dropdown-item copy_b" ftype="file" data-key="`+item+`">Copy </button>
       <button class="dropdown-item duplicate_b" ftype="file" data-key="`+item+`">Duplicate </button>
       <button class="dropdown-item download_b" ftype="file" data-key="`+item+`">Download </button>
+      <button class="dropdown-item copy_add_b" ftype="file" data-key="`+item+`">Copy Address </button>
     </div></div> `;
 }
 
@@ -223,10 +224,19 @@ function update_file_list(msg){
     })
     
   });
-
+  $(".copy_add_b").on("click", function(e) {
+    let name = $(this).attr("data-key")
+    let path = $("#path_b").attr("data-key") 
+    let full_path = path + "/" + name;
+    copyToClipboardAsync(full_path);
+  });
 }
 
-
+const copyToClipboardAsync = str => {
+  if (navigator && navigator.clipboard && navigator.clipboard.writeText)
+    return navigator.clipboard.writeText(str);
+  return Promise.reject('The Clipboard API is not available.');
+};
 
 $("#path_b").on("click", function(e) {
 	// init path

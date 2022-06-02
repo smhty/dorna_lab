@@ -143,22 +143,6 @@ var onresize = function(e) {
 window.addEventListener('resize', onresize, false);
 onresize();
 
-/*
-function tabber(str){
-  
-  let k = str.length
-  while(k>0){
-      k = str.lastIndexOf("\n",k-1);
-      if(k>-1){
-      str = str.slice(0,k+1) + "    " + str.slice(k+1,str.length)
-      }
-  }
-
-  return "    "+str;
-
-}
-
-*/
 workspace.addChangeListener(function() {
   let code = Blockly.Python.workspaceToCode(workspace);
 
@@ -382,7 +366,13 @@ $('.blockly_delete_b').click(function(e){
 
 var first_time_programming = true
 
-$('#pills-programming-tab').on("click",function(e){
+$('#pills-programming-tab-python , #pills-programming-tab-blockly ').on("click",function(e){
+  if($(this).attr("id") == "pills-programming-tab-python" )
+    $(".editor_s").val("python_panel")
+    $(".editor_s").change()
+  if($(this).attr("id") == "pills-programming-tab-blockly" )
+    $(".editor_s").val("blockly_panel")
+    $(".editor_s").change()
 
   setTimeout(function() { window.dispatchEvent(new Event('resize')); 
     if(first_time_programming)
