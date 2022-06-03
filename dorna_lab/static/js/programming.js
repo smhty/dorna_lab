@@ -369,16 +369,19 @@ var first_time_programming = true
 $('#pills-programming-tab-python , #pills-programming-tab-blockly ').on("click",function(e){
   if($(this).attr("id") == "pills-programming-tab-python" )
     $(".editor_s").val("python_panel")
-    $(".editor_s").change()
-  if($(this).attr("id") == "pills-programming-tab-blockly" )
-    $(".editor_s").val("blockly_panel")
-    $(".editor_s").change()
 
-  setTimeout(function() { window.dispatchEvent(new Event('resize')); 
-    if(first_time_programming)
-       $('.blockly_new_b').click()
-    first_time_programming = false
-  }, 200);
+  if($(this).attr("id") == "pills-programming-tab-blockly" ){
+    $(".editor_s").val("blockly_panel")
+    setTimeout(function() { window.dispatchEvent(new Event('resize')); 
+      if(first_time_programming)
+         $('.blockly_new_b').click()
+      first_time_programming = false
+    }, 200);
+  }
+
+  $(".editor_s").change()
+
+
   
 });
 
