@@ -468,7 +468,7 @@ $('.blockly_play_b').click(function(e){
   //send_message({"cmd": "sudo python3 "+path+'/'+name}, "shell")
     send_message({
     "_server":"shell",
-    "prm": ["sudo python3 "+path+'/'+name],
+    "prm": ["sudo /home/dorna/Downloads/dorna_venv/bin/python3 "+path+'/'+name],
     "dir": path
   })
   }, 200);
