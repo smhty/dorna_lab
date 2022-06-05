@@ -70,6 +70,16 @@ class Shell(object):
 
 
     async def kill(self, socket, ws, server_loop, db):
+        cmd = "sudo sh /home/dorna/Downloads/dorna_lab/dorna_lab/force_kill.sh "+ str(self.p.pid)
+        kill_process = await asyncio.create_subprocess_shell(cmd)
+        msg = {"to": "shell","msg": "(process id: " + str(self.p.pid) + ") " + "process terminated", "pid":-1}
+        server_loop.add_callback(ws.emit_message, json.dumps(msg))
+
+        asyncio.create_task(db.db_call(socket, server_loop, 'UPDATE program SET status = "Ended", finish = \" ' + date.today().strftime("%B %d,%Y") +
+                              ' - ' + datetime.now().strftime("%H:%M:%S") + '\" WHERE id =' + str(self.p.pid)))
+        asyncio.create_task(db.db_call(socket, server_loop, "SELECT * FROM program"))
+        
+        """
         async with self.lock:
             #if self.p.returncode is not None:
             self.p.terminate()
@@ -79,3 +89,4 @@ class Shell(object):
             asyncio.create_task(db.db_call(socket, server_loop, 'UPDATE program SET status = "Ended", finish = \" ' + date.today().strftime("%B %d,%Y") +
                                   ' - ' + datetime.now().strftime("%H:%M:%S") + '\" WHERE id =' + str(self.p.pid)))
             asyncio.create_task(db.db_call(socket, server_loop, "SELECT * FROM program"))
+        """
