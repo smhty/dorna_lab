@@ -1,4 +1,3 @@
-setuptools
 Jinja2
 tornado
 requests
