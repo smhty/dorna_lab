@@ -32,7 +32,7 @@ class gui(BaseHandler):
 class DornaConnection(object):
     def __init__(self):
         self.robot = Dorna()
-        self.robot.connect("192.168.254.139")
+        self.robot.connect()
 
         self.robot.register_callback(self.send_message_to_browser)
         self.ws_list = []
