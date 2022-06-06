@@ -39,8 +39,8 @@ $(".in_c").each(function(index) {
   function_map[key] = "in_r";
 });
 
-$(".axis_c").each(function(index) {
-  let key = $(this).attr("data-key");
+$(".ratio_v").each(function(index) {
+  let key = $(this).attr("data-item");
   function_map[key] = "axis_r";
 });
 

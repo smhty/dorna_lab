@@ -61,8 +61,8 @@ function out_r(key, msg) {
 }
 
 function axis_r(key, msg) {
-  let index = key.substring(4)
-  $(`.ratio_v[data-key=${key}]`).prop("value", msg["freq".concat(index)].toFixed(3));
+  let index = key.substring(5)
+  $(`.ratio_v[data-key=axis${index}]`).prop("value", msg[key].toFixed(3));
 }
 function gravity_r(key, msg) {
   $(`.gravity_c`).prop("checked", msg[key]? true:false);
