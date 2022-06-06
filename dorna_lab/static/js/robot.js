@@ -63,7 +63,7 @@ class Robot{
 					   "nj1":-90 ,  "pj1":180,
 					   "nj2":-142 , "pj2":142,
 					   "nj3":-135 , "pj3":135,
-					   "nj4":-10000 , "pj4":10000};
+					   "nj4":-1000000 , "pj4":1000000};
 
 		this.Load(need_control);
 
@@ -787,7 +787,7 @@ class Robot{
 		info["nb"] = this.limits["nj4"];
 		info["pb"] = this.limits["pj4"];
 
-		let other_limits = 1000;
+		let other_limits = 1000000;
 
 		info["pc"] = other_limits;
 		info["nc"] = -other_limits;
@@ -811,8 +811,8 @@ class Robot{
 		
 		var r_a = this.a_get();
 
-		info["na"] = -10000;
-		info["pa"] = 10000;
+		info["na"] = -1000000;
+		info["pa"] = 1000000;
 		if( c>1 || c<-1 ){
 			return info;
 		}
@@ -974,7 +974,7 @@ class Robot{
 		info["pj2"] = j2_limit_up;
 
 
-		let other_limits = 1000;
+		let other_limits = 1000000;
 		info["pj5"] = other_limits;
 		info["nj5"] = -other_limits;
 		info["pj6"] = other_limits;
