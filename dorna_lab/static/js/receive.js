@@ -102,7 +102,7 @@ function alarm_r(key, msg) {
   }
   if(val===0){
     $(".alarm_li").hide()
-    init_ws(args = ["motor", "toollength", "input", "output", "pwm", "adc", "version", "uid"])  
+    init_ws(args = ["motor", "toollength", "input", "output", "pwm", "adc", "version", "uid", "gravity", "axis"])  
   }
   
   // display alarm message
