@@ -1,4 +1,9 @@
 #!/bin/bash
+
+# sleep for 5 seconds
+sleep 5
+/home/dorna/app/a.out
+
 # sleep for 5 seconds
 sleep 5
 # run the program
