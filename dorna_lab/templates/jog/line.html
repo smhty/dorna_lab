@@ -35,10 +35,10 @@
     </tr>
     <!--/discrete jog-->
     <!--buttons-->
-    {% for i in [["x","0"], ["y","1"], ["z","2"], ["a","3"], ["b","4"],["c","5"],["d","6"],["e","7"]] %}
+    {% for i in [["x","0", "350"], ["y","1", "0"], ["z","2", "200"], ["a","3", "0"], ["b","4", "0"],["c","5", "0"],["d","6", "0"],["e","7", "0"]] %}
     <tr class="jog_form" data-key = "{{i[1]}}">
       <td>
-        <input type="number" class="text-center form-control bind go_v small" value="0" step="0.001" data-key="{{i[0]}}" data-cmd={{cmd["lmove"]}} data-item = "xyz" data-type = "xyz">
+        <input type="number" class="text-center form-control bind go_v small" value={{i[2]}} step="0.001" data-key="{{i[0]}}" data-cmd={{cmd["lmove"]}} data-item = "xyz" data-type = "xyz">
       </td>      
       <td>
         <button type="button" class="jog_b btn btn-primary jog_b_{{i[0]}}m" data-key={{i[0]}} tab="line" data-value=-1 data-cmd={{cmd["lmove"]}} data-type="xyz">- {{i[0]}}
