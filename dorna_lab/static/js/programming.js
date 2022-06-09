@@ -494,10 +494,11 @@ $('.shell_submit_b').click(function(e){
 
 })
 
-
+/*
 $('.sessions_b').click(function(e){
   $('#sessions_modal').modal('show');
 })
+*/
 
 var sessions_list = [];
 
