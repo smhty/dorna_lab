@@ -811,8 +811,8 @@ class Robot{
 		
 		var r_a = this.a_get();
 
-		info["na"] = -1000000;
-		info["pa"] = 1000000;
+		info["na"] = -10000;
+		info["pa"] =  10000;
 		if( c>1 || c<-1 ){
 			return info;
 		}
