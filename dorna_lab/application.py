@@ -18,7 +18,7 @@ STATIC_PATH_DIR = os.path.join(PATH, 'static')
 # change directory
 os.chdir(os.path.join(PATH))
 
-V_LAB = "2.0.0" 
+V_LAB = "2.0.1" 
 
 CONFIG = config.config
 loop = tornado.ioloop.IOLoop.current()
