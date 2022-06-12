@@ -777,7 +777,7 @@ class Robot{
 			a += l;
 			last_l = l;
 		}
-		info["nx"] = this.xyz_to_real(v).x;//a*this.scale_to_real;
+		info["nx"] = this.xyz_to_real(v).x;
 
 		let info_a = this.allowed_a();
 		info["na"] = info_a["na"];
@@ -795,9 +795,7 @@ class Robot{
 		info["nd"] = -other_limits;
 		info["pe"] = other_limits;
 		info["ne"] = -other_limits;
-		//must be removed 
-		//info["na"] = -1000;
-		//info["pa"] = -1000;
+
 
 
 		return info;

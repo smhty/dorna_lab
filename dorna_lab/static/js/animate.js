@@ -37,9 +37,6 @@ function init_collada(){
 
   original_robot =  new Robot( renderer , camera , scene , control_camera , 1.0 , false);
 
-  //ghost_robot.callback.add(change_ghost_value);
-
-
   chain = new move_chain(scene, camera, renderer,control_camera);
   chain.callback.add(change_ghost_value);
 
@@ -71,7 +68,6 @@ function graphic_on() {
     scene.add( particleLight );
 
     var light = new THREE.AmbientLight( 0xf0d0a5 ); // soft white light
-    //scene.add( light );
 
     // Lights
 
@@ -79,12 +75,7 @@ function graphic_on() {
     directionalLight.castShadow = 1;
     directionalLight.position.set(2,-1,1);
 
-    //scene.add( directionalLight );
 
-   //var light = new THREE.HemisphereLight( 0xffeeee, 0x111122 );
-    //scene.add( light );
-    
-    // renderer
     renderer = new THREE.WebGLRenderer( { antialias : true } );
     renderer.setPixelRatio( window.devicePixelRatio );
     renderer.setSize( $(view_container).width(), $(view_container).height() );
@@ -308,3 +299,4 @@ function empty(elem) {
 init_scene()
 graphic_on()
 init_collada()
+

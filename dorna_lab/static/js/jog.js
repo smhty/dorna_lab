@@ -110,6 +110,11 @@ $(".jog_b").on("mousedown touchstart", function(e) {
 
 	if($(this).attr("data-cmd")==="lmove"){
 		info = original_robot.allowed_xyza();
+		if(info["na"]<-9000||info["pa"]>9000){
+			msg["rel"] = 1;
+			info["pa"] = Math.PI;
+			info["na"] = -Math.PI;
+		}
 	}
 	if($(this).attr("data-cmd")==="jmove"){
 		info = original_robot.allowed_j();
@@ -225,7 +230,8 @@ function position(type = "joint"){
 	return pos	
 }
 
+
 $(".joint_v[data-key=j0]").text("180.000");
 $(".joint_v[data-key=j1]").text("180.000");
-$(".joint_v[data-key=j2]").text("-142.000");
+$(".joint_v[data-key=j2]").text("-141.000");
 $(".joint_v[data-key=j3]").text("135.000");
