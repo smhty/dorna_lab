@@ -111,7 +111,8 @@ $(".jog_b").on("mousedown touchstart", function(e) {
 	if($(this).attr("data-cmd")==="lmove"){
 		info = original_robot.allowed_xyza();
 		if(info["na"]<-9000||info["pa"]>9000){
-			msg["rel"] = 1;
+			if(s=="a")
+				msg["rel"] = 1;
 			info["pa"] = 180;
 			info["na"] = -180;
 		}
@@ -127,7 +128,7 @@ $(".jog_b").on("mousedown touchstart", function(e) {
 	}
 	if($(this).attr("data-cmd")==="lmove"){
 
-		limit = limit;//- 0.5 * Math.sign(limit);
+		limit = limit;
 	}
 
 	///
@@ -154,7 +155,7 @@ $(".jog_b").on("mousedown touchstart", function(e) {
 			l = Math.sign( l ) *  Math.abs( $(`.jog_d_v[data-cmd=${msg["cmd"]}]`).prop("value") ) ;
 	}
 
-	msg[$(this).attr("data-key")] = original_robot.value($(this).attr("data-key")) + l;
+	msg[$(this).attr("data-key")] = (original_robot.value($(this).attr("data-key")) + l).toFixed(3);
 
 	/*
 	// joint
