@@ -112,8 +112,8 @@ $(".jog_b").on("mousedown touchstart", function(e) {
 		info = original_robot.allowed_xyza();
 		if(info["na"]<-9000||info["pa"]>9000){
 			msg["rel"] = 1;
-			info["pa"] = Math.PI;
-			info["na"] = -Math.PI;
+			info["pa"] = 180;
+			info["na"] = -180;
 		}
 	}
 	if($(this).attr("data-cmd")==="jmove"){
