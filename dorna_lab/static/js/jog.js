@@ -155,16 +155,8 @@ $(".jog_b").on("mousedown touchstart", function(e) {
 			l = Math.sign( l ) *  Math.abs( $(`.jog_d_v[data-cmd=${msg["cmd"]}]`).prop("value") ) ;
 	}
 
-	msg[$(this).attr("data-key")] = (original_robot.value($(this).attr("data-key")) + l).toFixed(3);
+	msg[$(this).attr("data-key")] = Number((original_robot.value($(this).attr("data-key")) + l).toFixed(3));
 
-	/*
-	// joint
-	msg[$(this).attr("data-key")] = parseInt($(this).attr("data-value"))
-									*$(`.jog_d_c[data-cmd=${msg["cmd"]}]`).prop("checked")
-									? $(`.jog_d_v[data-cmd=${msg["cmd"]}]`).prop("value"):
-									1000
-	msg[$(this).attr("data-key")] *= $(this).attr("data-value")
-	*/
 
 	// vel, accel, jerk
 	$(`.vaj_s_v[data-value=${$(this).attr("data-type")}]`).each(function() {
