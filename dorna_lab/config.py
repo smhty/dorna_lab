@@ -31,5 +31,7 @@ config = {
 		"gravity": "gravity",
 		"axis": "axis",
 	},
-	"update": "sudo rm -rf /home/dorna/Downloads/upgrade && sudo mkdir /home/dorna/Downloads/upgrade && sudo git clone https://github.com/dorna-robotics/upgrade.git /home/dorna/Downloads/upgrade && cd /home/dorna/Downloads/upgrade && sudo sh setup_0.sh"
+	"update": "sudo rm -rf /home/dorna/Downloads/upgrade && sudo mkdir /home/dorna/Downloads/upgrade && sudo git clone https://github.com/dorna-robotics/upgrade.git /home/dorna/Downloads/upgrade && cd /home/dorna/Downloads/upgrade && sudo sh setup_0.sh",
+	"home": "sudo python3 /home/dorna/Downloads/dorna_python/example/home/main.py --Host localhost --Index "
+
 }

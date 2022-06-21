@@ -148,6 +148,28 @@ function motor_r(key, msg) {
 
 // id
 function id_r(key, msg) {
+  // home
+  if(msg[key] >= 2000000){
+    // 2,000,0i0: set pid
+    // 2,000,0i1: alarm motion
+    // 2,000,0i2: clear alarm
+    // 2,000,0i3: reset pid
+    // 2,000,0i4: move backwards and set iprobe
+    // 2,000,0i5: halt
+    // 2,000,0i6: joint assignment 
+    // 2,000,0i7: error, clear alarm
+    // 2,000,0i8: error, reset pid 
+    let id = msg[key]
+    let index = Math.floor((id - 2000000) / 10)
+    let process_stat = id - (2000000 + 10 * index)
+    if(process_stat == 0 && msg["stat"] == 0){
+      add_note("home", "Homing process started for joint "+index)  
+    }else if(process_stat == 6  && msg["stat"] == 2){
+      add_note("home", "Homing process completed for joint "+index)
+    }else if(process_stat == 8  && msg["stat"] == 2){
+      add_note("home", "Homing process failed for joint "+index)
+    }
+  }   
   // replay
   if(msg[key] === 1 && msg["stat"] === 2 && $(".script_replay_c").prop("checked")){
     $(".script_play_b").click()

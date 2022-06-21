@@ -32,7 +32,9 @@ class gui(BaseHandler):
 class DornaConnection(object):
     def __init__(self):
         self.robot = Dorna()
+        self.robot.log("connecting")
         self.robot.connect()
+        self.robot.log("connected")
 
         self.robot.register_callback(self.send_message_to_browser)
         self.ws_list = []
@@ -47,8 +49,8 @@ class DornaConnection(object):
     def send_message_to_robot(self, msg):
         try:
             self.robot.play(0, msg)
-        except:
-            pass
+        except Exception as ex:
+            self.robot.log(ex)
 
     async def send_message_to_browser(self, msg, sys):
         loop.add_callback(self.emit_all, msg)
@@ -99,7 +101,7 @@ class WebSocket(tornado.websocket.WebSocketHandler):
                 try:
                     eval(msg["code"])#needs to be compatible with asyncio and does the results need to be sent back to the client?
                 except:
-                    print("Error in running message.")
+                    DORNA.robot.log("Error in running message.")
         else:
             DORNA.send_message_to_robot(json.dumps(msg))
 
@@ -114,7 +116,7 @@ class WebSocket(tornado.websocket.WebSocketHandler):
             PROCESSES.append(process)
 
         except Exception as ex:
-            print("error2: ", ex)
+            DORNA.robot.log("error2: "+ ex)
 
     def update_process(self, msg):
         try:
@@ -123,13 +125,13 @@ class WebSocket(tornado.websocket.WebSocketHandler):
             PROCESSES.append(process)
 
         except Exception as ex:
-            print("error2: ", ex)
+            DORNA.robot.log("error2: "+ ex)
 
     def update_check_process(self):
         try:
             asyncio.create_task(update.last_version_async(self, loop))
         except Exception as ex:
-            print("error2: ", ex)
+            DORNA.robot.log("error2: "+ ex)
 
 
     # client running a shell
@@ -155,7 +157,7 @@ class WebSocket(tornado.websocket.WebSocketHandler):
                 asyncio.create_task(folder.open_file(self, loop, msg["prm"][0]))
 
         except Exception as ex:
-            print("error9: ", ex)
+            DORNA.robot.log("error9: "+ ex)
 
     # client killing a shell
     def shell_kill(self, pid):
@@ -165,19 +167,19 @@ class WebSocket(tornado.websocket.WebSocketHandler):
                     asyncio.create_task(process.kill(DORNA, self, loop, DATABASE))
 
         except Exception as ex:
-            print("error3: ", ex)
+            DORNA.robot.log("error3: "+ ex)
 
     def database(self, msg):
         try:
             asyncio.create_task(DATABASE.db_call(DORNA, loop, msg))
         except Exception as ex:
-            print("error3: ", ex)
+            DORNA.robot.log("error3: "+ ex)
 
     def emit_message(self,msg):
         try:
             self.write_message(msg)
         except Exception as ex:
-            print('error_6', ex)
+            DORNA.robot.log('error_6'+ ex)
 
 
 if __name__ == '__main__':
