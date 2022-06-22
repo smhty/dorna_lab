@@ -3,7 +3,7 @@
 var ND = {5:false,6:false,7:false,8:false};
 var ND_count = 4;
 var xyz_names = ["x","y","z","a","b","c","d","e"]
-
+var axis_names_to_numbers = {"j0":0,"j1":1,"j2":2,"j3":3,"j4":4,"j5":5,"j6":6,"j7":7,"j8":8,"x":0,"y":1,"z":2,"a":3,"b":4,"c":5,"d":6,"e":7,"f":8};
 function set_ND(){
 	$('.axis_c').each(function(e){
 		let key = $(this).attr("data-key").substring(4);

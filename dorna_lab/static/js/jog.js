@@ -73,9 +73,11 @@ $( ".go_b" ).on("click", function(e) {
 
 	// joints
 	$(`.go_v[data-type=${$(this).attr("data-type")}]`).each(function() {
-		msg[$(this).attr("data-key")] = Number($(this).prop("value"))
+		let i = axis_names_to_numbers[$(this).attr("data-key")];
+		if(i<5||ND[i])
+			msg[$(this).attr("data-key")] = Number($(this).prop("value"))
 	});
-
+ 
 	// vel, accel, jerk
 	$(`.vaj_s_v[data-value=${$(this).attr("data-type")}]`).each(function() {
 		msg[$(this).attr("data-key")] = Number($(this).prop("value"))
