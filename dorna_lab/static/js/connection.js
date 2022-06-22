@@ -28,6 +28,7 @@ $(".connect_b").on("click", function(e) {
     $(".connect_stat_connected").show()
     $(".connect_stat_disconnected").hide()
     $(".url").text(new URL(socket.url).hostname)
+    $(".url_notebook").attr("href", "http://"+new URL(socket.url).hostname+":8888")
     init_ws()
   };
 
