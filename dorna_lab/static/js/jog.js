@@ -138,27 +138,18 @@ $(".jog_b").on("mousedown touchstart", function(e) {
 	f_pos = original_robot.xyz_to_real(f_pos);
 	f_pos[$(this).attr("data-key")] = limit;
 
-	///console.log(original_robot.check_interior( original_robot.real_to_xyz(f_pos) ,  original_robot.a_get()));
-
 	///
 
-	
-
 	let l = limit - original_robot.value($(this).attr("data-key"));
-
-	//console.log(limit,l,original_robot.value($(this).attr("data-key")))
 
 	if(Math.abs(l)>=0.4)
 		l = l - Math.sign(l)*0.5;
 
-
 	if($(`.jog_d_c[data-cmd=${msg["cmd"]}]`).prop("checked")){
-
 			l = Math.sign( l ) *  Math.abs( $(`.jog_d_v[data-cmd=${msg["cmd"]}]`).prop("value") ) ;
 	}
 
 	msg[$(this).attr("data-key")] = Number((original_robot.value($(this).attr("data-key")) + l).toFixed(3));
-
 
 	// vel, accel, jerk
 	$(`.vaj_s_v[data-value=${$(this).attr("data-type")}]`).each(function() {
@@ -226,7 +217,15 @@ function position(type = "joint"){
 }
 
 
+
 $(".joint_v[data-key=j0]").text("180.000");
 $(".joint_v[data-key=j1]").text("180.000");
 $(".joint_v[data-key=j2]").text("-141.000");
 $(".joint_v[data-key=j3]").text("135.000");
+
+/*
+$(".joint_v[data-key=j0]").text("161.016");
+$(".joint_v[data-key=j1]").text("180");
+$(".joint_v[data-key=j2]").text("-142");
+$(".joint_v[data-key=j3]").text("135");
+*/

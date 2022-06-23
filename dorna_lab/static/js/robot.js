@@ -63,7 +63,7 @@ class Robot{
 					   "nj1":-90 ,  "pj1":180,
 					   "nj2":-142 , "pj2":142,
 					   "nj3":-135 , "pj3":135,
-					   "nj4":-1000000 , "pj4":1000000};
+					   "nj4":-10000 , "pj4":10000};
 
 		this.Load(need_control);
 
@@ -928,14 +928,17 @@ class Robot{
 				while (pb["j1"][i] < joint["j1"])
 					i += 1
 				j2_limit_down = -142;
-				j2_limit_up = ((pb["j2"][i-1]- pb["j2"][i]) / (pb["j1"][i-1]- pb["j1"][i] ))* (joint["j1"]- pb["j1"][i] ) + pb["j2"][i] ;
+				if(i==0) 	j2_limit_up = this.limits["pj2"];
+				else 		j2_limit_up = ((pb["j2"][i-1]- pb["j2"][i]) / (pb["j1"][i-1]- pb["j1"][i] )) * (joint["j1"]- pb["j1"][i] ) + pb["j2"][i] ;
 
 			}
 			else{
 				var i = 0
 				while (nb["j1"][i] > joint["j1"])
 					i += 1
-				j2_limit_down = ((nb["j2"][i-1]- nb["j2"][i]) / (nb["j1"][i-1]- nb["j1"][i] ))* (joint["j1"]- nb["j1"][i] ) + nb["j2"][i]
+				if(i==0) 	j2_limit_down = this.limits["nj2"];
+				else 		j2_limit_down = ((nb["j2"][i-1]- nb["j2"][i]) / (nb["j1"][i-1]- nb["j1"][i] )) * (joint["j1"]- nb["j1"][i] ) + nb["j2"][i]
+				
 				j2_limit_up = 142;
 			}
 		}
@@ -948,8 +951,8 @@ class Robot{
 				var i = 0
 				while (pb["j2"][i] > joint["j2"])
 					i += 1
-
-				j1_limit_up = ((pb["j1"][i-1]- pb["j1"][i]) / (pb["j2"][i-1]- pb["j2"][i] ))* (joint["j2"]- pb["j2"][i] ) + pb["j1"][i]
+				if(i==0)	j1_limit_up = this.limits["pj1"];
+				else 		j1_limit_up = ((pb["j1"][i-1]- pb["j1"][i]) / (pb["j2"][i-1]- pb["j2"][i] ))* (joint["j2"]- pb["j2"][i] ) + pb["j1"][i]
 			}
 		} 
 
@@ -961,7 +964,8 @@ class Robot{
 				var i = 0;
 				while (nb["j2"][i] < joint["j2"])
 					i += 1
-				j1_limit_down = ((nb["j1"][i-1]- nb["j1"][i]) / (nb["j2"][i-1]- nb["j2"][i] ))* (joint["j2"]- nb["j2"][i] ) + nb["j1"][i]
+				if(i==0)	j1_limit_down = this.limits["nj1"];
+				else 		j1_limit_down = ((nb["j1"][i-1]- nb["j1"][i]) / (nb["j2"][i-1]- nb["j2"][i] ))* (joint["j2"]- nb["j2"][i] ) + nb["j1"][i]
 			}
 		} 
 		var info = JSON.parse(JSON.stringify(this.limits));
@@ -979,7 +983,6 @@ class Robot{
 		info["nj6"] = -other_limits;
 		info["pj7"] = other_limits;
 		info["nj7"] = -other_limits;
-
 
 		return info;
 
@@ -1009,14 +1012,16 @@ class Robot{
 				while (pb["j1"][i] < joint["j1"])
 					i += 1
 				j2_limit_down = -142;
-				j2_limit_up = ((pb["j2"][i-1]- pb["j2"][i]) / (pb["j1"][i-1]- pb["j1"][i] ))* (joint["j1"]- pb["j1"][i] ) + pb["j2"][i] ;
+				if(i==0)	j2_limit_up = this.limits["pj2"];
+				else 		j2_limit_up = ((pb["j2"][i-1]- pb["j2"][i]) / (pb["j1"][i-1]- pb["j1"][i] ))* (joint["j1"]- pb["j1"][i] ) + pb["j2"][i] ;
 
 			}
 			else{
 				var i = 0
 				while (nb["j1"][i] > joint["j1"])
 					i += 1
-				j2_limit_down = ((nb["j2"][i-1]- nb["j2"][i]) / (nb["j1"][i-1]- nb["j1"][i] ))* (joint["j1"]- nb["j1"][i] ) + nb["j2"][i]
+				if(i==0)	j2_limit_down = this.limits["nj2"];
+				else 		j2_limit_down = ((nb["j2"][i-1]- nb["j2"][i]) / (nb["j1"][i-1]- nb["j1"][i] ))* (joint["j1"]- nb["j1"][i] ) + nb["j2"][i]
 				j2_limit_up = 142;
 			}
 		}
