@@ -19,10 +19,24 @@ async def get(ws, server_loop, path):
 
     except Exception as ex:
         rtn["error"] = 1
-        rtn["error_ex"] = ex
+        rtn["error_ex"] = str(ex)
 
     server_loop.add_callback(ws.emit_message, json.dumps(rtn))
 
+    return rtn
+
+async def rename(ws, server_loop, path_old, path_new):
+    rtn = {"to": "api.folder.rename", "path_old": path_old,
+           "path_new": path_new, "broadcast": False, "error": 0}
+    try:
+        #await asyncio.create_task(asyncio.to_thread(os.rename, path_old, path_new))
+        await asyncio.get_running_loop().run_in_executor(None, os.rename, path_old, path_new)
+    except Exception as ex:
+        rtn["error"] = 1
+        rtn["error_ex"] =  str(ex)
+
+    #ws.emit_message(json.dumps(rtn))
+    server_loop.add_callback(ws.emit_message, json.dumps(rtn))
     return rtn
 
 async def move(ws, path_old, path_new):
@@ -34,7 +48,7 @@ async def move(ws, path_old, path_new):
 
     except Exception as ex:
         rtn["error"] = 1
-        rtn["error_ex"] = ex
+        rtn["error_ex"] =  str(ex)
     return rtn
 
 async def folder_new(ws,  path):
@@ -56,7 +70,7 @@ async def file_new(ws,  path):
         await asyncio.get_running_loop().run_in_executor(None, open, path, "x")
     except Exception as ex:
         rtn["error"] = 1
-        rtn["error_ex"] = ex
+        rtn["error_ex"] =  str(ex)
     return rtn
 
 async def folder_delete(ws,  path):
@@ -67,7 +81,7 @@ async def folder_delete(ws,  path):
         await asyncio.get_running_loop().run_in_executor(None, shutil.rmtree, path)
     except Exception as ex:
         rtn["error"] = 1
-        rtn["error_ex"] = ex
+        rtn["error_ex"] =  str(ex)
     return rtn
 
 async def file_delete(ws,  path):
@@ -78,7 +92,7 @@ async def file_delete(ws,  path):
         await asyncio.get_running_loop().run_in_executor(None, os.remove, path)
     except Exception as ex:
         rtn["error"] = 1
-        rtn["error_ex"] = ex
+        rtn["error_ex"] =  str(ex)
     return rtn
 
 async def file_copy(ws, path_old, path_new):
@@ -89,7 +103,7 @@ async def file_copy(ws, path_old, path_new):
         await asyncio.get_running_loop().run_in_executor(None, shutil.copyfile, path_old, path_new)
     except Exception as ex:
         rtn["error"] = 1
-        rtn["error_ex"] = ex
+        rtn["error_ex"] =  str(ex)
     return rtn
 
 async def folder_copy(ws,   path_old, path_new):
@@ -100,7 +114,7 @@ async def folder_copy(ws,   path_old, path_new):
         await asyncio.get_running_loop().run_in_executor(None, shutil.copytree, path_old, path_new)
     except Exception as ex:
         rtn["error"] = 1
-        rtn["error_ex"] = ex
+        rtn["error_ex"] =  str(ex)
     return rtn
 
 async def save_file(ws, server_loop, path, file_name, content):
@@ -116,7 +130,7 @@ async def save_file(ws, server_loop, path, file_name, content):
         await asyncio.get_running_loop().run_in_executor(None, file1.close)
     except Exception as ex:
         rtn["error"] = 1
-        rtn["error_ex"] = ex
+        rtn["error_ex"] =  str(ex)
     #ws.emit_message(json.dumps(rtn))
     server_loop.add_callback(ws.emit_message, json.dumps(rtn))
     return rtn
@@ -134,7 +148,7 @@ async def open_file(ws, server_loop, path):
         await asyncio.get_running_loop().run_in_executor(None, file1.close)
     except Exception as ex:
         rtn["error"] = 1
-        rtn["error_ex"] = ex
+        rtn["error_ex"] =  str(ex)
     #ws.emit_message(json.dumps(rtn))
     server_loop.add_callback(ws.emit_message, json.dumps(rtn))
     return rtn

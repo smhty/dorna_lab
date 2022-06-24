@@ -207,7 +207,6 @@ $(".rec_p_b").on("click", function(e) {
 	add_to_editor(cmd)
 });
 
-
 function position(type = "joint"){
 	let pos = {}
 	$("."+type+"_v").each(function(index, element) {
@@ -216,11 +215,9 @@ function position(type = "joint"){
 	return pos	
 }
 
-
-
 $(".joint_v[data-key=j0]").text("180.000");
 $(".joint_v[data-key=j1]").text("180.000");
-$(".joint_v[data-key=j2]").text("-141.000");
+$(".joint_v[data-key=j2]").text("-142.000");
 $(".joint_v[data-key=j3]").text("135.000");
 
 /*

@@ -917,8 +917,10 @@ class Robot{
 		var j2_limit_down = -180 ; var j2_limit_up = 180;
 		var j1_limit_down = -90 ; var j1_limit_up = 180;
 
+		var epsilon = 1.0;
+
 		//j2 limits
-		if (joint["j1"] <= 120 && joint["j1"] >= -40){
+		if (joint["j1"] <= 120 - epsilon && joint["j1"] >= -40 + epsilon ){
 			j2_limit_down = -142;
 			j2_limit_up = 142;
 		}
@@ -944,9 +946,14 @@ class Robot{
 		}
 
 		//j1 up limits
-		if(joint["j2"]<-142) j1_limit_up = 120;
+		if(joint["j2"] < -142 - epsilon)
+			j1_limit_up = 120;
+
 		else{
-			if(joint["j2"]<55) j1_limit_up = 180;
+
+			if(joint["j2"] < 55)
+				j1_limit_up = 180;
+
 			else{
 				var i = 0
 				while (pb["j2"][i] > joint["j2"])
@@ -957,7 +964,7 @@ class Robot{
 		} 
 
 		//j1 down limits
-		if(joint["j2"]>= 142) j1_limit_down = -40;
+		if(joint["j2"]>= 142 + epsilon) j1_limit_down = -40;
 		else{
 			if(joint["j2"]>=-70) j1_limit_down = -90;
 			else{

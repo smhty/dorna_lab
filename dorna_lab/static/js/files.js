@@ -124,13 +124,13 @@ function update_file_list(msg){
   $(".file_b").on("click", function(e) {
     let name = $(this).attr("data-key");
     open_file_name = name;
-    
-  $(".list-file").children().each(function( index){
+    open_file_name_2 = name;
 
-    $(this).removeClass( "active" )
-  })
-  $(this).parent().addClass("active")
-  
+    $(".list-file").children().each(function( index){
+
+      $(this).removeClass( "active" );
+    })
+    $(this).parent().addClass("active");
 
   });
 
@@ -433,7 +433,6 @@ $('.file_save_b').on("click",function(e) {
     })
   }
 
-
   open_file_name_2 = name
   open_dst = save_dst
 
@@ -475,9 +474,10 @@ $('.file_cancel_b').on("click", function(e) {
 });
 
 function file_open_result(data){
+  console.log("javad:",open_file_name,"2:",open_file_name_2);
   if(open_file_name_2 != ""){
     open_file_name = open_file_name_2;
-    open_file_name_2 = ""
+    open_file_name_2 = "";
   }
   if(wait_for_download){
     wait_for_download = false;
@@ -503,24 +503,22 @@ function file_open_result(data){
       change_script_file(data,open_file_name,$("#path_b").attr("data-key"),open_file_name);
   }
 
-  if(open_dst=="blockly"||open_dst=="python"){
-    let format = open_file_name.slice(open_file_name.lastIndexOf(".")+1,open_file_name.length)
-    if(format=="blk"){
-        if($(".editor_s").val()!="blockly_panel"){
-          $(".editor_s").val("blockly_panel")
-          $(".editor_s").change()
-        }
-        import_blockly_data(data)
-        change_blockly_file(data,open_file_name,$("#path_b").attr("data-key"),open_file_name)
+  if(open_dst=="blockly"){
+    if($(".editor_s").val()!="blockly_panel"){
+      $(".editor_s").val("blockly_panel")
+      $(".editor_s").change()
     }
-    else{
+    import_blockly_data(data);
+    change_blockly_file(data,open_file_name,$("#path_b").attr("data-key"),open_file_name);
+  }
+
+  if(open_dst=="python"){
         if($(".editor_s").val()!="python_panel"){
           $(".editor_s").val("python_panel")
           $(".editor_s").change()
         }
-        change_python_file(data,open_file_name,$("#path_b").attr("data-key"),open_file_name)
-        import_python_data(data)
-    }
+        change_python_file(data,open_file_name,$("#path_b").attr("data-key"),open_file_name);
+        import_python_data(data);
   }
 }
 
