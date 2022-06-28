@@ -29,6 +29,12 @@
 
           <!--path-->
           <div class="d-flex border mb-2">
+
+            <nav aria-label="breadcrumb" id="breadcrumb_area">
+              <ol class="breadcrumb path_breadcrumb" id="path_breadcrumb_id">
+              </ol>
+            </nav>
+
             <div class="mb-auto mt-auto path_b pl-2" id="path_b" data-key='{{config["folder"]["path_home"]}}'>{{config["folder"]["path_home"]}}</div>
             <div class="mb-auto mt-auto path_home_b pl-2" id="path_home_b" data-key='{{config["folder"]["path_home"]}}' hidden="true">{{config["folder"]["path_home"]}}</div>
             <div class="mb-auto mt-auto path_blk_b pl-2" id="path_blk_b" data-key='{{config["folder"]["path_blockly"]}}' hidden="true">{{config["folder"]["path_blockly"]}}</div>

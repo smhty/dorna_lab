@@ -87,6 +87,55 @@ function update_file_list(msg){
   $("#path_b").attr("data-key",msg["path"]);
 
 
+
+  if(msg["path"].indexOf($("#path_home_b").attr("data-key"))==0 && $("#path_home_b").attr("data-key").length < msg["path"].length){
+    $("#breadcrumb_area").prop("style").display = "";
+    $("#path_b").prop("style").display = "none";
+
+    let path_rest = msg["path"].slice($("#path_home_b").attr("data-key").length + 1 , msg["path"].length);
+    let path_here = $("#path_home_b").attr("data-key");
+    //javad
+    crumb_list = document.getElementById("path_breadcrumb_id");
+    $(crumb_list).empty();
+    let elem =`<li class="breadcrumb-item"><a href="#" class="crumb" data-key="`+path_here+`">Home</a></li>`;
+    $(elem).appendTo(crumb_list);
+
+    while(path_rest.length>0){
+
+      let ss = "";
+      if(path_rest.indexOf("/")>-1){
+        ss = path_rest.slice(0,path_rest.indexOf("/"));
+        path_rest = path_rest.slice(path_rest.indexOf("/")+1,path_rest.length);
+      }
+      else{
+        ss = path_rest;
+        path_rest = "";
+      }
+
+      path_here = path_here +"/" +ss;
+      if(ss=="")break;
+      elem =`<li class="breadcrumb-item"><a href="#" class="crumb" data-key="`+path_here+`">`+ss+`</a></li>`;
+      if(path_rest==""){
+        elem =`<li class="breadcrumb-item" aria-current="page">`+ss+`</li>`;
+      }
+      $(elem).appendTo(crumb_list);
+    }
+
+    $(".crumb").on("click", function(e) {
+      e.preventDefault();
+        send_message({
+          "_server":"folder",
+          "func": "get",
+          "prm": [$(this).attr("data-key")] 
+      });
+    });
+  }
+  else{
+    $("#breadcrumb_area").prop("style").display = "none";
+    $("#path_b").prop("style").display = "" ;
+  }
+
+
   for( a in msg["folder"]){
         let item = msg["folder"][a];
         let elem =`<div class="list-group-item list-group-item-action d-flex p-0 rounded-0">
@@ -120,6 +169,7 @@ function update_file_list(msg){
       "prm": [path] 
     })
   });
+
 
   $(".file_b").on("click", function(e) {
     let name = $(this).attr("data-key");
@@ -474,7 +524,6 @@ $('.file_cancel_b').on("click", function(e) {
 });
 
 function file_open_result(data){
-  console.log("javad:",open_file_name,"2:",open_file_name_2);
   if(open_file_name_2 != ""){
     open_file_name = open_file_name_2;
     open_file_name_2 = "";
