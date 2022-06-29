@@ -1,4 +1,4 @@
-<div class="modal fade" id="file_modal" tabindex="-1" role="dialog" aria-labelledby="file_modal" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+<div class="modal fade" id="file_modal" tabindex="-1" role="dialog" aria-labelledby="file_modal" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
@@ -10,27 +10,44 @@
       <div class="modal-body">
         <!--folder-->
           <!--actions-->
-          <div class="d-flex border-left border-right border-top bg-light">
-            <button type="button" class="btn btn-light rounded-0 file_upload_b border-right">
+          <div class="d-flex border bg-light">
+            <button type="button" class="btn btn-light rounded-0 home_folder_b border-right">
+              <i class="fal fa-bookmark"></i>
+              Projects
+            </button>
+
+            <button type="button" class="btn btn-light rounded-0 back_folder_b border-right">
+              <i class="fal fa-long-arrow-alt-left"></i>
+              Back
+            </button>
+
+            <button type="button" class="btn btn-light rounded-0 up_folder_b border-right">
+              <i class="fal fa-long-arrow-alt-up"></i>
+              Up
+            </button>
+
+            <div class="flex-grow-1"></div>
+
+            <button type="button" class="btn btn-light rounded-0 file_upload_b border-left">
               <i class="fal fa-upload"></i>
               Upload
             </button>
 
-            <button type="button" class="btn btn-light rounded-0 paste_b border-right">
+            <button type="button" class="btn btn-light rounded-0 paste_b border-left">
               <i class="fal fa-paste"></i>
               Paste
             </button>
 
-            <button type="button" class="btn btn-light rounded-0 new_folder_b border-right">
+            <button type="button" class="btn btn-light rounded-0 new_folder_b border-left">
               <i class="fal fa-plus-circle"></i>
               New Folder
             </button>
+
           </div> 
 
-          <!--path-->
-          <div class="d-flex border mb-2">
 
-            <nav aria-label="breadcrumb" id="breadcrumb_area">
+          <!--path-->
+            <nav aria-label="breadcrumb" id="breadcrumb_area" class="mb-2 mt-2 bg-light">
               <ol class="breadcrumb path_breadcrumb" id="path_breadcrumb_id">
               </ol>
             </nav>
@@ -41,25 +58,6 @@
             <div class="mb-auto mt-auto path_py_b pl-2" id="path_py_b" data-key='{{config["folder"]["path_python"]}}' hidden="true">{{config["folder"]["path_python"]}}</div>
             <div class="mb-auto mt-auto path_path_design_b pl-2" id="path_path_design_b" data-key='{{config["folder"]["path_path_design"]}}' hidden="true">{{config["folder"]["path_path_design"]}}</div>
             <div class="mb-auto mt-auto path_script_b pl-2" id="path_script_b" data-key='{{config["folder"]["path_script"]}}' hidden="true">{{config["folder"]["path_script"]}}</div>
-
-
-
-            <div class="flex-grow-1"></div>
-            <button type="button" class="btn btn-light rounded-0 home_folder_b border-left">
-              <i class="fal fa-home"></i>
-              Projects
-            </button>
-
-            <button type="button" class="btn btn-light rounded-0 back_folder_b border-left">
-              <i class="fal fa-long-arrow-alt-left"></i>
-              Back
-            </button>
-
-            <button type="button" class="btn btn-light rounded-0 up_folder_b border-left">
-              <i class="fal fa-long-arrow-alt-up"></i>
-              Up
-            </button>
-          </div>         
 
         <ul class="list-group mb-2 list-file" id="fileList">
         </ul>
