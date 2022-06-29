@@ -88,20 +88,17 @@ function update_file_list(msg){
 
 
 
-  if(msg["path"].indexOf($("#path_home_b").attr("data-key"))==0 && $("#path_home_b").attr("data-key").length < msg["path"].length){
+  if(true){//creating the breadcrumb
     $("#breadcrumb_area").prop("style").display = "";
     $("#path_b").prop("style").display = "none";
 
-    let path_rest = msg["path"].slice($("#path_home_b").attr("data-key").length + 1 , msg["path"].length);
-    let path_here = $("#path_home_b").attr("data-key");
+    let path_rest = msg["path"].slice(1,msg["path"].length);
+    let path_here = "";
     //javad
     crumb_list = document.getElementById("path_breadcrumb_id");
     $(crumb_list).empty();
-    let elem =`<li class="breadcrumb-item"><a href="#" class="crumb" data-key="`+path_here+`">Home</a></li>`;
-    $(elem).appendTo(crumb_list);
 
     while(path_rest.length>0){
-
       let ss = "";
       if(path_rest.indexOf("/")>-1){
         ss = path_rest.slice(0,path_rest.indexOf("/"));
@@ -129,10 +126,6 @@ function update_file_list(msg){
           "prm": [$(this).attr("data-key")] 
       });
     });
-  }
-  else{
-    $("#breadcrumb_area").prop("style").display = "none";
-    $("#path_b").prop("style").display = "" ;
   }
 
 
