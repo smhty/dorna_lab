@@ -3,7 +3,7 @@ let shell_editor = CodeMirror.fromTextArea($(".shell")[0], {
 	lineWrapping: true,
 	matchBrackets: true,
 	autoCloseBrackets: true,
-	readOnly: true,
+	readOnly: false,
 	mode: "application/x-sh",
 	theme: "isotope",
 })
