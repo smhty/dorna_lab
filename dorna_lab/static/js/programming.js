@@ -227,14 +227,14 @@ $('.blockly_save_b').click(function(e){
   if($(".editor_s").val()=="blockly_panel"){
       save_dst = "blockly"
       if(blkly_file_name==""){
-
+        /*
         let path = $("#path_blk_b").attr("data-key")
         send_message({
             "_server":"folder",
            "func": "get",
             "prm": [path] 
         })
-
+        */
         save_mode();
         save_content = export_blockly_data();
         save_content2 = python_viewer.getValue();
@@ -256,12 +256,13 @@ $('.blockly_save_b').click(function(e){
     save_dst = "python"
     if(python_file_name==""){
         save_mode();
+        /*
         let path = $("#path_py_b").attr("data-key")
         send_message({
             "_server":"folder",
            "func": "get",
             "prm": [path] 
-        })
+        })*/
         save_content = python_editor.getValue();
       }
     else{
@@ -275,24 +276,28 @@ $('.blockly_save_b').click(function(e){
 })
 $('.blockly_save_as_b').click(function(e){
   if($(".editor_s").val()=="blockly_panel"){
+      /*
       let path = $("#path_blk_b").attr("data-key")
       send_message({
             "_server":"folder",
            "func": "get",
             "prm": [path] 
       })
+      */
       save_dst = "blockly"
       save_mode();
       save_content = export_blockly_data();
       save_content2 = python_viewer.getValue();
   }
   if($(".editor_s").val()=="python_panel"){
+    /*
       let path = $("#path_py_b").attr("data-key")
       send_message({
             "_server":"folder",
            "func": "get",
             "prm": [path] 
       })
+      */
       save_dst = "python"
       save_mode();
       save_content = python_editor.getValue();
@@ -303,21 +308,25 @@ $('.blockly_open_b').click(function(e){
   open_mode();
   if($(".editor_s").val()=="blockly_panel"){
     open_dst = "blockly"
+    /*
     let path = $("#path_blk_b").attr("data-key")
     send_message({
             "_server":"folder",
            "func": "get",
             "prm": [path] 
     })
+    */
   }
   if($(".editor_s").val()=="python_panel"){
     open_dst = "python"
+    /*
     let path = $("#path_py_b").attr("data-key")
     send_message({
             "_server":"folder",
            "func": "get",
             "prm": [path] 
     })
+    */
   }
 })
 

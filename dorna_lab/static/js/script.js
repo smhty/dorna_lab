@@ -196,13 +196,14 @@ function add_to_editor(data){
 
 
 $('.script_save_as_b').click(function(e){
+	/*
 	let path = $("#path_script_b").attr("data-key")
 	 send_message({
 	      "_server": "folder",
 	      "func":"get",
 	      "prm": [path] 
 	 })
-
+	*/
 	save_dst = "script"
 	save_mode();
 	save_content = editor.getValue();
@@ -221,12 +222,14 @@ $('.script_save_b').click(function(e){
 })
 
 $('.script_open_b').click(function(e){
+	/*
 	let path = $("#path_script_b").attr("data-key")
 	 send_message({
 	      "_server":"folder",
 	      "func": "get",
 	      "prm": [path] 
 	 })
+	 */
 	open_mode();
 	open_dst = "script"
 })

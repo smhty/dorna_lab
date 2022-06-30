@@ -329,8 +329,7 @@ $(".home_folder_b").on("click", function(e) {
       "_server":"folder",
     "func": "get",
       "prm": [path] 
-    })
-
+    });
 });
 
 $(".new_folder_b").on("click", function(e) {
@@ -371,7 +370,7 @@ $(".new_folder_b").on("click", function(e) {
     */
     send_message({
       "_server":"folder",
-    "func": "folder_new",
+      "func": "folder_new",
       "prm": [path+"/"+new_folder_name] 
     })
     reload_file_list()
@@ -441,6 +440,15 @@ function empty_mode(){
   $('.file_open_b').prop("style").display = "none";
 }//empty_mode();
 
+$( "#file_modal" ).on('shown.bs.modal', function(){
+  let path = $("#path_b").attr("data-key");
+  send_message({
+    "_server":"folder",
+    "func": "get",
+    "prm": [path] 
+  })
+
+});
 
 $('.file_save_b').on("click",function(e) {
   const d = new Date();

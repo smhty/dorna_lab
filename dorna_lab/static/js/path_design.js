@@ -511,12 +511,14 @@ $('.path_save_b').click(function(e){
 
 })
 $('.path_save_as_b').click(function(e){
+	/*
 	let path = $("#path_path_design_b").attr("data-key")
 	 send_message({
 	      "_server":"folder",
     	"func": "get",
 	      "prm": [path] 
 	 })
+	*/
 
 	save_dst = "path_design"
 	save_mode();
@@ -529,12 +531,14 @@ $('.path_save_as_b').click(function(e){
 })
 
 $('.path_open_b').click(function(e){
+	/*
 		let path = $("#path_path_design_b").attr("data-key")
 	 send_message({
 	      "_server":"folder",
     	"func": "get",
 	      "prm": [path] 
 	 })
+	*/
 	open_mode();
 	open_dst = "path_design"
 })
