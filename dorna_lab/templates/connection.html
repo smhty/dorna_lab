@@ -10,13 +10,13 @@
       <div class="modal-body">
         <form>
           <div class="form-group">
-            <label for="exampleInputEmail1">Websocket Status</label>
+            <label for="exampleInputEmail1">WebSocket Status</label>
             <input type="text" class="form-control ws_stat_v"  id="ws-status-val" value="Disconnected" disabled>
           </div>
           <div class="form-group">
-            <label for="exampleInputEmail1">Websocket URL</label>
-            <input type="url" value="ws://dorna:443" placeholder="ws://dorna:443" class="form-control robot_url ">
-            <small id="emailHelp" class="form-text text-muted">Connect to the websocket feed via port 443 of the robot, ws://robot_ip_address:443</small>
+            <label for="exampleInputEmail1">WebSocket URL</label>
+            <input type="url" value="ws://dorna/ws" placeholder="ws://dorna/ws" class="form-control robot_url " disabled>
+            <small id="emailHelp" class="form-text text-muted">Connect to the WebSocket feed via, ws://robot_ip_address/ws</small>
           </div>
           <button type="button" class="btn btn-primary connect_b">Connect</button>
           <button type="button" class="btn btn-secondary disconnect_b">Disconnect</button>
