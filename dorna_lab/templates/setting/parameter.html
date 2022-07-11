@@ -127,3 +127,89 @@
       </tbody>
     </table>  
 </details>
+
+<!--pid-->
+<details>
+  <summary class="bg-secondary border-bottom pl-2 pr-2 text-white">PID</summary>
+    <table class="table table-hover table-sm pl-2 pr-2 mb-0">
+      <tbody>
+          <tr >
+            <td class="border-top-0 border-bottom">
+              Threshold
+            </td>
+            <td class="border-top-0 border-bottom" colspan="3">
+              <div class="input-group input-group-sm">
+                <div class="input-group-prepend">
+                  <input type="number" class="input-group-text small text-left" value="0" data-key="threshold" disabled>
+                </div>
+                <input class="form-control small text-left" type="number" value="0" step="1" data-key="threshold" placeholder= "0" step="1" min="0">
+              </div>                    
+            </td>
+          </tr>
+
+          <tr >
+            <td class="border-top-0 border-bottom">
+              Duration
+            </td>
+            <td class="border-top-0 border-bottom" colspan="3">
+              <div class="input-group input-group-sm">
+                <div class="input-group-prepend">
+                  <input type="number" class="input-group-text small text-left" value="0" data-key="duuration" disabled>
+                </div>
+                <input class="form-control small text-left" type="number" value="0" step="1" data-key="duration" placeholder= "0" step="1" min="0">
+              </div>                    
+            </td>
+          </tr>
+          {% for i in range(8) %}
+            <tr >
+              <td class="border-top-0 border-bottom">
+                Axis{{i}}
+              </td>
+              <td class="border-top-0 border-bottom">
+                <div class="input-group input-group-sm">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="">P</span>
+                    <input type="number" class="input-group-text small text-left" value="0" data-key={{i}} disabled>
+                  </div>
+                  <input class="form-control small text-left" type="number" value="0" step="0.01" data-key={{i}} placeholder= "0" step="0.01" min="0">
+                </div>                                           
+              </td>
+              <td class="border-top-0 border-bottom">
+                <div class="input-group input-group-sm">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="">I</span>
+                    <input type="number" class="input-group-text small text-left" value="0" data-key={{i}} disabled>
+                  </div>
+                  <input class="form-control small text-left" type="number" value="0" step="0.01" data-key={{i}} placeholder= "0" step="0.01" min="0">
+                </div>                                           
+              </td>
+              <td class="border-top-0 border-bottom">
+                <div class="input-group input-group-sm">
+                  <div class="input-group-prepend">
+                    <span class="input-group-text" id="">D</span>
+                    <input type="number" class="input-group-text small text-left" value="0" data-key={{i}} disabled>
+                  </div>
+                  <input class="form-control small text-left" type="number" value="0" step="0.01" data-key={{i}} placeholder= "0" step="0.01" min="0">
+                </div>                                           
+              </td>                            
+            </tr>
+          {% endfor %}   
+          <tr >
+            <td class="border-top-0 border-bottom text-right" colspan="4">
+              <button type="button" class="set_pid_b btn btn-primary btn-sm" style="width:100px" data-cmd={{cmd["pid"]}}>
+                <i class="fal fa-check"></i>
+                Set All
+              </button>
+            </td>
+          </tr>                                                 
+          <tr >
+            <td class="border-top-0 border-bottom text-right" colspan="4">
+              <button type="button" class="reset_pid_b btn btn-primary btn-sm" style="width:100px" data-cmd={{cmd["pid"]}}>
+                <i class="fal fa-check"></i>
+                Reset All
+              </button>
+            </td>               
+          </tr>                                                 
+      </tbody>
+    </table>  
+</details>
