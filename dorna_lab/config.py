@@ -11,6 +11,9 @@ config = {
 		"port": 80,
 		"debug": True
 	},
+	"robot_server":{
+		"host": "localhost"
+	},
 	"cmd":{
 		"alarm": "alarm",
 		"output": "output",

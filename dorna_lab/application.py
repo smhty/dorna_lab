@@ -18,7 +18,7 @@ STATIC_PATH_DIR = os.path.join(PATH, 'static')
 # change directory
 os.chdir(os.path.join(PATH))
 
-V_LAB = "2.0.2" 
+V_LAB = "2.0.3" 
 
 CONFIG = config.config
 loop = tornado.ioloop.IOLoop.current()
@@ -33,7 +33,7 @@ class DornaConnection(object):
     def __init__(self):
         self.robot = Dorna()
         self.robot.log("connecting")
-        self.robot.connect()
+        self.robot.connect(CONFIG['robot_server']['host'])
         self.robot.log("connected")
 
         self.robot.register_callback(self.send_message_to_browser)
@@ -48,9 +48,10 @@ class DornaConnection(object):
 
     def send_message_to_robot(self, msg):
         try:
-            self.robot.play(0, msg)
+            if self.robot._connected:
+                self.robot.play(0, msg)
         except Exception as ex:
-            self.robot.log(ex)
+            self.robot.log("error9: "+ str(ex))
 
     async def send_message_to_browser(self, msg, sys):
         loop.add_callback(self.emit_all, msg)
@@ -101,7 +102,7 @@ class WebSocket(tornado.websocket.WebSocketHandler):
                 try:
                     eval(msg["code"])#needs to be compatible with asyncio and does the results need to be sent back to the client?
                 except:
-                    DORNA.robot.log("Error in running message.")
+                    DORNA.robot.log("error1: running message error.")
         else:
             DORNA.send_message_to_robot(json.dumps(msg))
 
@@ -125,13 +126,13 @@ class WebSocket(tornado.websocket.WebSocketHandler):
             PROCESSES.append(process)
 
         except Exception as ex:
-            DORNA.robot.log("error2: "+ str(ex))
+            DORNA.robot.log("error3: "+ str(ex))
 
     def update_check_process(self):
         try:
             asyncio.create_task(update.last_version_async(self, loop))
         except Exception as ex:
-            DORNA.robot.log("error2: "+ str(ex))
+            DORNA.robot.log("error4: "+ str(ex))
 
 
     # client running a shell
@@ -157,7 +158,7 @@ class WebSocket(tornado.websocket.WebSocketHandler):
                 asyncio.create_task(folder.open_file(self, loop, msg["prm"][0]))
 
         except Exception as ex:
-            DORNA.robot.log("error9: "+ str(ex))
+            DORNA.robot.log("error5: "+ str(ex))
 
     # client killing a shell
     def shell_kill(self, pid):
@@ -167,19 +168,19 @@ class WebSocket(tornado.websocket.WebSocketHandler):
                     asyncio.create_task(process.kill(DORNA, self, loop, DATABASE))
 
         except Exception as ex:
-            DORNA.robot.log("error3: "+ str(ex))
+            DORNA.robot.log("error6: "+ str(ex))
 
     def database(self, msg):
         try:
             asyncio.create_task(DATABASE.db_call(DORNA, loop, msg))
         except Exception as ex:
-            DORNA.robot.log("error3: "+ str(ex))
+            DORNA.robot.log("error7: "+ str(ex))
 
     def emit_message(self,msg):
         try:
             self.write_message(msg)
         except Exception as ex:
-            DORNA.robot.log('error_6'+ str(ex))
+            DORNA.robot.log('error8'+ str(ex))
 
 
 if __name__ == '__main__':
