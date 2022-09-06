@@ -226,3 +226,13 @@ body {
 .flex-even {
   flex: 1;
 }
+
+/* ============= slider ============= */
+.slide-wrap {
+  width: auto;
+  overflow-x: scroll;
+}
+
+.slide {
+  width: max-content;
+}
