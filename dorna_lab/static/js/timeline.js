@@ -1,6 +1,6 @@
 var h_values = []
 var slider = document.getElementById('values-slider');
-var valuesForSlider = Array.from({length:200},(v,k)=>k);
+var valuesForSlider = Array.from({length:5001},(v,k)=>k);
 
 var format = {
     to: function(value) {

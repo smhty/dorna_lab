@@ -1,0 +1,50 @@
+	<!--top-->
+	<div class="d-flex border-bottom bg-light border-top">
+		<!-- file name-->
+		<div class="mt-auto mb-auto ml-2 mr-2">
+			<span class="blockly_file_v"></span><span class="blockly_process_id_v"></span>
+		</div>
+		
+	  
+	  <!--running
+		<button type="button" class="btn btn-light process_kill_modal_b rounded-0 border-right"> 
+		  Process ID: <span class="blockly_process_id_v">None</span>
+		</button>
+		-->
+	  
+		<div class="flex-grow-1"></div>
+
+		<!--process-->
+		<!--
+    <button type="button" class="btn btn-light sessions_b rounded-0 border-left border-right">
+      <i class="far fa-list-alt"></i>
+      Sessions
+      
+    </button>
+		-->
+		<!--robot fps-->
+		<div class="mr-2"></div>
+		<div class="input-group input-group-sm mt-auto mb-auto mr-2" style="max-width: 150px">
+			<div class="input-group-prepend">
+			<span class="input-group-text" id="inputGroup-sizing-sm">Robot FPS</span>
+			</div>
+			<input type="number" class="form-control" aria-label="" aria-describedby="inputGroup-sizing-sm"
+			value="24" step="1" data-key="robot_fps" min="1">				
+		</div>
+
+	  	<!--file action-->
+		<button id="btnGroupDrop2" type="button" class="btn btn-light rounded-0 border-left" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-h"></i>
+		</button>
+		<div class="dropdown-menu" aria-labelledby="btnGroupDrop2" style="">
+			<button class="dropdown-item camera_new_b"><i class="fal fa-plus pr-2"></i>New File</button>
+			<button class="dropdown-item camera_open_b"><i class="fal fa-file pr-2"></i>Open File...</button>	
+			<button class="dropdown-item camera_save_b"><i class="fal fa-save pr-2"></i>Save</button>
+      <button class="dropdown-item camera_save_as_b"><i class="fal fa-save pr-2"></i>Save as</button>
+			<div class="dropdown-divider"></div>
+			<button class="dropdown-item camera_download_b"><i class="fal fa-download pr-2"></i>Download</button>
+			<button class="dropdown-item camera_upload_b"><i class="fal fa-upload pr-2"></i>Upload</button>
+			<div class="dropdown-divider"></div>
+			<button class="dropdown-item camera_delete_b "><i class="fal fa-trash-alt pr-2"></i>Delete</button>
+		</div>	
+	</div>  
+	<!--/top-->

@@ -1,16 +1,18 @@
-<style type="text/css">
-  .noUi-base{
-    width:  5000px;
-  }
-  .noUi-pips-horizontal{
-    width:  5000px;
-    /*border-top: 1px solid;*/
-  }
+<div class="d-flex flex-column">
+  <!--header-->
+  {% include "camera/header.html" %}
+  
+  <div class="slide-wrap ml-2 mr-2">
+    <div class="slide p-2 d-flex flex-column">
+      
+      <!-- way points-->
+      <div class="" id="values-slider" ></div>
 
-</style>
-<div class="slide-wrap">
-  <div class="slide p-2 d-flex flex-column">
-    <div class="" id="values-slider" ></div>
-    <div id="curve_chart" style="margin-top: 40px"></div>
+      <!--timeline-->
+      <input type="range" class="custom-range" min="0" max="5000" value="1" style="z-index: 100;">
+
+      <!--plot-->      
+      <div id="curve_chart" style="margin-top: 40px"></div>
+    </div>
   </div>
 </div>

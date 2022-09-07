@@ -236,3 +236,11 @@ body {
 .slide {
   width: max-content;
 }
+
+.noUi-base{
+  width:  125000px;
+}
+.noUi-pips-horizontal{
+  width:  125000px;
+  /*border-top: 1px solid;*/
+}
