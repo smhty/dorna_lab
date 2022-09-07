@@ -1,6 +1,6 @@
 var h_values = []
 var slider = document.getElementById('values-slider');
-var valuesForSlider = Array.from({length:5001},(v,k)=>k);
+var valuesForSlider = Array.from({length:1501},(v,k)=>k);
 
 var format = {
     to: function(value) {
@@ -19,7 +19,10 @@ noUiSlider.create(slider, {
     step: 1,
     tooltips: false,
     format: format,
-    pips: { mode: 'steps', format: format},
+    pips: { 
+        mode: 'steps',
+        format: format,
+    },
 });
 
 // add time line
@@ -39,7 +42,7 @@ function add_timeline(slider) {
         "positions": positions,
         "noUiSlider": noUiSlider,
     }
-    console.log(data)
+    //console.log(data)
 }
 
 // change item i then drag all the remaining items after it
@@ -58,7 +61,7 @@ function set_plot(values, handle, unencoded, tap, positions, noUiSlider) {
         "positions": positions,
         "noUiSlider": noUiSlider,
     }
-    console.log(data)
+    //console.log(data)
 }
 
 

@@ -238,9 +238,41 @@ body {
 }
 
 .noUi-base{
-  width:  125000px;
+  width:  37500px;
 }
 .noUi-pips-horizontal{
-  width:  125000px;
+  width:  37500px;
   /*border-top: 1px solid;*/
+}
+
+/* ============= timeline slider ============= */
+.timeline_s {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 60px;
+  background: #aaa0;
+  outline: none;
+  opacity: 1;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+}
+
+.timeline_s:hover {
+  opacity: 1;
+}
+
+.timeline_s::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 2px;
+  height: 60px;
+  background: #c3313e;
+  cursor: pointer;
+}
+
+.timeline_s::-moz-range-thumb {
+  width: 2px;
+  height: 60px;
+  background: #c3313e;
+  cursor: pointer;
 }
