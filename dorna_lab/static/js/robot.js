@@ -29,10 +29,10 @@ class Robot{
 
 		
 		this.joints = [0,0,0,0,0,0,0];
-		this.scale_factor = 1/80;
+		this.scale_factor = 10;
 
-		this.p0 = new THREE.Vector3(0.0,206.404464*this.scale_factor,95.475806*this.scale_factor);
-		this.l2 = 203.2*this.scale_factor;
+		this.p0 = new THREE.Vector3(0,0,0)//new THREE.Vector3(0.0,2.404464*this.scale_factor,9.475806*this.scale_factor);
+		this.l2 = 2.02*this.scale_factor;
 		this.l3 = 152.4*this.scale_factor;
 		this.offset = {"x":0,"y":0,"z":0};
 		this.l4 = 48.9245*this.scale_factor;
@@ -125,7 +125,10 @@ class Robot{
 		this.loader[4].load("./static/assets/robot/arm4.dae" , function ( collada ) {robot.dae[4] = collada.scene; if(robot.load_index++>4)robot.load_level2();});
 		this.loader[5].load("./static/assets/robot/arm5.dae" , function ( collada ) {robot.dae[5] = collada.scene; if(robot.load_index++>4)robot.load_level2();});
 
-		
+		for(let i=0;i<2/*robot.dae.length*/;i++){
+			//robot.dae[i].scale.set(1000,1000,1000);
+		}
+
 	}
 
 	load_level2(){
@@ -283,30 +286,30 @@ class Robot{
 
 		this.a2_g.matrixAutoUpdate  = false;
 		this.a2_g.updateMatrix();
-		this.a2_g.matrix.set(c	,	0	,	d	,	95.475806,
-							 d	,	0	,	-c	,	206.404464,
-							 0	,	1	,	0	,	0,
+		this.a2_g.matrix.set(c	,	-d	,	0	,	0.100597,
+							 -d	,	-c	,	0	,	0.313343,
+							 0	,	0	,	1	,	-0.059279,
 							 0	,	0	,	0	,	1);
 
 		this.a3_g.matrixAutoUpdate  = false;
 		this.a3_g.updateMatrix();
-		this.a3_g.matrix.set(e	,	0	,	f	,	203.2,
-							 0	,	1	,	0	,	0,
-							 -f	,	0	,	e	,	0,
+		this.a3_g.matrix.set(e	,	f	,	0	,	0.3,
+							 -f	,	e	,	0	,	0,
+							 0	,	0	,	1	,	0.008,
 							 0	,	0	,	0	,	1);
 
 		this.a4_g.matrixAutoUpdate  = false;
 		this.a4_g.updateMatrix();
-		this.a4_g.matrix.set(g	,	0	,	h	,	152.4,
-							 0	,	1	,	0	,	0,
-							 -h	,	0	,	g	,	0,
+		this.a4_g.matrix.set(g	,	h	,	0	,	0.2,
+							 -h	,	g	,	0	,	0,
+							 0	,	0	,	1	,	0.003,
 							 0	,	0	,	0	,	1);
 
 		this.a5_g.matrixAutoUpdate  = false;
 		this.a5_g.updateMatrix();
-		this.a5_g.matrix.set(0	,	1	,	0	,	0,
-							- j	,	0	,	-i	,	0,
-							 -i	,	0	,	j	,	0,
+		this.a5_g.matrix.set(1	,	0	,	0	,	0.013,
+							 0	,	j	,	-i	,	0,
+							 0	,	i	,	j	,	-0.08,
 							 0	,	0	,	0	,	1);
 
 		this.focus_point.matrixAutoUpdate  = false;
@@ -581,7 +584,7 @@ class Robot{
 	xyza_to_joints(pos , a_value , b , s = 1 , k = 1){
 
 	  let head_2d = new THREE.Vector2( s * Math.sqrt(pos.z*pos.z + pos.x*pos.x) - this.p0.z , pos.y - this.p0.y);
-
+	  return [0,0,0,0,0];
 	  
 	  head_2d.x = head_2d.x - (this.l4 + this.offset.z) *Math.cos(a_value*Math.PI/180);
 	  head_2d.y = head_2d.y - (this.l4 + this.offset.z)*Math.sin(a_value*Math.PI/180);

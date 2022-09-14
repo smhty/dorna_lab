@@ -215,10 +215,10 @@ function position(type = "joint"){
 	return pos	
 }
 
-$(".joint_v[data-key=j0]").text("180.000");
-$(".joint_v[data-key=j1]").text("180.000");
-$(".joint_v[data-key=j2]").text("-142.000");
-$(".joint_v[data-key=j3]").text("135.000");
+$(".joint_v[data-key=j0]").text("0");
+$(".joint_v[data-key=j1]").text("0");
+$(".joint_v[data-key=j2]").text("0");
+$(".joint_v[data-key=j3]").text("0");
 
 /*
 $(".joint_v[data-key=j0]").text("161.016");
