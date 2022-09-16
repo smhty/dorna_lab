@@ -85,10 +85,11 @@ class Robot{
 
 		this.material = new THREE.MeshStandardMaterial({
 			vertexColors: true,
-			roughness: 0.5,
-			metalness : 0.3,
+			roughness: 0.4,
+			metalness : 0.4,
 			envMap : this.textureCube,
-			emissive : this.normal_color
+			emissive : this.normal_color,
+			side:THREE.DoubleSide
 		});
 
 		if(this.being_controlled)
@@ -166,6 +167,8 @@ class Robot{
 			this.dae[i].traverse( function ( child ) {
 		    	if ( child instanceof THREE.Mesh ) {
 		    		child.material = robot.material;
+		    		child.castShadow = true;
+    				child.receiveShadow = true;
 					if(robot.opacity<1){
 			        	child.material.transparent = 1;
 			        	child.material.opacity = robot.opacity;
@@ -287,8 +290,8 @@ class Robot{
 		this.a2_g.matrixAutoUpdate  = false;
 		this.a2_g.updateMatrix();
 		this.a2_g.matrix.set(c	,	-d	,	0	,	0.100597,
-							 -d	,	-c	,	0	,	0.313343,
-							 0	,	0	,	1	,	-0.059279,
+							 d	,	c	,	0	,	0.313343,
+							 0	,	0	,	1	,	-0.049279,
 							 0	,	0	,	0	,	1);
 
 		this.a3_g.matrixAutoUpdate  = false;
@@ -300,16 +303,16 @@ class Robot{
 
 		this.a4_g.matrixAutoUpdate  = false;
 		this.a4_g.updateMatrix();
-		this.a4_g.matrix.set(g	,	h	,	0	,	0.2,
+		this.a4_g.matrix.set(g	,	h	,	0	,	0.208,
 							 -h	,	g	,	0	,	0,
-							 0	,	0	,	1	,	0.003,
+							 0	,	0	,	1	,	-0.0015,
 							 0	,	0	,	0	,	1);
 
 		this.a5_g.matrixAutoUpdate  = false;
 		this.a5_g.updateMatrix();
 		this.a5_g.matrix.set(1	,	0	,	0	,	0.013,
 							 0	,	j	,	-i	,	0,
-							 0	,	i	,	j	,	-0.08,
+							 0	,	-i	,	-j	,	-0.08,
 							 0	,	0	,	0	,	1);
 
 		this.focus_point.matrixAutoUpdate  = false;

@@ -64,20 +64,22 @@ function graphic_on() {
 
     particleLight = new THREE.PointLight( 0xffffff, 0.5 );
     particleLight.position.set(0,10,0);
-
     scene.add( particleLight );
 
     var light = new THREE.AmbientLight( 0xf0d0a5 ); // soft white light
 
     // Lights
 
-    var directionalLight = new THREE.DirectionalLight( 0xffffff, 1.0 );
-    directionalLight.castShadow = 1;
-    directionalLight.position.set(2,-1,1);
-
+    var directionalLight = new THREE.DirectionalLight( 0xffffff, 3.0 );
+    directionalLight.castShadow = true;
+    directionalLight.target.position.set(0,0,0);
+    directionalLight.position.set(5,5,5);
+    scene.add(directionalLight);
 
     renderer = new THREE.WebGLRenderer( { antialias : true } );
     renderer.setPixelRatio( window.devicePixelRatio );
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.setSize( $(view_container).width(), $(view_container).height() );
     renderer.setClearColor(0xffffff, 1);
     container.appendChild( renderer.domElement );
@@ -89,7 +91,7 @@ function graphic_on() {
     // control camera
     control_camera = new THREE.OrbitControls( camera, renderer.domElement );
     control_camera.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
-    control_camera.dampingFactor = 1.0;
+    control_camera.dampingFactor = .2;
     control_camera.enableZoom    = true;
     control_camera.enableKeys = false;
     control_camera.addEventListener( 'change', function(){
