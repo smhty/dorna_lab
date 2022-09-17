@@ -98,13 +98,13 @@ function graphic_on() {
     // control camera
     control_camera = new THREE.OrbitControls( camera, renderer.domElement );
     control_camera.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
-    control_camera.dampingFactor = .2;
+    control_camera.dampingFactor = 0.1;
     control_camera.enableZoom    = true;
     control_camera.enableKeys = false;
-    control_camera.addEventListener( 'change', function(){
-      render();
-      particleLight.position.set(cam.position.x,cam.position.y,cam.position.z);
-    });
+    //control_camera.addEventListener( 'change', function(){
+      //render();
+      //particleLight.position.set(cam.position.x,cam.position.y,cam.position.z);
+    //});
 
 
     // Axis
@@ -244,6 +244,7 @@ function render() {
   if(graphic){
     set_frame(Object.values(position()));
     renderer.render( scene, camera );
+    control_camera.update();
   }
 
 }
