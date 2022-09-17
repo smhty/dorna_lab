@@ -300,13 +300,13 @@ class Robot{
 		this.a3_g.updateMatrix();
 		this.a3_g.matrix.set(e	,	-f	,	0	,	0.3,
 							 f	,	e	,	0	,	0,
-							 0	,	0	,	1	,	0.008,
+							 0	,	0	,	1	,	-0.001,
 							 0	,	0	,	0	,	1);
 
 		this.a4_g.matrixAutoUpdate  = false;
 		this.a4_g.updateMatrix();
-		this.a4_g.matrix.set(g	,	-h	,	0	,	0.208,
-							 h	,	g	,	0	,	0,
+		this.a4_g.matrix.set(h	,	g	,	0	,	0.208,
+							 -g	,	h	,	0	,	0,
 							 0	,	0	,	1	,	-0.0015,
 							 0	,	0	,	0	,	1);
 
@@ -321,8 +321,8 @@ class Robot{
 		this.a6_g.matrixAutoUpdate  = false;
 		this.a6_g.updateMatrix();
 		this.a6_g.matrix.set(1	,	0	,	0	,	0.013,
-							 0	,	l	,	-k	,	0,
-							 0	,	-k	,	-l	,	-0.08,
+							 0	,	-k	,	l	,	0,
+							 0	,	l	,	k	,	-0.08,
 							 0	,	0	,	0	,	1);
 
 
@@ -1159,7 +1159,7 @@ class Robot{
 
 
 		this.ditherMat = new THREE.ShaderMaterial(this.ditherShader);
-
+		this.ditherMat.side = THREE.DoubleSide;
 		let ditherTex = createDitherTexture();
 
 		this.ditherMat.uniforms.ditherTex.value = ditherTex;
