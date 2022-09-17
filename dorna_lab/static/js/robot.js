@@ -85,8 +85,8 @@ class Robot{
 
 		this.material = new THREE.MeshStandardMaterial({
 			vertexColors: true,
-			roughness: 0.4,
-			metalness : 0.4,
+			roughness: 0.3,
+			metalness : 0.6,
 			envMap : this.textureCube,
 			emissive : this.normal_color,
 			side:THREE.DoubleSide
@@ -115,20 +115,19 @@ class Robot{
 
 		this.loader = [new THREE.ColladaLoader(),new THREE.ColladaLoader(),
 						new THREE.ColladaLoader(),new THREE.ColladaLoader(),
-						new THREE.ColladaLoader(),new THREE.ColladaLoader()];
-		this.dae = new Array(6);
+						new THREE.ColladaLoader(),new THREE.ColladaLoader(),new THREE.ColladaLoader()];
+		this.dae = new Array(7);
 		robot.load_index = 0;
 
-		this.loader[0].load("./static/assets/robot/base.dae" , function ( collada ) {robot.dae[0] = collada.scene; if(robot.load_index++>4)robot.load_level2();});
-		this.loader[1].load("./static/assets/robot/arm1.dae" , function ( collada ) {robot.dae[1] = collada.scene; if(robot.load_index++>4)robot.load_level2();});
-		this.loader[2].load("./static/assets/robot/arm2.dae" , function ( collada ) {robot.dae[2] = collada.scene; if(robot.load_index++>4)robot.load_level2();});
-		this.loader[3].load("./static/assets/robot/arm3.dae" , function ( collada ) {robot.dae[3] = collada.scene; if(robot.load_index++>4)robot.load_level2();});
-		this.loader[4].load("./static/assets/robot/arm4.dae" , function ( collada ) {robot.dae[4] = collada.scene; if(robot.load_index++>4)robot.load_level2();});
-		this.loader[5].load("./static/assets/robot/arm5.dae" , function ( collada ) {robot.dae[5] = collada.scene; if(robot.load_index++>4)robot.load_level2();});
+		this.loader[0].load("./static/assets/robot/base.dae" , function ( collada ) {robot.dae[0] = collada.scene; if(robot.load_index++>5)robot.load_level2();});
+		this.loader[1].load("./static/assets/robot/arm1.dae" , function ( collada ) {robot.dae[1] = collada.scene; if(robot.load_index++>5)robot.load_level2();});
+		this.loader[2].load("./static/assets/robot/arm2.dae" , function ( collada ) {robot.dae[2] = collada.scene; if(robot.load_index++>5)robot.load_level2();});
+		this.loader[3].load("./static/assets/robot/arm3.dae" , function ( collada ) {robot.dae[3] = collada.scene; if(robot.load_index++>5)robot.load_level2();});
+		this.loader[4].load("./static/assets/robot/arm4.dae" , function ( collada ) {robot.dae[4] = collada.scene; if(robot.load_index++>5)robot.load_level2();});
+		this.loader[5].load("./static/assets/robot/arm4.dae" , function ( collada ) {robot.dae[5] = collada.scene; if(robot.load_index++>5)robot.load_level2();});
+		this.loader[6].load("./static/assets/robot/arm6.dae" , function ( collada ) {robot.dae[6] = collada.scene; if(robot.load_index++>5)robot.load_level2();});
 
-		for(let i=0;i<2/*robot.dae.length*/;i++){
-			//robot.dae[i].scale.set(1000,1000,1000);
-		}
+
 
 	}
 
@@ -143,6 +142,7 @@ class Robot{
 		this.a3_g 		= new THREE.Group();
 		this.a4_g 		= new THREE.Group();
 		this.a5_g 		= new THREE.Group();
+		this.a6_g 		= new THREE.Group();
 		this.focus_point = new THREE.Object3D();	
 
 		//this.a_help = new THREE.AxesHelper(this.scale_to_real/4);
@@ -159,11 +159,13 @@ class Robot{
 		this.a4_g.add(this.dae[4]);
 		this.a4_g.add(this.a5_g);
 		this.a5_g.add(this.dae[5]);
+		this.a5_g.add(this.a6_g);
+		this.a6_g.add(this.dae[6])
 		this.a4_g.add(this.focus_point);
 		//this.a5_g.add(this.a_help);
 
 		let i=0;
-		for(i=0;i<6;i++){
+		for(i=0;i<7;i++){
 			this.dae[i].traverse( function ( child ) {
 		    	if ( child instanceof THREE.Mesh ) {
 		    		child.material = robot.material;
@@ -187,7 +189,7 @@ class Robot{
 		this.scene.add(this.robot_scene);//last thing to do
 
 		if(this.being_controlled)
-		    for(i=-1;i<5;i++){
+		    for(i=-1;i<6;i++){
 			          var control_c = new THREE.TransformControls( camera, renderer.domElement );
 			          if(i>-1)
 			          	control_c.attach( this.dae[i+1].parent);
@@ -296,24 +298,33 @@ class Robot{
 
 		this.a3_g.matrixAutoUpdate  = false;
 		this.a3_g.updateMatrix();
-		this.a3_g.matrix.set(e	,	f	,	0	,	0.3,
-							 -f	,	e	,	0	,	0,
+		this.a3_g.matrix.set(e	,	-f	,	0	,	0.3,
+							 f	,	e	,	0	,	0,
 							 0	,	0	,	1	,	0.008,
 							 0	,	0	,	0	,	1);
 
 		this.a4_g.matrixAutoUpdate  = false;
 		this.a4_g.updateMatrix();
-		this.a4_g.matrix.set(g	,	h	,	0	,	0.208,
-							 -h	,	g	,	0	,	0,
+		this.a4_g.matrix.set(g	,	-h	,	0	,	0.208,
+							 h	,	g	,	0	,	0,
 							 0	,	0	,	1	,	-0.0015,
 							 0	,	0	,	0	,	1);
 
 		this.a5_g.matrixAutoUpdate  = false;
 		this.a5_g.updateMatrix();
-		this.a5_g.matrix.set(1	,	0	,	0	,	0.013,
-							 0	,	j	,	-i	,	0,
-							 0	,	-i	,	-j	,	-0.08,
+		this.a5_g.matrix.set(0	,	0	,	-1	,	0.013,
+							 -j	,	i	,	0	,	0,
+							 -i	,	-j	,	0	,	-0.08,
 							 0	,	0	,	0	,	1);
+
+
+		this.a6_g.matrixAutoUpdate  = false;
+		this.a6_g.updateMatrix();
+		this.a6_g.matrix.set(1	,	0	,	0	,	0.013,
+							 0	,	l	,	-k	,	0,
+							 0	,	-k	,	-l	,	-0.08,
+							 0	,	0	,	0	,	1);
+
 
 		this.focus_point.matrixAutoUpdate  = false;
 		this.focus_point.updateMatrix();
