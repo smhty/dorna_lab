@@ -11,6 +11,15 @@ Useful Robot methodes:
 
 */
 
+///
+//d1 = 0.309664
+//a1 = 0.100039
+//a2 = 0.299983
+//a3 = 0.2085
+//d4 = -0.1331
+//d5 = 0.091502
+//d6 = x  ???
+///
 
 class Robot{
 
@@ -124,7 +133,7 @@ class Robot{
 		this.loader[2].load("./static/assets/robot/arm2.dae" , function ( collada ) {robot.dae[2] = collada.scene; if(robot.load_index++>5)robot.load_level2();});
 		this.loader[3].load("./static/assets/robot/arm3.dae" , function ( collada ) {robot.dae[3] = collada.scene; if(robot.load_index++>5)robot.load_level2();});
 		this.loader[4].load("./static/assets/robot/arm4.dae" , function ( collada ) {robot.dae[4] = collada.scene; if(robot.load_index++>5)robot.load_level2();});
-		this.loader[5].load("./static/assets/robot/arm4.dae" , function ( collada ) {robot.dae[5] = collada.scene; if(robot.load_index++>5)robot.load_level2();});
+		this.loader[5].load("./static/assets/robot/arm5.dae" , function ( collada ) {robot.dae[5] = collada.scene; if(robot.load_index++>5)robot.load_level2();});
 		this.loader[6].load("./static/assets/robot/arm6.dae" , function ( collada ) {robot.dae[6] = collada.scene; if(robot.load_index++>5)robot.load_level2();});
 
 
@@ -284,37 +293,37 @@ class Robot{
 		this.a1_g.matrixAutoUpdate  = false;
 		this.a1_g.updateMatrix();
 		this.a1_g.matrix.set(-a	,	0	,	-b	,	0,
-							 0	,	1	,	0	,	0,
+							 0	,	1	,	0	,	0.309664,
 							 b	,	0	,	-a	,	0,
 							 0	,	0	,	0	,	1);
 
 
 		this.a2_g.matrixAutoUpdate  = false;
 		this.a2_g.updateMatrix();
-		this.a2_g.matrix.set(c	,	-d	,	0	,	0.100597,
-							 d	,	c	,	0	,	0.313343,
-							 0	,	0	,	1	,	-0.049279,
+		this.a2_g.matrix.set(c	,	-d	,	0	,	0.100039,
+							 d	,	c	,	0	,	0,
+							 0	,	0	,	1	,	0,
 							 0	,	0	,	0	,	1);
 
 		this.a3_g.matrixAutoUpdate  = false;
 		this.a3_g.updateMatrix();
-		this.a3_g.matrix.set(e	,	-f	,	0	,	0.3,
+		this.a3_g.matrix.set(e	,	-f	,	0	,	0.299983,
 							 f	,	e	,	0	,	0,
-							 0	,	0	,	1	,	-0.001,
+							 0	,	0	,	1	,	0,
 							 0	,	0	,	0	,	1);
 
 		this.a4_g.matrixAutoUpdate  = false;
 		this.a4_g.updateMatrix();
-		this.a4_g.matrix.set(h	,	g	,	0	,	0.208,
+		this.a4_g.matrix.set(h	,	g	,	0	,	0.2085,
 							 -g	,	h	,	0	,	0,
-							 0	,	0	,	1	,	-0.0015,
+							 0	,	0	,	1	,	-0.1331,
 							 0	,	0	,	0	,	1);
 
 		this.a5_g.matrixAutoUpdate  = false;
 		this.a5_g.updateMatrix();
-		this.a5_g.matrix.set(0	,	0	,	-1	,	0.013,
+		this.a5_g.matrix.set(0	,	0	,	-1	,	0.091502,
 							 -j	,	i	,	0	,	0,
-							 -i	,	-j	,	0	,	-0.08,
+							 -i	,	-j	,	0	,	0.0,
 							 0	,	0	,	0	,	1);
 
 
@@ -322,7 +331,7 @@ class Robot{
 		this.a6_g.updateMatrix();
 		this.a6_g.matrix.set(1	,	0	,	0	,	0.013,
 							 0	,	-k	,	l	,	0,
-							 0	,	l	,	k	,	-0.08,
+							 0	,	l	,	k	,	0,
 							 0	,	0	,	0	,	1);
 
 
@@ -1153,10 +1162,6 @@ class Robot{
 
 		}
 		this.ditherShader = DitheredTransparencyShaderMixin(THREE.ShaderLib.standard);
-
-
-
-
 
 		this.ditherMat = new THREE.ShaderMaterial(this.ditherShader);
 		this.ditherMat.side = THREE.DoubleSide;
