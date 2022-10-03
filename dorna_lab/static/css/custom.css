@@ -114,6 +114,18 @@ body {
   overflow-x: auto; 
 }
 
+.stretch_50{
+  height: calc(50vh - 69px);
+  overflow-y: auto;
+  overflow-x: auto; 
+}
+
+.stretch_v{
+  width: calc(100% - 302px - 72px - 18px) !important;
+  overflow-y: auto;
+  overflow-x: auto; 
+}
+
 /*script*/
 
 .script_stat_1 {

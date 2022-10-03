@@ -1,20 +1,30 @@
-<div class="d-flex flex-column">
-  <!--header-->
-  {% include "camera/header.html" %}
-  
-  <div class="slide-wrap ml-2 mr-2 d-flex" >
-    <!--gui-->
-    <div id="gui_div"></div>
-    <div class="slide m-2 d-flex flex-column">
+<div class="camera_panel side_panel stretch_v" style="width:650px; min-wdith:650px; position: absolute; background-color: red; bottom: 0px; ">
 
-      <!-- way points-->
-      <div class="" id="values-slider"></div>
+	<!--header-->
+	{% include "camera/header.html" %}
 
-      <!--timeline-->
-      <input type="range" class="timeline_s mt-2"  min="0" max="1500" value="1" style="z-index: 100">
+	<!-- content-->
+	<div class="stretch_50 d-flex">
 
-      <!--plot-->      
-      <div id="curve_chart" style="margin-top: 0px"></div>
-    </div>
-  </div>
+		<!-- gui-->
+	    <div id="gui_div" style="overflow-y: auto;overflow-x: auto; min-width: 300px; "></div>
+		
+		<!--slider-->
+		<div class="flex-grow-1 pl-3 pr-3 pt-3" style="overflow-y: auto;overflow-x: auto; background-color: green;">
+
+		    <div class="slide m-2 d-flex flex-column">
+
+		      <!-- way points-->
+		      <div class="" id="values-slider"></div>
+
+		      <!--timeline-->
+		      <input type="range" class="timeline_s mt-2"  min="0" max="1500" value="1" style="z-index: 100">
+
+		      <!--plot-->      
+		      <div id="curve_chart" style="margin-top: 0px; height: 100%;"></div>
+		    </div>
+
+			
+		</div>
+	</div>
 </div>

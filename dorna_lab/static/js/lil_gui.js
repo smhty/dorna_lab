@@ -32,9 +32,42 @@ folder_2.add( obj, 'e' );
 */
 //prm
 let gui_prm = {
-  move: 0,
-  robot_fps: 24
+  cmd: 0,
+  fps: 24,
 }
+
+// general setting
+let general_setting_key_frame_gui = new Tweakpane.Pane({container: document.querySelector('#gui_div'), title: "General Setting"});
+// plugin
+general_setting_key_frame_gui.registerPlugin(TweakpaneCamerakitPlugin)
+general_setting_key_frame_gui.registerPlugin(TweakpaneEssentialsPlugin)
+
+// motion type
+general_setting_key_frame_gui.addInput(gui_prm, 'cmd', {
+  view: 'radiogrid',
+  groupName: 'cmd',
+  size: [2, 1],
+  cells: (x, y) => ({
+    title: ["Joint", "Line"][x],
+    value: [0, 1][x],
+  }),
+
+  label: 'Motion Type',
+}).on('change', (ev) => {
+  console.log(ev);
+});
+
+
+//fps
+general_setting_key_frame_gui.addInput(gui_prm, "fps", {
+  label: 'Robot FPS',
+  view: 'cameraring',
+  series: 0,
+  min: 1,
+  max: 960,
+  step: 1,
+})
+
 
 // new key frame
 let new_key_frame_gui = new Tweakpane.Pane({container: document.querySelector('#gui_div'), title: "New Key Frame"});
@@ -59,12 +92,12 @@ new_key_frame_gui.addInput(gui_prm, "frame_new", {
 
 // new key_frame_button
 gui_prm["new_frame_b"] = new_key_frame_gui.addButton({
-  title: 'Create',
+  title: '+ Create Key Frame',
 });
 
 
 // key frame gui
-let key_frame_gui = new Tweakpane.Pane({container: document.querySelector('#gui_div'), title: "Key Frame"});
+let key_frame_gui = new Tweakpane.Pane({container: document.querySelector('#gui_div'), title: "Key Frame Setting"});
 
 // plugin
 key_frame_gui.registerPlugin(TweakpaneCamerakitPlugin);
@@ -94,7 +127,7 @@ key_frame_gui.addInput(gui_prm, "frame_select", {
 let pose_tab = key_frame_gui.addTab({
   pages: [
     {title: 'Joint'},
-    {title: 'XYZ'},
+    {title: 'Cartesian'},
   ],
 });
 
@@ -108,8 +141,8 @@ pose_tab.pages[0].addInput(gui_prm, "j3_5", {label: 'j3, j4, j5'})
 //XYZ
 gui_prm["xyz"] = {"x": 0, "y": 0, "z": 0}
 gui_prm["abc"] = {"x": 0, "y": 0, "z": 0}
-pose_tab.pages[1].addInput(gui_prm, "xyz", {label: 'xyz'})
-pose_tab.pages[1].addInput(gui_prm, "abc", {label: 'abc'})
+pose_tab.pages[1].addInput(gui_prm, "xyz", {label: 'x, y, z'})
+pose_tab.pages[1].addInput(gui_prm, "abc", {label: 'a, b, c'})
 
 /*
 for (let i = 0; i < 8 ; i++) {
@@ -148,8 +181,19 @@ for (let i = 0; i < 8 ; i++) {
 }
 
 //delete
-key_frame_gui.addSeparator();
 gui_prm["delete_frame"] = key_frame_gui.addButton({title: 'Delete Key Frame'});
+
+
+// on change 
+general_setting_key_frame_gui.on('change', (ev) => {
+  //console.log(JSON.stringify(ev.value));
+  console.log(gui_prm)
+});
+
+new_key_frame_gui.on('change', (ev) => {
+  //console.log(JSON.stringify(ev.value));
+  console.log(ev)
+});
 
 key_frame_gui.on('change', (ev) => {
   //console.log(JSON.stringify(ev.value));
