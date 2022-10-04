@@ -9,7 +9,7 @@ import tornado.websocket
 from flask_to_tornado import BaseHandler
 
 from dorna2 import Dorna, __version__ as V_API
-from tool import db,folder,shell, update, kinematic
+from tool import db,folder,shell, update, kinematic, timeline
 import config
 
 PATH = os.path.dirname(os.path.abspath(__file__))
@@ -63,7 +63,10 @@ class DornaConnection(object):
 
 DORNA = DornaConnection()
 DATABASE = db.db_class(os.path.join(PATH, 'flaskr.sqlite'))
+
+
 """
+msg["code"] = "asyncio.create_task(timeline.timeline_data(self, loop, point_data, time_start=0, ticks_per_sec=100000, sample_per_sec=5))":
 msg["code"] = "asyncio.create_task(KNMTC.fw(self, loop, joint=[1, 2, 3, 4, 5, 6]))"
 msg["code"] = "asyncio.create_task(KNMTC.inv(self, loop, xyzabg=[1, 2, 3, 4, 5, 6], joint_current=[1, 2, 3, 4, 5, 6], all_sol=False))"
 """

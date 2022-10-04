@@ -1,63 +1,10 @@
-"""
-series of commands are given to the robot and break it to a way points
-"""
-class waypoint(object):
-	"""docstring for waypoint"""
-	def __init__(self, arg):
-		super(waypoint, self).__init__()
-		self.current = []
-	
-	def cmds_to_groups(self, cmds):
-		grps = []
-		while len(cmds) != 0
-			# init group
-			grp = []
-			while len(cmds) != 0:
-				if len(grp) == 0:
-					grp.append(cmds.pop(0))
+from dorna_motion import timeline
 
-					# circle
-					if grp[0]["cmd"] == "cmove":
-						break
-
-					# cont == 0 or no cont
-					if "cont" not in grp[0] or grp[0]["cont"] == 0:
-						break
-
-				else:
-					# different cmd
-					if cmds[0]["cmd"] != grp[-1]["cmd"]:
-						break
-
-					# add to group
-					grp.append(cmds.pop(0))
-
-					# cont == 0
-					if "cont" in grp[-1] and grp[-1]["cont"] == 0:
-						break
-			
-			# check for the size
-			if len(grp):
-				grps.append(grp)
-
-		return grps
-
-	# create based on new set of cmds
-	def create(self, cmds):
-		grps = self.cmds_to_groups(list(cmds))
-
-		# frame data: velocity and position 
-		for grp in grps:
-			pass
-
-		self.
-
-
-	# add a new cmd
-	def update(self, cmds):
-		# compare to
-
-
+async def timeline_data(ws, server_loop, point_data, time_start=0, ticks_per_sec=100000, sample_per_sec=5):
+	rtn = {"to": "?", "result": "?", "broadcast": False, "error": 0}		
+	rtn["result"] = await asyncio.get_running_loop().run_in_executor(None, timeline.points_to_plot, point_data, time_start, ticks_per_sec, sample_per_sec)
+	server_loop.add_callback(ws.emit_message, json.dumps(rtn))
+	return rtn
 
 	
 			
