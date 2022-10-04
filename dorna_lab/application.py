@@ -9,7 +9,7 @@ import tornado.websocket
 from flask_to_tornado import BaseHandler
 
 from dorna2 import Dorna, __version__ as V_API
-from tool import db,folder,shell, update
+from tool import db,folder,shell, update, kinematic
 import config
 
 PATH = os.path.dirname(os.path.abspath(__file__))
@@ -63,6 +63,11 @@ class DornaConnection(object):
 
 DORNA = DornaConnection()
 DATABASE = db.db_class(os.path.join(PATH, 'flaskr.sqlite'))
+"""
+msg["code"] = "asyncio.create_task(KNMTC.fw(self, loop, joint=[1, 2, 3, 4, 5, 6]))"
+msg["code"] = "asyncio.create_task(KNMTC.inv(self, loop, xyzabg=[1, 2, 3, 4, 5, 6], joint_current=[1, 2, 3, 4, 5, 6], all_sol=False))"
+"""
+KNMTC = kinematic.kinematic_class()
 PROCESSES = []
 
 
@@ -159,6 +164,7 @@ class WebSocket(tornado.websocket.WebSocketHandler):
 
         except Exception as ex:
             DORNA.robot.log("error5: "+ str(ex))
+
 
     # client killing a shell
     def shell_kill(self, pid):
