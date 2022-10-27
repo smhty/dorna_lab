@@ -984,10 +984,13 @@ class Robot{
 			return this.position.y/this.scale_factor ;
 		}
 		if(name=="a"){
-			return this.a_get();
+			return this.abc[0];
 		}
 		if(name=="b"){
-			return this.joints[4];
+			return this.abc[1];
+		}
+		if(name=="c"){
+			return this.abc[2];
 		}
 		return 0;
 	}
