@@ -29,13 +29,14 @@ var view_container = document.getElementsByClassName("view_3d")[0]
 function init_scene(){
   // scene
   scene = new THREE.Scene();
+  //scene.scale.set(10,10,10);
   scene.background = new THREE.Color( "#cccccc");
 }
 
 
 function init_collada(){
 
-  original_robot =  new Robot( renderer , camera , scene , control_camera , 1.0 , false);
+  original_robot =  new Robot( renderer , camera , scene , control_camera , 0.35 , false);
 
   chain = new move_chain(scene, camera, renderer,control_camera);
   chain.callback.add(change_ghost_value);
@@ -53,18 +54,19 @@ function graphic_on() {
 
     /*********************/
     // camera
-    camera = new THREE.PerspectiveCamera( 45, $(view_container).width() / $(view_container).height(), 1, 2000 );
-    camera.position.set( 8, 8, 8 );
+    camera = new THREE.PerspectiveCamera( 65, $(view_container).width() / $(view_container).height(), 0.1, 2000 );
+    camera.position.set( 2, 1, 2 );
 
     // Grid
-    var grid = new THREE.GridHelper( 10, 10, 0x444444, 0x888888 );
+    var grid = new THREE.GridHelper( 20, 20, 0x444444, 0x888888 );
+    grid.scale.set(0.1,0.1,0.1);
     scene.add( grid );
     
 
 
-    particleLight = new THREE.PointLight( 0xffffff, 0.5 );
-    particleLight.position.set(0,10,0);
-    scene.add( particleLight );
+   // particleLight = new THREE.PointLight( 0xffffff, 0.5 );
+   //// particleLight.position.set(0,10,0);
+    //scene.add( particleLight );
 
     // Lights
 
@@ -306,7 +308,5 @@ function empty(elem) {
 
 
 
-init_scene()
-graphic_on()
-init_collada()
+
 

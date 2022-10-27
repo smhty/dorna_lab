@@ -22,12 +22,15 @@ V_LAB = "2.0.3"
 
 CONFIG = config.config
 loop = tornado.ioloop.IOLoop.current()
+kin = kinematic.kinematic_class()
 
 class gui(BaseHandler):
     def get(self, **kwargs):
         data = {"host_ip": CONFIG['server']['host'],
                 "port": CONFIG['server']['port'], "dorna_lab": V_LAB, "api": V_API}
         return self.render_jinja('index.html', data=data, cmd=CONFIG["cmd"], config=CONFIG)
+
+
 
 class DornaConnection(object):
     def __init__(self):
@@ -52,7 +55,7 @@ class DornaConnection(object):
                 self.robot.play(0, msg)
         except Exception as ex:
             self.robot.log("error9: "+ str(ex))
-
+            #print("error9")
     async def send_message_to_browser(self, msg, sys):
         loop.add_callback(self.emit_all, msg)
 
@@ -63,14 +66,6 @@ class DornaConnection(object):
 
 DORNA = DornaConnection()
 DATABASE = db.db_class(os.path.join(PATH, 'flaskr.sqlite'))
-
-
-"""
-msg["code"] = "asyncio.create_task(timeline.timeline_data(self, loop, point_data, time_start=0, ticks_per_sec=100000, sample_per_sec=5))":
-msg["code"] = "asyncio.create_task(KNMTC.fw(self, loop, joint=[1, 2, 3, 4, 5, 6]))"
-msg["code"] = "asyncio.create_task(KNMTC.inv(self, loop, xyzabg=[1, 2, 3, 4, 5, 6], joint_current=[1, 2, 3, 4, 5, 6], all_sol=False))"
-"""
-KNMTC = kinematic.kinematic_class()
 PROCESSES = []
 
 
@@ -104,13 +99,17 @@ class WebSocket(tornado.websocket.WebSocketHandler):
                 self.database(msg["prm"][0])
 
             elif msg["_server"] == "folder":
-                self.folder_process(msg)      
+                self.folder_process(msg)   
+
+            elif msg["_server"] == "knmtc":
+                self.knmtc(msg)   
 
             elif msg["_server"] == "code":
                 try:
                     eval(msg["code"])#needs to be compatible with asyncio and does the results need to be sent back to the client?
                 except:
                     DORNA.robot.log("error1: running message error.")
+                    #print("error1")
         else:
             DORNA.send_message_to_robot(json.dumps(msg))
 
@@ -168,7 +167,6 @@ class WebSocket(tornado.websocket.WebSocketHandler):
         except Exception as ex:
             DORNA.robot.log("error5: "+ str(ex))
 
-
     # client killing a shell
     def shell_kill(self, pid):
         try:
@@ -185,12 +183,28 @@ class WebSocket(tornado.websocket.WebSocketHandler):
         except Exception as ex:
             DORNA.robot.log("error7: "+ str(ex))
 
+    def knmtc(self, msg):
+        try:
+            if msg["func"] == "frw":
+                asyncio.create_task(kin.fw(self, loop, msg["cmd_id"] if "cmd_id" in msg else None,  msg["joint"] if "joint" in msg else [0,0,0,0,0,0]))
+            elif msg["func"] == "inv":
+                asyncio.create_task(kin.inv(self, loop, msg["cmd_id"] if "cmd_id" in msg else None, msg["xyzabg"] if "xyzabg" in msg else None, msg["joint_current"] if "joint_current" in msg else None, msg["all_sol"] if "all_sol" in msg else False))
+
+        except Exception as ex:
+            DORNA.robot.log("error8: "+ str(ex))
+
+
     def emit_message(self,msg):
         try:
             self.write_message(msg)
         except Exception as ex:
-            DORNA.robot.log('error8'+ str(ex))
+            DORNA.robot.log('error9'+ str(ex))
 
+"""
+msg["code"] = "asyncio.create_task(timeline.timeline_data(self, loop, point_data, time_start=0, ticks_per_sec=100000, sample_per_sec=5))":
+msg["code"] = "asyncio.create_task(KNMTC.fw(self, loop, joint=[1, 2, 3, 4, 5, 6]))"
+msg["code"] = "asyncio.create_task(KNMTC.inv(self, loop, xyzabg=[1, 2, 3, 4, 5, 6], joint_current=[1, 2, 3, 4, 5, 6], all_sol=False))"
+"""
 
 if __name__ == '__main__':
     app = [

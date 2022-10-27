@@ -31,6 +31,7 @@ class move_cmd{
 		this.joint_save = [j_values[0], j_values[1], j_values[2], j_values[3], j_values[4], j_values[5], j_values[6], j_values[7]];
 
 		this.position = new THREE.Vector3(0,0,0);
+		this.abc = [0,0,0];
 		this.position_save = new THREE.Vector3(0,0,0);
 		this.position_save_needs_update = true;
 
@@ -52,7 +53,7 @@ class move_cmd{
 		}
 		this.sprite.father = this;
 
-		this.sprite.scale.x = this.sprite.scale.y = this.sprite.scale.z = 0.15; 
+		this.sprite.scale.set(0.02,0.02,0.02); 
 		this.sprite.name = "sprite";
 		this.parent_chain.scene.add( this.sprite );
 		this.update_sprite_pos();
@@ -74,7 +75,7 @@ class move_cmd{
 		this.id = "-1";
 
 		this.save();
-
+		this.arrow = false;
 		if(this.arrow){
 
 			this.curve_positions = [new THREE.Vector3( 0, 0, 0 ),
@@ -132,10 +133,24 @@ class move_cmd{
 		return this.joint[1]+this.joint[2]+this.joint[3];
 	}
 	update_sprite_pos(){
-		var j_pos = this.parent_chain.robot.joints_to_xyz(this.joint)
+		 send_message({
+	        "_server":"knmtc",
+	        "func": "frw","joint":this.joint
+	        },true, true,function(res,v){
+	        	let p = new THREE.Vector3(res["result"][0],res["result"][1],res["result"][2]);
+	        	console.log(p)
+	        	let abc = [res["result"][3],res["result"][4],res["result"][5]]
+	        	v[0].update_sprite_pos_p(p,abc);
+	        },[this]);
+	}
+	update_sprite_pos_p(j_pos,abc){
+		j_pos = this.parent_chain.robot.real_to_xyz(j_pos);
+		//var j_pos = this.parent_chain.robot.joints_to_xyz(this.joint)
 		this.sprite.position.set(j_pos.x,j_pos.y,j_pos.z);
 		this.position.set(j_pos.x,j_pos.y,j_pos.z);
-
+		this.abc[0] = abc[0];
+		this.abc[1] = abc[1];
+		this.abc[2] = abc[2];
 		if(this.position_save_needs_update){
 			this.position_save.set(j_pos.x,j_pos.y,j_pos.z);
 			let k=0;
@@ -325,13 +340,28 @@ class move_cmd{
 			let v = this.parent_chain.robot.real_to_xyz(new THREE.Vector3(cmd["x"],cmd["y"],cmd["z"]));
 
 			this.position.set(v.x,v.y,v.z);
+			if(cmd["a"])
+				this.abc[0] = cmd["a"];
+			if(cmd["b"])
+				this.abc[1] = cmd["b"];
+			if(cmd["c"])
+				this.abc[2] = cmd["c"];
 
 			if(this.parent_chain.control_cmd == this){
-				this.parent_chain.controller.set_xyza(this.position,cmd["a"],cmd["b"]);
+				this.parent_chain.controller.set_xyza(this.position,this.abc);
 				set_5(this.joint,this.parent_chain.controller.joints)
 			}
-			else{
-				set_5(this.joint , this.parent_chain.robot.xyza_to_joints(this.position,cmd["a"],cmd["b"]));
+			else{//javad here 
+				//set_5(this.joint , this.parent_chain.robot.xyza_to_joints(this.position,cmd["a"],cmd["b"]));
+				console.log("Check here.")
+				var ps = this.parent_chain.robot.xyz_to_real(this.position); 
+				send_message({
+			        "_server":"knmtc",
+			        "func": "inv","xyzabg":[ps.x,ps.y,ps.z,this.abc[0],this.abc[1],this.abc[2]],"joint_current":false,"all_sol":true
+			        },true, true,function(res,v){
+			        	if(res["result"][0])
+			        		set_5(v[0],res["result"][0])
+			        },[this.joint]);
 			}
 		}
 	
@@ -386,9 +416,9 @@ class move_cmd{
 					"z": out["z"].toFixed(3)
 				},
 				...{
-					"a": (cc.joint[1]+cc.joint[2]+cc.joint[3]).toFixed(3),
-					"b": cc.joint[4].toFixed(3),
-					"c": cc.joint[5].toFixed(3),
+					"a": (cc.abc[0]).toFixed(3),
+					"b": (cc.abc[1]).toFixed(3),
+					"c": (cc.abc[2]).toFixed(3),
 					"d": cc.joint[6].toFixed(3),
 					"e": cc.joint[7].toFixed(3)
 				},	
@@ -453,7 +483,7 @@ class move_chain{
 		this.main_scene = scene;
 		this.main_scene.add(this.scene);
 		this.camera = camera;
-		this.controller = new Robot( renderer , camera , this.scene , control_camera , 0.35 , true );
+		this.controller = new Robot( renderer , camera , this.scene , control_camera , 1.0 , true );
 		this.robot = this.controller
 		let spriteMap = new THREE.TextureLoader().load( "./static/assets/texture/dot.png" );
 

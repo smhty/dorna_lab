@@ -1,11 +1,22 @@
 //in - out - pwm - adc - path design
 
 // receive message functions
+var knmtc_response_list = {}; // in the form of "cmd_id" : function. 
+
 
 function on_message(event){
   
-  try {
+  /*try*/ {
     let msg = JSON.parse(event.data);
+    //console.log(msg)
+    if("cmd_id" in msg){
+      if(String(msg["cmd_id"]) in knmtc_response_list){
+        knmtc_response_list[String(msg["cmd_id"])]["func"](msg, knmtc_response_list[String(msg["cmd_id"])]["vars"]);
+        delete knmtc_response_list[String(msg["cmd_id"])];
+        return;
+      }
+    }
+
     if("to" in msg){
       switch (msg["to"]) {
         case "api.folder.get":
@@ -48,9 +59,9 @@ function on_message(event){
       print_log(msg)      
     }
   }
-  catch(err) {
-    console.error(err)
-  }
+  //catch(err) {
+  //  console.error(err)
+  //}
 
 }
 

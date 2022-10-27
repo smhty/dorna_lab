@@ -34,11 +34,12 @@ class Robot{
 		
 		this.control_camera = cam_ctr;
 		this.position = new THREE.Vector3(0,0,0);
+		this.abc = [15,90,90];
 		this.being_controlled = need_control;
 
 		
 		this.joints = [0,0,0,0,0,0,0];
-		this.scale_factor = 10;
+		this.scale_factor = 1;
 
 		this.p0 = new THREE.Vector3(0,0,0)//new THREE.Vector3(0.0,2.404464*this.scale_factor,9.475806*this.scale_factor);
 		this.l2 = 2.02*this.scale_factor;
@@ -46,7 +47,21 @@ class Robot{
 		this.offset = {"x":0,"y":0,"z":0};
 		this.l4 = 48.9245*this.scale_factor;
 		this.scale_to_real = 1/this.scale_factor;
-		this.head_pos = this.joints_to_xyz([0,0,0,0,0,0]);
+
+
+		this.head_pos = new THREE.Vector3(0,0,0);//this.joints_to_xyz([0,0,0,0,0,0]);
+		//let ff = ;
+        send_message({
+	        "_server":"knmtc",
+	        "func": "frw","joints":[0,0,0,0,0,0,0]
+	        },true, true,function(res,v){
+	        	v[0].x = res["result"][0]; v[1].x = res["result"][0]; 
+	        	v[0].y=res["result"][1]; v[1].y=res["result"][1];
+	        	v[0].z=res["result"][2]; v[1].z=res["result"][2];
+	        	v[2][0] = res["result"][3];
+	        	v[2][1] = res["result"][4];
+	        	v[2][2] = res["result"][5];
+	        },[this.head_pos,this.position,this.abc]);
 
 		this.a = 0;
 		this.knocle = 1;
@@ -59,14 +74,8 @@ class Robot{
 		this.visible = false;
 
 		//headball
-		let spriteMap = new THREE.TextureLoader().load( "./static/assets/texture/dot.png" );
-		let spriteMaterial = new THREE.SpriteMaterial( { map: spriteMap , sizeAttenuation: true, color : 0x09e41b } );
-		this.sprite = new THREE.Sprite( spriteMaterial );
-		this.sprite.scale.x = this.sprite.scale.y = this.sprite.scale.z = 0.14;
+		this.loader_axis = new THREE.ColladaLoader()
 
-	    this.mesh_ball = this.sprite;
-	    this.scene.add(this.mesh_ball);
-	    this.mesh_ball.position.set(0,0,0);
 
 		this.limits = {"nj0":-160 , "pj0":180, //nj0 got from -175 to -160
 					   "nj1":-90 ,  "pj1":180,
@@ -75,9 +84,6 @@ class Robot{
 					   "nj4":-10000 , "pj4":10000};
 
 		this.Load(need_control);
-
-		if(need_control)	this.create_head_control();
-
 
 		var loader = new THREE.CubeTextureLoader();
 		loader.setPath( './static/assets/texture/' );
@@ -95,19 +101,19 @@ class Robot{
 		this.material = new THREE.MeshStandardMaterial({
 			vertexColors: true,
 			roughness: 0.3,
-			metalness : 0.6,
+			//metalness : 0.6,
 			envMap : this.textureCube,
 			emissive : this.normal_color,
 			side:THREE.DoubleSide
 		});
 
-		if(this.being_controlled)
+		if(!this.being_controlled)
 			this.new_mat()
 		
 		this.callback = $.Callbacks();
 		
-		let init_pos = this.joints_to_xyz([0,0,0,0,0,0]);
-		this.position.set(init_pos.x,init_pos.y,init_pos.z);
+		//let init_pos = this.joints_to_xyz([0,0,0,0,0,0]);
+		//this.position.set(init_pos.x,init_pos.y,init_pos.z);
 
 
 
@@ -125,18 +131,35 @@ class Robot{
 		this.loader = [new THREE.ColladaLoader(),new THREE.ColladaLoader(),
 						new THREE.ColladaLoader(),new THREE.ColladaLoader(),
 						new THREE.ColladaLoader(),new THREE.ColladaLoader(),new THREE.ColladaLoader()];
-		this.dae = new Array(7);
+		this.dae = new Array(8);
 		robot.load_index = 0;
 
-		this.loader[0].load("./static/assets/robot/base.dae" , function ( collada ) {robot.dae[0] = collada.scene; if(robot.load_index++>5)robot.load_level2();});
-		this.loader[1].load("./static/assets/robot/arm1.dae" , function ( collada ) {robot.dae[1] = collada.scene; if(robot.load_index++>5)robot.load_level2();});
-		this.loader[2].load("./static/assets/robot/arm2.dae" , function ( collada ) {robot.dae[2] = collada.scene; if(robot.load_index++>5)robot.load_level2();});
-		this.loader[3].load("./static/assets/robot/arm3.dae" , function ( collada ) {robot.dae[3] = collada.scene; if(robot.load_index++>5)robot.load_level2();});
-		this.loader[4].load("./static/assets/robot/arm4.dae" , function ( collada ) {robot.dae[4] = collada.scene; if(robot.load_index++>5)robot.load_level2();});
-		this.loader[5].load("./static/assets/robot/arm5.dae" , function ( collada ) {robot.dae[5] = collada.scene; if(robot.load_index++>5)robot.load_level2();});
-		this.loader[6].load("./static/assets/robot/arm6.dae" , function ( collada ) {robot.dae[6] = collada.scene; if(robot.load_index++>5)robot.load_level2();});
+		this.loader[0].load("./static/assets/robot/base.dae" , function ( collada ) {robot.dae[0] = collada.scene; if(robot.load_index++>6)robot.load_level2();});
+		this.loader[1].load("./static/assets/robot/arm1.dae" , function ( collada ) {robot.dae[1] = collada.scene; if(robot.load_index++>6)robot.load_level2();});
+		this.loader[2].load("./static/assets/robot/arm2.dae" , function ( collada ) {robot.dae[2] = collada.scene; if(robot.load_index++>6)robot.load_level2();});
+		this.loader[3].load("./static/assets/robot/arm3.dae" , function ( collada ) {robot.dae[3] = collada.scene; if(robot.load_index++>6)robot.load_level2();});
+		this.loader[4].load("./static/assets/robot/arm4.dae" , function ( collada ) {robot.dae[4] = collada.scene; if(robot.load_index++>6)robot.load_level2();});
+		this.loader[5].load("./static/assets/robot/arm5.dae" , function ( collada ) {robot.dae[5] = collada.scene; if(robot.load_index++>6)robot.load_level2();});
+		this.loader[6].load("./static/assets/robot/arm6.dae" , function ( collada ) {robot.dae[6] = collada.scene; if(robot.load_index++>6)robot.load_level2();});
 
+		
+		this.loader_axis.load("./static/assets/robot/axis.dae" , function ( collada ) {
 
+			robot.dae[7] = collada.scene; 
+			/*robot.dae[7].traverse( function ( child ) {
+				var materialf = new THREE.MeshBasicMaterial({vertexColors: true,roughness: 0.2,metalness : 0.2});
+		    	if ( child instanceof THREE.Mesh ) {
+		    		child.material = materialf;
+		    	}
+	    	});*/
+			robot.dae[7].scale.set(0.1,0.1,0.1)
+		    robot.mesh_ball = robot.dae[7];//sprite;
+		    //
+		    robot.mesh_ball.position.set(0,0,0);
+    		if(robot.being_controlled)	robot.create_head_control();
+    		if(robot.load_index++>6)robot.load_level2();
+		});
+		
 
 	}
 
@@ -158,6 +181,7 @@ class Robot{
 	
 	
 		this.robot_scene.add(this.dae[0]);
+
 		this.robot_scene.add(this.a1_g);
 		this.a1_g.add(this.dae[1]);
 		this.a1_g.add(this.a2_g);
@@ -174,7 +198,7 @@ class Robot{
 		//this.a5_g.add(this.a_help);
 
 		let i=0;
-		for(i=0;i<7;i++){
+		for(i=0;i<8;i++){
 			this.dae[i].traverse( function ( child ) {
 		    	if ( child instanceof THREE.Mesh ) {
 		    		child.material = robot.material;
@@ -184,7 +208,7 @@ class Robot{
 			        	child.material.transparent = 1;
 			        	child.material.opacity = robot.opacity;
 		    	}
-			    	if(robot.being_controlled){
+			    	if(!robot.being_controlled){
 			    		child.material = robot.ditherMat;
 			    		robot.dither = true;
 			    	}
@@ -195,8 +219,8 @@ class Robot{
 		this.robot_scene.scale.set(this.scale_factor , this.scale_factor , this.scale_factor);
 		this.kinematic([0,0,0,0,0,0]);
 
+		this.scene.add(this.mesh_ball);
 		this.scene.add(this.robot_scene);//last thing to do
-
 		if(this.being_controlled)
 		    for(i=-1;i<6;i++){
 			          var control_c = new THREE.TransformControls( camera, renderer.domElement );
@@ -314,8 +338,8 @@ class Robot{
 
 		this.a4_g.matrixAutoUpdate  = false;
 		this.a4_g.updateMatrix();
-		this.a4_g.matrix.set(h	,	g	,	0	,	0.2085,
-							 -g	,	h	,	0	,	0,
+		this.a4_g.matrix.set(g	,	-h	,	0	,	0.2085,
+							 h	,	g	,	0	,	0,
 							 0	,	0	,	1	,	-0.1331,
 							 0	,	0	,	0	,	1);
 
@@ -379,7 +403,7 @@ class Robot{
 
 	    this.control_head.addEventListener( 'objectChange', function ( event ) {
 	    	robot.head_pos = robot.mesh_ball.position;
-	    	robot.set_xyza(robot.head_pos,robot.a,robot.joints[4]);
+	    	robot.set_xyza(robot.head_pos,robot.abc);
     } );
 
 	}
@@ -478,8 +502,19 @@ class Robot{
 	  }
 	
 	}
+	set_joints(js){
+		let joint = js;
+		send_message({
+	        "_server":"knmtc",
+	        "func": "frw","joint":js
+	        },true, true,function(res,v){
+	        	let p = new THREE.Vector3(res["result"][0],res["result"][1],res["result"][2]);
+	        	let abc = [res["result"][3],res["result"][4],res["result"][5]];
+	        	v[0].set_joints_p(v[1],p,abc);
+	        },[this,joint]);
+	}
 
-	set_joints(js){ 	
+	set_joints_p(js,new_pos,abc){
 
 		this.joints = js;
 		let i = 0;
@@ -487,8 +522,13 @@ class Robot{
 		this.kinematic(this.joints);
 
 		this.a = this.joints[1] + this.joints[2] + this.joints[3];
-		let new_pos = this.joints_to_xyz(this.joints);
+		new_pos = this.real_to_xyz(new_pos)
+		//let new_pos = this.joints_to_xyz(this.joints);
 		this.position.set(new_pos.x,new_pos.y,new_pos.z);
+		this.abc[0] = abc[0];
+		this.abc[1] = abc[1];
+		this.abc[2] = abc[2];
+
 		this.set_head_ball();
 		this.callback.fire(this.joints); 
 
@@ -511,7 +551,6 @@ class Robot{
 	}
 
 	set_head_ball(){
-
  	 	this.mesh_ball.position.set(this.position.x,this.position.y,this.position.z);
   			 	 	
 	}
@@ -539,12 +578,12 @@ class Robot{
 
 		if(fix_head){
 			this.a = Math.min(Math.max(this.a , a_lim["na"]),a_lim["pa"]);
-			this.set_xyza(this.fixed_pos,this.a,this.joints[4]);
-			var new_pos = this.joints_to_xyz(this.joints);
+			this.set_xyza(this.fixed_pos,this.abc);
+			//var new_pos = this.joints_to_xyz(this.joints);
 
-			if(Math.abs(new_pos.x-this.fixed_pos.x)>0.001 || Math.abs(new_pos.y-this.fixed_pos.y)>0.001 || Math.abs(new_pos.z-this.fixed_pos.z)>0.001){
-				cancel = true;
-			} 
+			//if(Math.abs(new_pos.x-this.fixed_pos.x)>0.001 || Math.abs(new_pos.y-this.fixed_pos.y)>0.001 || Math.abs(new_pos.z-this.fixed_pos.z)>0.001){
+			//	cancel = true;
+			//} 
 		}
 		if(cancel){
 			this.joints[0] = old_joints[0];
@@ -557,7 +596,7 @@ class Robot{
 			this.a = (this.joints[1] + this.joints[2] + this.joints[3]);
 		}
 			this.set_joints(this.joints);
-			this.set_head_ball();
+			//this.set_head_ball();
 
 	}
 
@@ -565,7 +604,20 @@ class Robot{
 		return Math.pow(range(j1[0]-j2[0]),2) + Math.pow(range(j1[1]-j2[1]),2) + Math.pow(range(j1[2]-j2[2]),2) + Math.pow(range(j1[3]-j2[3]),2) + Math.pow(range(j1[4]-j2[4]),2) 
 	}
 
-	set_xyza(pos,a_value,b_value){
+	set_xyza(pos,abc){
+		//inverse here 
+		var p = this.xyz_to_real(pos);
+		 send_message({
+	        "_server":"knmtc",
+	        "func": "inv","xyzabg":[p.x,p.y,p.z,abc[0],abc[1],abc[2]],"joint_current":false,"all_sol":true
+	        },true, true,function(res,v){
+	        	var pp = res;
+	        	if(res["result"][0])
+	        		v[0].set_joints(res["result"][0]);
+	        	else
+	        		v[0].set_joints(v[0].joints);
+	        },[this]);
+		/*
 		if((this.joints[2] > 1 && this.joints[2] < 179 )|| this.joints[2] < -181){
 			this.knocle = -1;
 		}
@@ -591,6 +643,7 @@ class Robot{
 		best_sol[4] = b_value;
 		//this.joints = this.xyza_to_joints(pos,a_value);
 		this.set_joints(best_sol);
+		*/
 	}
 
 	check_interior(pos , a_value){
@@ -639,16 +692,9 @@ class Robot{
 	}
 
 	joints_to_xyz(joints){
-	  let j0 = (joints[0])*Math.PI/180;
-	  let j1 = (joints[1])*Math.PI/180;
-	  let j2 = (joints[1]+joints[2])*Math.PI/180;
-	  let j3 = (joints[1]+joints[2]+joints[3])*Math.PI/180;
-
-	  let head_2d = new THREE.Vector2(this.p0.z + this.l2*Math.cos(j1) + this.l3*Math.cos(j2) + (this.l4 + this.offset.z)*Math.cos(j3),
-	                                  this.p0.y + this.l2*Math.sin(j1) + this.l3*Math.sin(j2) + (this.l4 + this.offset.z)*Math.sin(j3));
-
-	  let result = new THREE.Vector3( head_2d.x*Math.sin(j0) , head_2d.y , head_2d.x*Math.cos(j0));
+	  let result = new THREE.Vector3(1,1,1);
 	  return result;
+	
 	}
 
 	set_visible(show){
@@ -677,6 +723,25 @@ class Robot{
 		return result;
 	}
 	allowed_xyza(){
+		var info = {};
+		let other_limits = 1000;
+		info["nx"] = -other_limits;
+		info["px"] = other_limits;
+		info["ny"] = -other_limits;
+		info["py"] = other_limits;
+		info["nz"] = -other_limits;
+		info["pz"] = other_limits;
+		info["na"] = -other_limits;
+		info["pa"] = other_limits;
+		
+		info["pb"] = other_limits;
+		info["nb"] = -other_limits;
+		info["pc"] = other_limits;
+		info["nc"] = -other_limits;
+		info["pd"] = other_limits;
+		info["nd"] = -other_limits;
+
+		return info;
 		var N = 50;
 		var info = {};
 		
@@ -813,7 +878,6 @@ class Robot{
 		info["nb"] = this.limits["nj4"];
 		info["pb"] = this.limits["pj4"];
 
-		let other_limits = 1000000;
 
 		info["pc"] = other_limits;
 		info["nc"] = -other_limits;
@@ -929,6 +993,27 @@ class Robot{
 	}
 
 	allowed_j(){
+		var info = {};
+		let other_limits = 1000;
+		info["nj0"] = -other_limits;
+		info["pj0"] = other_limits;
+		info["nj1"] = -other_limits;
+		info["pj1"] = other_limits;
+		info["nj2"] = -other_limits;
+		info["pj2"] = other_limits;
+		info["nj3"] = -other_limits;
+		info["pj3"] = other_limits;
+		info["nj4"] = -other_limits;
+		info["pj4"] = other_limits;
+		
+		info["pj5"] = other_limits;
+		info["nj5"] = -other_limits;
+		info["pj6"] = other_limits;
+		info["nj6"] = -other_limits;
+		info["pj7"] = other_limits;
+		info["nj7"] = -other_limits;
+
+		return info;
 		var joint = {"j0":this.joints[0] , "j1":this.joints[1] , "j2":this.joints[2] , "j3":this.joints[3] , "j4":this.joints[4] , "j5":this.joints[5]};
 		var nb = { 
 					"j1": [-40, -45, -50, -60, -70, -80, -90],
@@ -1008,8 +1093,6 @@ class Robot{
 		info["nj2"] = j2_limit_down;
 		info["pj2"] = j2_limit_up;
 
-
-		let other_limits = 1000000;
 		info["pj5"] = other_limits;
 		info["nj5"] = -other_limits;
 		info["pj6"] = other_limits;
@@ -1022,6 +1105,7 @@ class Robot{
 	}
 
 	check_work_space(){
+		return 1;
 		var joint = {"j0":this.joints[0] , "j1":this.joints[1] , "j2":this.joints[2] , "j3":this.joints[3] , "j4":this.joints[4] , "j5":this.joints[5]};
 		var nb = { 
 					"j1": [-40, -45, -50, -60, -70, -80, -90],
