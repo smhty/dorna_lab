@@ -14,7 +14,7 @@ function tripleDigit_vector(v){
 	return 1;
 }
 function set_5(a,b){
-	for(i=0;i<5;i++){
+	for(i=0;i<Math.min(a.length,b.length);i++){
 		a[i]=b[i];
 	}
 }
@@ -130,7 +130,7 @@ class move_cmd{
 		
 	}
 	a(){
-		return this.joint[1]+this.joint[2]+this.joint[3];
+		return this.abc[0];
 	}
 	update_sprite_pos(){
 		 send_message({
@@ -138,7 +138,6 @@ class move_cmd{
 	        "func": "frw","joint":this.joint
 	        },true, true,function(res,v){
 	        	let p = new THREE.Vector3(res["result"][0],res["result"][1],res["result"][2]);
-	        	console.log(p)
 	        	let abc = [res["result"][3],res["result"][4],res["result"][5]]
 	        	v[0].update_sprite_pos_p(p,abc);
 	        },[this]);
@@ -311,7 +310,6 @@ class move_cmd{
 
 	set_cmd(cmd){
 		var move_values_given = false;
-
 		if(cmd["cmd"] == "jmove"){
 			this.move_type = 0;
 		}
@@ -348,8 +346,8 @@ class move_cmd{
 				this.abc[2] = cmd["c"];
 
 			if(this.parent_chain.control_cmd == this){
-				this.parent_chain.controller.set_xyza(this.position,this.abc);
-				set_5(this.joint,this.parent_chain.controller.joints)
+				this.parent_chain.controller.set_xyza(this.position,this.abc,this.joint);
+				//set_5(this.joint,this.parent_chain.controller.joints)
 			}
 			else{//javad here 
 				//set_5(this.joint , this.parent_chain.robot.xyza_to_joints(this.position,cmd["a"],cmd["b"]));
@@ -660,6 +658,7 @@ class move_chain{
 		//$(".move_panel").toggle(true);
 		this.show_ghost();
 		this.control_cmd = cmd;
+
 		this.controller.set_joints(this.control_cmd.joint);
 		let chain = this;
 		this.control_cmd.callback();
@@ -850,140 +849,7 @@ class move_chain{
 		this.play_c_speed = 0.03;
 
 		let chain = this;
-		function play_func(){
-			if(chain.control_cmd==null){
-				var finish_cmd = false;
-				var new_j = [0,0,0,0,0,0];
-				if(chain.play_cmd.dummy==0){
-					if(chain.play_cmd.move_type==0){
-						let dj = [0,0,0,0,0,0];
-						let i=0;
-						for(i=0;i<6;i++) dj[i] = chain.play_cmd.joint[i] - chain.controller.joints[i];
-						let jc = Math.sqrt(dj[0]*dj[0] + dj[1]*dj[1] + dj[2]*dj[2] + dj[3]*dj[3] + dj[4]*dj[4] + dj[5]*dj[5]);
-						if(jc < chain.play_j_speed) finish_cmd = true;
-						else{
-							let i=0;
-							for(i=0;i<6;i++) new_j[i] =  chain.controller.joints[i] + dj[i] * chain.play_j_speed / jc;
-						}
-					}
-					if(chain.play_cmd.move_type==1){
-						let dx = new THREE.Vector3().subVectors(chain.play_cmd.position , chain.controller.position);
-						let da = chain.play_cmd.joint[1] + chain.play_cmd.joint[2] + chain.play_cmd.joint[3] 
-								-chain.controller.joints[1] - chain.controller.joints[2] - chain.controller.joints[3];
-						let db = chain.play_cmd.joint[4] -chain.controller.joints[4];
-
-						let lc = dx.length();
-						if(lc<chain.play_l_speed)finish_cmd = true;
-						else{
-							let tc = (new THREE.Vector3().subVectors(chain.play_cmd.position , chain.play_cmd.before.position)).length();
-
-							let new_a = (chain.play_cmd.before.joint[1] + chain.play_cmd.before.joint[2] + chain.play_cmd.before.joint[3]) * (lc) / tc
-										+ (chain.play_cmd.joint[1] + chain.play_cmd.joint[2] + chain.play_cmd.joint[3])* (tc - lc) / tc;
-							let new_b =  chain.play_cmd.before.joint[4] * (lc) / tc + chain.play_cmd.joint[4]* (tc - lc) / tc;
-
-							let nx = chain.controller.position.clone().addScaledVector(dx,chain.play_l_speed/lc);
-
-							chain.controller.set_xyza(nx,new_a,new_b);
-
-							new_j = chain.controller.joints;//chain.robot.xyza_to_joints(nx,new_a,new_b);
-							
-							if(!chain.robot.check_interior(nx,new_a)) {
-								clearInterval(chain.play_interval);
-								show_dismiss_alert("danger","out of bound",5000);
-							}
-						}
-					}
-				}
-				if(chain.play_cmd.dummy!=0){
-					let p0 = chain.play_cmd.master.p0;
-					let r = chain.play_cmd.master.r;
-					let delta = new THREE.Vector3().subVectors(chain.controller.position, p0);
-					let t = Math.atan2(delta.dot(chain.play_c_b) , delta.dot(chain.play_c_a));
-					chain.play_t += -chain.play_c_speed;
-					t += chain.play_c_speed;
-					
-					if(chain.play_t < 0)finish_cmd = true;
-
-					let nx = chain.play_c_a.clone().multiplyScalar(Math.cos(t)*r).addScaledVector(chain.play_c_b,Math.sin(t)*r).addScaledVector(p0,1);
-					let new_a =  chain.controller.a_get() + chain.play_c_speed*chain.play_c_dadt;
-					let new_b = chain.controller.joints[4] + chain.play_c_speed*chain.play_c_dbdt;
-
-					new_j = chain.robot.xyza_to_joints(nx ,new_a,new_b);
-
-					if(!chain.robot.check_interior(nx,new_a)) {
-								clearInterval(chain.play_interval);
-								show_dismiss_alert("danger","out of bound",5000);
-							}
-				}
-
-				if(finish_cmd){
-					if(chain.play_cmd.dummy!=1)
-						chain.controller.set_joints(chain.play_cmd.joint);
-					if(chain.play_cmd.after == null){
-						clearInterval(chain.play_interval);
-					}
-					else{
-						chain.play_cmd = chain.play_cmd.after;
-
-						if(chain.play_cmd.dummy>0){
-								var turn = 0;
-								if (!(typeof chain.play_cmd.master.prm.turn === 'undefined'))
-									turn = chain.play_cmd.master.prm.turn;
-						}
-
-						if(chain.play_cmd.dummy==1){
-							let a = new THREE.Vector3().subVectors(chain.play_cmd.master.base.position, chain.play_cmd.master.p0).normalize();
-							let b = chain.play_cmd.master.omega.clone().cross(a);
-							let r1 = new THREE.Vector3().subVectors(chain.play_cmd.master.dummies[0].position, chain.play_cmd.master.p0);
-							let r2 = new THREE.Vector3().subVectors(chain.play_cmd.master.dummies[1].position, chain.play_cmd.master.p0);
-							let t1 = Math.atan2(r1.dot(b),r1.dot(a));
-							let t2 = Math.atan2(r2.dot(b),r2.dot(a));
-							if(t1<0) t1 += 2*Math.PI;
-							if(t2<0) t2 += 2*Math.PI;
-							chain.play_t = t1;
-
-							chain.play_c_a = a;
-							chain.play_c_b = b;
-
-
-
-							let total_t = (t2) + (turn)*2*Math.PI;
-							chain.play_c_dadt = (chain.play_cmd.master.dummies[1].a() - chain.play_cmd.master.base.a())/total_t;
-							chain.play_c_dbdt = (chain.play_cmd.master.dummies[1].joint[4] - chain.play_cmd.master.base.joint[4])/total_t;
-						}
-						if(chain.play_cmd.dummy==2){
-
-							let a = new THREE.Vector3().subVectors(chain.play_cmd.master.base.position, chain.play_cmd.master.p0).normalize();
-							let b = chain.play_cmd.master.omega.clone().cross(a);
-							let r1 = new THREE.Vector3().subVectors(chain.play_cmd.master.dummies[0].position, chain.play_cmd.master.p0);
-							let r2 = new THREE.Vector3().subVectors(chain.play_cmd.master.dummies[1].position, chain.play_cmd.master.p0);
-							let t1 = Math.atan2(r1.dot(b),r1.dot(a));
-							let t2 = Math.atan2(r2.dot(b),r2.dot(a));
-							if(t1<0) t1 += 2*Math.PI;
-							if(t2<0) t2 += 2*Math.PI;
-							chain.play_t = (t2 - t1) + (turn)*2*Math.PI;
-
-							chain.play_c_a = a;
-							chain.play_c_b = b;
-
-						}
-					}
-				}
-				else{
-					chain.controller.set_joints(new_j);
-					//console.log(new_j)
-				}
-			
-			}
-			
-			else{
-				clearInterval(chain.play_interval);
-			}
-		}
-
-		if(!(typeof this.play_interval === 'undefined'))
-			clearInterval(this.play_interval);
-		this.play_interval = setInterval(play_func , 1000/frame["fps"])
+		
 	}
 	tool_head_length_set(x){
 		this.controller.tool_head_length_set(x)

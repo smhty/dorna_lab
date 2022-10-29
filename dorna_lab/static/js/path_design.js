@@ -56,8 +56,6 @@ $( ".path_design_point_prm_v" ).on("change", function(e) {
 				cmd[xyz_names[i]] = xyzab[i];
 			}
 		}
-
-		console.log("xyzab: ", xyzab)
 		chain.control_cmd.set_cmd(cmd);
 	}
 

@@ -34,7 +34,7 @@ class Robot{
 		
 		this.control_camera = cam_ctr;
 		this.position = new THREE.Vector3(0,0,0);
-		this.abc = [15,90,90];
+		this.abc = [0,90,90];
 		this.being_controlled = need_control;
 
 		
@@ -120,7 +120,7 @@ class Robot{
 	}
 
 	a_get(){
-		return this.joints[1] +this.joints[2] + this.joints[3];
+		return this.abc[0];
 	}
 
 	Load(need_control){
@@ -144,14 +144,7 @@ class Robot{
 
 		
 		this.loader_axis.load("./static/assets/robot/axis.dae" , function ( collada ) {
-
 			robot.dae[7] = collada.scene; 
-			/*robot.dae[7].traverse( function ( child ) {
-				var materialf = new THREE.MeshBasicMaterial({vertexColors: true,roughness: 0.2,metalness : 0.2});
-		    	if ( child instanceof THREE.Mesh ) {
-		    		child.material = materialf;
-		    	}
-	    	});*/
 			robot.dae[7].scale.set(0.1,0.1,0.1)
 		    robot.mesh_ball = robot.dae[7];//sprite;
 		    //
@@ -223,6 +216,7 @@ class Robot{
 		this.scene.add(this.robot_scene);//last thing to do
 		if(this.being_controlled)
 		    for(i=-1;i<6;i++){
+
 			          var control_c = new THREE.TransformControls( camera, renderer.domElement );
 			          if(i>-1)
 			          	control_c.attach( this.dae[i+1].parent);
@@ -254,7 +248,6 @@ class Robot{
 			          control_c.setSpace("local" );
 			          control_c.setMode( "rotate" );
 			          this.scene.add( control_c );
-
 			        if(i==0)control_c.addEventListener( 'dragging-changed', function ( event) {robot.control_camera.enabled = ! event.value; robot.hider(! event.value,0);  });
 			        if(i==1)control_c.addEventListener( 'dragging-changed', function ( event) {robot.control_camera.enabled = ! event.value; robot.hider(! event.value,1);  });
 			        if(i==2)control_c.addEventListener( 'dragging-changed', function ( event) {robot.control_camera.enabled = ! event.value; robot.hider(! event.value,2);  });
@@ -510,6 +503,8 @@ class Robot{
 	        },true, true,function(res,v){
 	        	let p = new THREE.Vector3(res["result"][0],res["result"][1],res["result"][2]);
 	        	let abc = [res["result"][3],res["result"][4],res["result"][5]];
+	        	//if(v[0].being_controlled)
+	        		//console.log("final",abc)
 	        	v[0].set_joints_p(v[1],p,abc);
 	        },[this,joint]);
 	}
@@ -521,7 +516,7 @@ class Robot{
 		
 		this.kinematic(this.joints);
 
-		this.a = this.joints[1] + this.joints[2] + this.joints[3];
+		//this.a = this.joints[1] + this.joints[2] + this.joints[3];
 		new_pos = this.real_to_xyz(new_pos)
 		//let new_pos = this.joints_to_xyz(this.joints);
 		this.position.set(new_pos.x,new_pos.y,new_pos.z);
@@ -547,7 +542,7 @@ class Robot{
 			}
 		}
 		for(i=0;i<6;i++)
-		this.joints[i] = Math.round(this.joints[i]*1000)/1000;
+			this.joints[i] = Math.round(this.joints[i]*1000)/1000;
 	}
 
 	set_head_ball(){
@@ -604,19 +599,26 @@ class Robot{
 		return Math.pow(range(j1[0]-j2[0]),2) + Math.pow(range(j1[1]-j2[1]),2) + Math.pow(range(j1[2]-j2[2]),2) + Math.pow(range(j1[3]-j2[3]),2) + Math.pow(range(j1[4]-j2[4]),2) 
 	}
 
-	set_xyza(pos,abc){
+	set_xyza(pos,abc,ret = null){
 		//inverse here 
+
 		var p = this.xyz_to_real(pos);
+		//console.log(abc,pos)
 		 send_message({
 	        "_server":"knmtc",
 	        "func": "inv","xyzabg":[p.x,p.y,p.z,abc[0],abc[1],abc[2]],"joint_current":false,"all_sol":true
 	        },true, true,function(res,v){
-	        	var pp = res;
-	        	if(res["result"][0])
+	        	if(res["result"][0]){
 	        		v[0].set_joints(res["result"][0]);
-	        	else
+	        		if(v[1]){
+	        			set_5(v[1],res["result"][0]);
+	        		}
+	        	}
+	        	else{
+	        		console.log("IK failed");
 	        		v[0].set_joints(v[0].joints);
-	        },[this]);
+	        	}
+	        },[this,ret]);
 		/*
 		if((this.joints[2] > 1 && this.joints[2] < 179 )|| this.joints[2] < -181){
 			this.knocle = -1;
