@@ -23,7 +23,7 @@ Useful Robot methodes:
 
 class Robot{
 
-	control_head; control_j0; control_j1; control_j2; control_j3; control_j4; mesh_ball;
+	control_head; control_head_rotate; control_j0; control_j1; control_j2; control_j3; control_j4; mesh_ball;
 
 	initialized = false;
 
@@ -35,6 +35,7 @@ class Robot{
 		this.control_camera = cam_ctr;
 		this.position = new THREE.Vector3(0,0,0);
 		this.abc = [0,90,90];
+		this.euler = new THREE.Euler( 0, 0, 0, 'ZYX' );
 		this.being_controlled = need_control;
 
 		
@@ -145,8 +146,9 @@ class Robot{
 		
 		this.loader_axis.load("./static/assets/robot/axis.dae" , function ( collada ) {
 			robot.dae[7] = collada.scene; 
-			robot.dae[7].scale.set(0.1,0.1,0.1)
+			//robot.dae[7].scale.set(0.1,0.1,0.1)
 		    robot.mesh_ball = robot.dae[7];//sprite;
+		    robot.mesh_ball.visible = false;
 		    //
 		    robot.mesh_ball.position.set(0,0,0);
     		if(robot.being_controlled)	robot.create_head_control();
@@ -214,7 +216,7 @@ class Robot{
 
 		this.scene.add(this.mesh_ball);
 		this.scene.add(this.robot_scene);//last thing to do
-		if(this.being_controlled)
+		if(this.being_controlled && false)
 		    for(i=-1;i<6;i++){
 
 			          var control_c = new THREE.TransformControls( camera, renderer.domElement );
@@ -284,7 +286,8 @@ class Robot{
 		//finalize
 		this.robot_scene.rotateY(-Math.PI/2.0);
 		robot.initialized = true;	
-		if(this.being_controlled){	this.set_control_mode(0); this.set_visible(false);}
+		if(this.being_controlled){	this.set_control_mode(0); this.set_visible(true);}
+		this.set_joints([0,0,0,0,0,0])
 	}
 
 	kinematic(js){
@@ -346,7 +349,7 @@ class Robot{
 
 		this.a6_g.matrixAutoUpdate  = false;
 		this.a6_g.updateMatrix();
-		this.a6_g.matrix.set(1	,	0	,	0	,	0.013,
+		this.a6_g.matrix.set(1	,	0	,	0	,	0.009,
 							 0	,	-k	,	l	,	0,
 							 0	,	l	,	k	,	0,
 							 0	,	0	,	0	,	1);
@@ -382,37 +385,68 @@ class Robot{
 		let robot = this;
 		
 	    this.control_head = new THREE.TransformControls( this.camera, this.renderer.domElement );
+	    this.control_head_rotate = new THREE.TransformControls( this.camera, this.renderer.domElement );
+	    this.control_head_rotate.setMode("rotate");
+	    //this.control_head_rotate.setSpace("local");
 	    this.control_head.attach( this.mesh_ball );
+	    this.control_head_rotate.attach( this.mesh_ball );
 
-	    this.mesh_ball.rotateOnAxis ( new THREE.Vector3(Math.sqrt(1/3),Math.sqrt(1/3),Math.sqrt(1/3)), -Math.PI*2/3 )
+	    //this.mesh_ball.rotateOnAxis ( new THREE.Vector3(Math.sqrt(1/3),Math.sqrt(1/3),Math.sqrt(1/3)), -Math.PI*2/3 )
 
-	    this.control_head.setSpace("local");
+	    //this.control_head.setSpace("local");
 	    this.scene.add( this.control_head );
+	    this.scene.add( this.control_head_rotate );
 
 	    this.control_head.addEventListener( 'dragging-changed', function ( event ) {
 	    	robot.control_camera.enabled = ! event.value;
 	    	robot.hider(! event.value, 5);
 	    } );
+	    this.control_head_rotate.addEventListener( 'dragging-changed', function ( event ) {
+	    	console.log("drag changed",event.value)
+	    	robot.control_camera.enabled = ! event.value;
+	    	robot.hider(! event.value, 6);
+	    } );
 
 	    this.control_head.addEventListener( 'objectChange', function ( event ) {
 	    	robot.head_pos = robot.mesh_ball.position;
 	    	robot.set_xyza(robot.head_pos,robot.abc);
-    } );
-
+    	} );
+	   	this.control_head_rotate.addEventListener( 'objectChange', function ( event ) {
+	    	robot.head_pos = robot.mesh_ball.position;
+	    	robot.set_euler();
+	    	robot.set_xyza(robot.head_pos,robot.abc);
+    	} );
 	}
+	set_euler(){
+
+		this.euler.setFromQuaternion (this.mesh_ball.quaternion,'YXZ') //transforms to 	ZYX
+		//console.log(this.mesh_ball.matrix)
+		this.abc[1] = this.euler.x * 180 / Math.PI; //1,2,0 //201 //
+		this.abc[2] = this.euler.y * 180 / Math.PI;
+		this.abc[0] = this.euler.z * 180 / Math.PI;
+		//console.log(this.abc)
+	}
+	set_head_ball(){
+ 	 	this.mesh_ball.position.set(this.position.x,this.position.y,this.position.z);
+  		this.mesh_ball.setRotationFromEuler(new THREE.Euler(this.abc[1]* Math.PI / 180,
+  															this.abc[2] * Math.PI / 180,
+  															this.abc[0] * Math.PI / 180,'YXZ'));
+	}
+
 	hider(show , i){
   		var j;
-  		for(j = -1; j<6; j++){
+  		for(j = -1; j<7; j++){
     		this.hide_this_control(show,j);
   		}
   		this.hide_this_control(true,i);
 	}
 
-	hide_this_control(show, i){
+	hide_this_control(show, i){/*
 	  if(i==-1){
 	  	if(this.control_mode!=3)show = false;
-	    this.control_a.showY = show;//showX = show;
-	    this.control_a.enabled = show;
+	    this.control_a.showY = false; 
+	    this.control_a.showX = false;
+	    this.control_a.enabled = false;
 	  }
 	  if(i==0){
 	    if(this.control_mode!=1)show = false;
@@ -431,15 +465,15 @@ class Robot{
 	    this.control_j2.enabled = show;
 	  }
 	  if(i==3){
-	  	if(this.control_mode!=1 /*&& this.control_mode!=3*/)show = false;
+	  	if(this.control_mode!=1 )show = false;
 	    this.control_j3.showY = show;//showX = show;
 	    this.control_j3.enabled = show;
 	  }
 	  if(i==4){
-	    if(this.control_mode!=1 && this.control_mode!=3)show = false;
+	    if(this.control_mode!=1)show = false;
 	    this.control_j4.showY = show;
 	    this.control_j4.enabled = show;
-	  }
+	  }*/
 	  if(i==5){
 	    if(this.control_mode!=2)show = false;
 
@@ -448,7 +482,14 @@ class Robot{
 	    this.control_head.showZ = show;
 	    this.control_head.enabled = show;
 	  }
+	  if(i==6){
+	    if(this.control_mode!=2)show = false;
 
+	    this.control_head_rotate.showX = show;
+	    this.control_head_rotate.showY = show;
+	    this.control_head_rotate.showZ = show;
+	    this.control_head_rotate.enabled = show;
+	  }
 	}
 
 
@@ -545,10 +586,7 @@ class Robot{
 			this.joints[i] = Math.round(this.joints[i]*1000)/1000;
 	}
 
-	set_head_ball(){
- 	 	this.mesh_ball.position.set(this.position.x,this.position.y,this.position.z);
-  			 	 	
-	}
+
 
 	change(i,ctrl,fix_head){
 
@@ -710,7 +748,7 @@ class Robot{
 		}
 		this.visible = show;
 		if(!show)this.set_control_mode(0);
-		this.mesh_ball.visible = show;
+		this.mesh_ball.visible = false//show;
 
 	}
 
