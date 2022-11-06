@@ -149,7 +149,7 @@ class Robot{
 			//robot.dae[7].scale.set(0.1,0.1,0.1)
 		    robot.mesh_ball = robot.dae[7];//sprite;
 		    robot.mesh_ball.visible = false;
-		    //
+		    
 		    robot.mesh_ball.position.set(0,0,0);
     		if(robot.being_controlled)	robot.create_head_control();
     		if(robot.load_index++>6)robot.load_level2();
@@ -417,20 +417,23 @@ class Robot{
 	    	robot.set_xyza(robot.head_pos,robot.abc);
     	} );
 	}
-	set_euler(){
 
+
+	set_euler(){
 		this.euler.setFromQuaternion (this.mesh_ball.quaternion,'YXZ') //transforms to 	ZYX
-		//console.log(this.mesh_ball.matrix)
+
 		this.abc[1] = this.euler.x * 180 / Math.PI; //1,2,0 //201 //
-		this.abc[2] = this.euler.y * 180 / Math.PI;
-		this.abc[0] = this.euler.z * 180 / Math.PI;
-		//console.log(this.abc)
+		this.abc[0] = this.euler.y * 180 / Math.PI;
+		this.abc[2] = this.euler.z * 180 / Math.PI;
+
+
+
 	}
 	set_head_ball(){
  	 	this.mesh_ball.position.set(this.position.x,this.position.y,this.position.z);
   		this.mesh_ball.setRotationFromEuler(new THREE.Euler(this.abc[1]* Math.PI / 180,
-  															this.abc[2] * Math.PI / 180,
-  															this.abc[0] * Math.PI / 180,'YXZ'));
+  															this.abc[0] * Math.PI / 180,
+  															this.abc[2] * Math.PI / 180,'YXZ'));
 	}
 
 	hider(show , i){
@@ -644,8 +647,9 @@ class Robot{
 		//console.log(abc,pos)
 		 send_message({
 	        "_server":"knmtc",
-	        "func": "inv","xyzabg":[p.x,p.y,p.z,abc[0],abc[1],abc[2]],"joint_current":false,"all_sol":true
+	        "func": "inv","xyzabg":[p.x,p.y,p.z,abc[0],abc[1],abc[2]],"joint_current":this.joints,"all_sol":false
 	        },true, true,function(res,v){
+	        	//console.log(res["result"],v[0].joints)
 	        	if(res["result"][0]){
 	        		v[0].set_joints(res["result"][0]);
 	        		if(v[1]){
@@ -748,7 +752,7 @@ class Robot{
 		}
 		this.visible = show;
 		if(!show)this.set_control_mode(0);
-		this.mesh_ball.visible = false//show;
+		//this.mesh_ball.visible = show;
 
 	}
 

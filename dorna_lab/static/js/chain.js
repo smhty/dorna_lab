@@ -355,10 +355,11 @@ class move_cmd{
 				var ps = this.parent_chain.robot.xyz_to_real(this.position); 
 				send_message({
 			        "_server":"knmtc",
-			        "func": "inv","xyzabg":[ps.x,ps.y,ps.z,this.abc[0],this.abc[1],this.abc[2]],"joint_current":false,"all_sol":true
+			        "func": "inv","xyzabg":[ps.x,ps.y,ps.z,this.abc[0],this.abc[1],this.abc[2]],"joint_current":this.parent_chain.robot.joints,"all_sol":false
 			        },true, true,function(res,v){
 			        	if(res["result"][0])
 			        		set_5(v[0],res["result"][0])
+
 			        },[this.joint]);
 			}
 		}

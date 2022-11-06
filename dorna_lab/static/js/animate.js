@@ -99,8 +99,8 @@ function graphic_on() {
 
     // control camera
     control_camera = new THREE.OrbitControls( camera, renderer.domElement );
-    control_camera.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
-    control_camera.dampingFactor = 0.1;
+    //control_camera.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
+    //control_camera.dampingFactor = 0.1;
     control_camera.enableZoom    = true;
     control_camera.enableKeys = false;
     //control_camera.addEventListener( 'change', function(){
