@@ -393,7 +393,6 @@ class Robot{
 
 	    //this.mesh_ball.rotateOnAxis ( new THREE.Vector3(Math.sqrt(1/3),Math.sqrt(1/3),Math.sqrt(1/3)), -Math.PI*2/3 )
 
-	    //this.control_head.setSpace("local");
 	    this.scene.add( this.control_head );
 	    this.scene.add( this.control_head_rotate );
 
@@ -408,7 +407,14 @@ class Robot{
 	    } );
 
 	    this.control_head.addEventListener( 'objectChange', function ( event ) {
-	    	robot.head_pos = robot.mesh_ball.position;
+	    	robot.head_pos.set(robot.mesh_ball.position.x,robot.mesh_ball.position.y,robot.mesh_ball.position.z);
+	    	robot.mesh_ball.position.set(robot.position.x,robot.position.y,robot.position.z)
+	    	/*
+	    	var d = 10.0;
+	    	robot.head_pos.subVectors (robot.head_pos , robot.position);
+	    	robot.head_pos.clampLength (0,d)
+			robot.head_pos.addVectors (robot.position , robot.head_pos);
+			*/
 	    	robot.set_xyza(robot.head_pos,robot.abc);
     	} );
 	   	this.control_head_rotate.addEventListener( 'objectChange', function ( event ) {
