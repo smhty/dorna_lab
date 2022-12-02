@@ -418,9 +418,11 @@ class Robot{
 	    	robot.set_xyza(robot.head_pos,robot.abc);
     	} );
 	   	this.control_head_rotate.addEventListener( 'objectChange', function ( event ) {
-	    	robot.head_pos = robot.mesh_ball.position;
+	   		
+	    	robot.head_pos.set(robot.mesh_ball.position.x,robot.mesh_ball.position.y,robot.mesh_ball.position.z);
 	    	robot.set_euler();
 	    	robot.set_xyza(robot.head_pos,robot.abc);
+    	
     	} );
 	}
 
