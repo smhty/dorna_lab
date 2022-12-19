@@ -23,8 +23,8 @@ Useful Robot methodes:
 
 class Robot{
 
-	control_head; control_head_rotate; control_j0; control_j1; control_j2; control_j3; control_j4; mesh_ball;
-
+	control_head; control_head_rotate; mesh_ball;
+	control_j = new Array();
 	initialized = false;
 
 	constructor(rend, cam,scen,cam_ctr,opac,need_control){
@@ -54,7 +54,7 @@ class Robot{
 		//let ff = ;
         send_message({
 	        "_server":"knmtc",
-	        "func": "frw","joints":[0,0,0,0,0,0,0]
+	        "func": "frw","joints":[0,0,0,0,0,0]
 	        },true, true,function(res,v){
 	        	v[0].x = res["result"][0]; v[1].x = res["result"][0]; 
 	        	v[0].y=res["result"][1]; v[1].y=res["result"][1];
@@ -216,58 +216,24 @@ class Robot{
 
 		this.scene.add(this.mesh_ball);
 		this.scene.add(this.robot_scene);//last thing to do
-		if(this.being_controlled && false)
-		    for(i=-1;i<6;i++){
+		if(this.being_controlled)
+		    for(let i=0;i<6;i++){
+				var control_c = new THREE.TransformControls( camera, renderer.domElement );
+				control_c.attach( this.dae[i+1].parent);
+				robot.control_j.push(control_c)
 
-			          var control_c = new THREE.TransformControls( camera, renderer.domElement );
-			          if(i>-1)
-			          	control_c.attach( this.dae[i+1].parent);
-			          else
-			          	control_c.attach( this.focus_point);
+				control_c.setSize(1.0);
+				control_c.setSpace("local" );
+				control_c.setMode( "rotate" );
 
-			          if(i==-1) robot.control_a = control_c;
-			          if(i==4) robot.control_j4 = control_c;
-			          if(i==3) robot.control_j3 = control_c;
-			          if(i==2) robot.control_j2 = control_c;
-			          if(i==1) robot.control_j1 = control_c;
-			          if(i==0) robot.control_j0 = control_c;
-			          /*
-			          if(i!=4 && i!=0){//j1 and j2 and j3 rotate around local Y axis
-			            control_c.showZ = false;
-			            control_c.showY = false;
-			          }
-			          if(i==4){//j0  rotates around local z axis
-			            control_c.showY = false;
-			            control_c.showX = false;
-			          }
-			          if(i==0){//j4 rotates around local x axis
-			            
-			          }*/
-			          control_c.showX = false;
-			          control_c.showZ = false;
+				this.scene.add( control_c );
 
-			          control_c.setSize(0.5);
-			          control_c.setSpace("local" );
-			          control_c.setMode( "rotate" );
-			          this.scene.add( control_c );
-			        if(i==0)control_c.addEventListener( 'dragging-changed', function ( event) {robot.control_camera.enabled = ! event.value; robot.hider(! event.value,0);  });
-			        if(i==1)control_c.addEventListener( 'dragging-changed', function ( event) {robot.control_camera.enabled = ! event.value; robot.hider(! event.value,1);  });
-			        if(i==2)control_c.addEventListener( 'dragging-changed', function ( event) {robot.control_camera.enabled = ! event.value; robot.hider(! event.value,2);  });
-			        if(i==3)control_c.addEventListener( 'dragging-changed', function ( event) {robot.control_camera.enabled = ! event.value; robot.hider(! event.value,3);});
-			          	//if(event.value && robot.control_mode==3 ){ robot.fixed_pos.set(robot.position.x,robot.position.y,robot.position.z);}  });
-			        if(i==4)control_c.addEventListener( 'dragging-changed', function ( event) {robot.control_camera.enabled = ! event.value; robot.hider(! event.value,4);  });
-			        if(i==-1)control_c.addEventListener( 'dragging-changed', function ( event) { robot.fixed_pos.set(robot.position.x,robot.position.y,robot.position.z);
-			         robot.control_camera.enabled = ! event.value; robot.hider(! event.value,-1);  });
 
-			        if(i==-1)control_c.addEventListener( 'objectChange', function ( event ) { robot.change(-1,this,false);} );
-			        if(i==4)control_c.addEventListener( 'objectChange', function ( event ) { robot.change(4,this,false);} );
-			        if(i==3)control_c.addEventListener( 'objectChange', function ( event ) { robot.change(3,this,false);} );//if(robot.control_mode==1) robot.change(3,this,false);if(robot.control_mode==3) robot.change(3,this,true);} );
-			        if(i==2)control_c.addEventListener( 'objectChange', function ( event ) { robot.change(2,this,false);} );
-			        if(i==1)control_c.addEventListener( 'objectChange', function ( event ) { robot.change(1,this,false);} );
-			        if(i==0)control_c.addEventListener( 'objectChange', function ( event ) { robot.change(0,this,false);} );
+		        control_c.addEventListener( 'dragging-changed', function ( event) {robot.control_camera.enabled = ! event.value; robot.hider(! event.value,i);  });
+				control_c.addEventListener( 'objectChange', function ( event ) { robot.change(i,this,false);} );
 
-		        
 		        }
+
 		//tool head line
 		var material = new THREE.LineBasicMaterial({
 			color: 0x0000ff
@@ -375,6 +341,7 @@ class Robot{
 			this.a3_g.quaternion.setFromRotationMatrix(this.a3_g.matrix);
 			this.a4_g.quaternion.setFromRotationMatrix(this.a4_g.matrix);
 			this.a5_g.quaternion.setFromRotationMatrix(this.a5_g.matrix);
+			this.a6_g.quaternion.setFromRotationMatrix(this.a6_g.matrix);
 			//this.a5_g.quaternion.y = this.a5_g.quaternion.y;
 
 		}
@@ -398,12 +365,12 @@ class Robot{
 
 	    this.control_head.addEventListener( 'dragging-changed', function ( event ) {
 	    	robot.control_camera.enabled = ! event.value;
-	    	robot.hider(! event.value, 5);
+	    	robot.hider(! event.value, 6);
 	    } );
 	    this.control_head_rotate.addEventListener( 'dragging-changed', function ( event ) {
 	    	console.log("drag changed",event.value)
 	    	robot.control_camera.enabled = ! event.value;
-	    	robot.hider(! event.value, 6);
+	    	robot.hider(! event.value, 7);
 	    } );
 
 	    this.control_head.addEventListener( 'objectChange', function ( event ) {
@@ -446,46 +413,33 @@ class Robot{
 
 	hider(show , i){
   		var j;
-  		for(j = -1; j<7; j++){
+  		for(j = 0; j<8; j++){
     		this.hide_this_control(show,j);
   		}
   		this.hide_this_control(true,i);
 	}
 
-	hide_this_control(show, i){/*
-	  if(i==-1){
-	  	if(this.control_mode!=3)show = false;
-	    this.control_a.showY = false; 
-	    this.control_a.showX = false;
-	    this.control_a.enabled = false;
-	  }
-	  if(i==0){
-	    if(this.control_mode!=1)show = false;
-	    this.control_j0.showY = show;//.showZ = show;
-	    this.control_j0.enabled = show;
-	  }
-	  if(i==1){
-	    if(this.control_mode!=1)show = false;
-	    this.control_j1.showY = show;//.showX = show;
-	    this.control_j1.enabled = show;
-	  }
-	  if(i==2){
+	hide_this_control(show, i){
+	  if(i<6){
 	    if(this.control_mode!=1)show = false;
 
-	    this.control_j2.showY = show;//.showX = show;
-	    this.control_j2.enabled = show;
+    	this.control_j[i].showX = false;
+	    this.control_j[i].showY = false;
+	    this.control_j[i].showZ = show;
+	    if(i==0){
+		    this.control_j[i].showX = false;
+		    this.control_j[i].showY = show;
+		    this.control_j[i].showZ = false;
+		}
+		else if(i==5){
+		    this.control_j[i].showX = show;
+		    this.control_j[i].showY = false;
+		    this.control_j[i].showZ = false;
+		}
+
+	    this.control_j[i].enabled = show;
 	  }
-	  if(i==3){
-	  	if(this.control_mode!=1 )show = false;
-	    this.control_j3.showY = show;//showX = show;
-	    this.control_j3.enabled = show;
-	  }
-	  if(i==4){
-	    if(this.control_mode!=1)show = false;
-	    this.control_j4.showY = show;
-	    this.control_j4.enabled = show;
-	  }*/
-	  if(i==5){
+	  if(i==6){
 	    if(this.control_mode!=2)show = false;
 
 	    this.control_head.showX = show;
@@ -493,7 +447,7 @@ class Robot{
 	    this.control_head.showZ = show;
 	    this.control_head.enabled = show;
 	  }
-	  if(i==6){
+	  if(i==7){
 	    if(this.control_mode!=2)show = false;
 
 	    this.control_head_rotate.showX = show;
@@ -507,43 +461,37 @@ class Robot{
 	set_control_mode(mode){ 
 	  this.control_mode = mode;
 	  if(mode==0){
-	    this.hide_this_control(false,-1);
 	    this.hide_this_control(false,0);
 	    this.hide_this_control(false,1);
 	    this.hide_this_control(false,2);
 	    this.hide_this_control(false,3);
 	    this.hide_this_control(false,4);
 	    this.hide_this_control(false,5);
+	    this.hide_this_control(false,6);
+	    this.hide_this_control(false,7);
 	  }
 	
 	  if(mode==1){
-	  	this.hide_this_control(false,-1);
 	    this.hide_this_control(true,0);
 	    this.hide_this_control(true,1);
 	    this.hide_this_control(true,2);
 	    this.hide_this_control(true,3);
 	    this.hide_this_control(true,4);
-	    this.hide_this_control(false,5);
+	    this.hide_this_control(true,5);
+	    this.hide_this_control(false,6);
+	    this.hide_this_control(false,7);
 	  }
 
 	  if(mode==2){
-	  	this.hide_this_control(false,-1);
 	    this.hide_this_control(false,0);
 	    this.hide_this_control(false,1);
 	    this.hide_this_control(false,2);
 	    this.hide_this_control(false,3);
 	    this.hide_this_control(false,4);
-	    this.hide_this_control(true,5);
-
-	  }
-	  if(mode==3){
-	  	this.hide_this_control(true,-1);
-	    this.hide_this_control(false,0);
-	    this.hide_this_control(false,1);
-	    this.hide_this_control(false,2);
-	    this.hide_this_control(false,3);
-	    this.hide_this_control(true,4);
 	    this.hide_this_control(false,5);
+	    this.hide_this_control(true,6);
+	    this.hide_this_control(true,7);
+
 	  }
 	
 	}
@@ -601,34 +549,17 @@ class Robot{
 
 	change(i,ctrl,fix_head){
 
-		let a_lim = this.allowed_a();
-		a_lim["pa"] = a_lim["pa"] - 0.5;
-		a_lim["na"] = a_lim["na"] + 0.5;
-
 		var old_joints = [this.joints[0],this.joints[1],this.joints[2],this.joints[3],this.joints[4],this.joints[5],this.joints[6]];
-		if( i==0 ) this.joints[0] = 2 * Math.atan2( ctrl.object.quaternion.y , ctrl.object.quaternion.w ) * 180 / Math.PI; //+ 90;//z
-		if( i==1 ) this.joints[1] = 2 * Math.atan2( ctrl.object.quaternion.y , ctrl.object.quaternion.w ) * 180 / Math.PI;//x
-		if( i==2 ) this.joints[2] = 2 * Math.atan2( ctrl.object.quaternion.y , ctrl.object.quaternion.w ) * 180 / Math.PI;//x
-		if( i==3 ) this.joints[3] = 2 * Math.atan2( ctrl.object.quaternion.y , ctrl.object.quaternion.w ) * 180 / Math.PI;//x
-		if( i==4 ) this.joints[4] = range(2 * Math.atan2(ctrl.object.quaternion.y , ctrl.object.quaternion.w ) * 180 / Math.PI + 270);
-		if( i==-1 ){
-			this.joints[3] = 2 * Math.atan2(this.focus_point.quaternion.y ,this.focus_point.quaternion.w ) * 180 / Math.PI;
-			fix_head = 1
-		}
 
-		this.a = (this.joints[1] + this.joints[2] + this.joints[3]);
-
+		if( i==0 ) this.joints[0] = 2 * Math.atan2( ctrl.object.quaternion.y , ctrl.object.quaternion.w ) * 180 / Math.PI; 
+		if( i==1 ) this.joints[1] = 2 * Math.atan2( ctrl.object.quaternion.z , ctrl.object.quaternion.w ) * 180 / Math.PI;
+		if( i==2 ) this.joints[2] = 2 * Math.atan2( ctrl.object.quaternion.z , ctrl.object.quaternion.w ) * 180 / Math.PI;
+		if( i==3 ) this.joints[3] = 2 * Math.atan2( ctrl.object.quaternion.z , ctrl.object.quaternion.w ) * 180 / Math.PI;
+		if( i==4 ) this.joints[4] = 2 * Math.atan2( ctrl.object.quaternion.z , ctrl.object.quaternion.w ) * 180 / Math.PI;
+		if( i==5 ) this.joints[5] = 2 * Math.atan2( ctrl.object.quaternion.x , ctrl.object.quaternion.w ) * 180 / Math.PI;
+		/*
 		var cancel = false;
 
-		if(fix_head){
-			this.a = Math.min(Math.max(this.a , a_lim["na"]),a_lim["pa"]);
-			this.set_xyza(this.fixed_pos,this.abc);
-			//var new_pos = this.joints_to_xyz(this.joints);
-
-			//if(Math.abs(new_pos.x-this.fixed_pos.x)>0.001 || Math.abs(new_pos.y-this.fixed_pos.y)>0.001 || Math.abs(new_pos.z-this.fixed_pos.z)>0.001){
-			//	cancel = true;
-			//} 
-		}
 		if(cancel){
 			this.joints[0] = old_joints[0];
 			this.joints[1] = old_joints[1];
@@ -637,10 +568,10 @@ class Robot{
 			this.joints[4] = old_joints[4];
 			this.joints[5] = old_joints[5];
 			this.joints[6] = old_joints[6];
-			this.a = (this.joints[1] + this.joints[2] + this.joints[3]);
 		}
-			this.set_joints(this.joints);
-			//this.set_head_ball();
+		*/
+		this.set_joints(this.joints);
+		//this.set_head_ball();
 
 	}
 
