@@ -1,0 +1,53 @@
+<div class="col-md-8 offset-md-2 p-2">
+	<h1>Sessions</h1>
+
+	<!--sessions-->
+	<div class="accordion" id="accordionExample">
+	  <div class="card">
+	    <div class="card-header d-flex flex-row" id="headingOne">
+				<!--info-->
+				<div class="flex-grow-1 pr-2">
+					<div class="d-flex w-100">
+						<small class="mt-auto mb-auto"> <b>Path: </b>test</small>
+						<small class="ml-auto mt-auto mb-auto">test</small>
+					</div>              
+					<div class="d-flex w-100">
+						<small class="mt-auto mb-auto"> <b>Process ID: </b>test</small>
+						<div class="mt-auto mb-auto ml-1 mr-1">&bull;</div>
+						<small class="mt-auto mb-auto"> <b>Started:  </b>test</small>
+						<div class="mt-auto mb-auto ml-1 mr-1">&bull;</div>
+						<small class="mt-auto mb-auto"> <b>Ended: </b>test</small>
+					</div>					
+				</div>
+				<!--expand-->
+				<div class="pl-2">
+	        <button class="btn btn-link btn-block text-left collapsed" type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+	          <i class="fas fa-ellipsis-h"></i>
+	        </button>
+				</div>
+	    </div>
+
+	    <div id="collapseOne" class="collapse show" aria-labelledby="headingOne" data-parent="#accordionExample">
+	      <div class="card-body">
+					<div class="d-flex justify-content-center">
+						<!--stop-->
+						<button class="btn text-center d-flex flex-column">
+							<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="200" height="200" viewBox="0 0 4335 4335">
+							<path fill="#FA5252" d="M2157 89l0 0c1544,0 2076,532 2076,2076l0 0c0,1545 -532,2077 -2076,2077l0 0c-1545,0 -2077,-532 -2077,-2077l0 0c0,-1544 532,-2076 2077,-2076z"></path><path fill="#ffffff" d="M1192 1200l0 0c97,-97 256,-97 353,0l612 612 612 -612c97,-97 256,-97 353,0l0 0c97,97 97,256 0,353l-612 612 612 612c97,97 97,256 0,353l0 0c-97,98 -256,98 -353,0l-612 -612 -612 612c-97,98 -256,98 -353,0l0 0c-98,-97 -98,-256 0,-353l612 -612 -612 -612c-98,-97 -98,-256 0,-353z"></path>
+							</svg>										
+						  	<div class="text-center w-100">End Process</div>
+						</button>
+
+						<!--stop-->
+						<button class="btn text-center d-flex flex-column">
+							<svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px" width="200" height="200" viewBox="0 0 4335 4335">
+							<path fill="#339AF0" d="M2150 110l0 0c1516,0 2039,523 2039,2040l0 0c0,1516 -523,2039 -2039,2039l0 0c-1517,0 -2040,-523 -2040,-2039l0 0c0,-1517 523,-2040 2040,-2040z"></path><path fill="#ffffff" d="M1492 2337l0 -375 0 -410c0,0 -4,-199 155,-259 200,-75 846,489 1003,602 210,166 210,343 0,509 -157,113 -803,677 -1003,602 -159,-60 -155,-259 -155,-259l0 -410z"></path>
+							</svg>											
+						  	<div class="text-center w-100">Start Process</div>
+						</button>										
+					</div>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+</div>
