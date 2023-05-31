@@ -528,7 +528,7 @@ function update_sessions_list(msg){
       if (a[3]=="Ended"){
         dis_str = "disabled = true"
       }
-      let elem = `<div class="list-group-item p-2 rounded-0">
+      let elem = `<div class="list-group-item">
               <div class="d-flex w-100">
                 <div> <i class="fa fa-code"></i> `+a[4]+`</div>
                 <small class="ml-auto mt-auto mb-auto">`+a[3]+`</small>

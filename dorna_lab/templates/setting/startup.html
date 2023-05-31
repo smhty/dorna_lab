@@ -1,0 +1,29 @@
+<h2>Startup Programs</h2>
+<p class="text-justify">
+The programs that run automatically when the robot starts up. Use the list below to add or remove programs from the list.
+</p>
+<div class="card mb-4 alert-primary">
+  <div class="card-body">
+    <h5 class="card-title">Notice</h5>
+	<ul class="card-text">
+		<li>Use one line for each program.</li>
+		<li>Programs will be executed during the startup, all at the same time.</li>
+		<li>Use <code>#</code> (hashtag symbol) at the beginning of each line to comment that line.</li>
+		<li>Empty lines will be ignored.</li>
+		<li>To include a Python program found at <code>full/path/to/the/python_file.py</code>, add a line to the list that says <code>python3 full/path/to/the/python_file.py</code>.</li>
+		<li>To include a Blockly program found at <code>full/path/to/the/blockly_file.blk</code>, add a line to the list that says <code>python3 full/path/to/the/blockly_file.py</code> (change the <code>.blk</code> extension to <code>.py</code>).</li>
+	</ul>
+  </div>
+</div>
+
+<!--startup list-->
+<form>
+  <div class="mb-3">
+  	<label>List of all startup programs</label>
+    <textarea class="form-control" rows="3"></textarea>
+  </div>
+  <div class="mb-3">
+    <button type="submit" class="btn btn-primary"><i class="fal fa-check"></i> Set</button>
+    <button type="button" class="btn btn-secondary"><i class="fal fa-times"></i> Cancel</button>
+  </div>
+</form>
