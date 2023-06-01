@@ -82,9 +82,9 @@ function tpre_r(key, msg) {
 }
 
 // motor
-function motor_r(key, msg) {
+function mot_r(key, msg) {
   let index = key.substring(4)
-  $(`.motor_c[data-key=usem${index}]`).prop("checked", msg[key]);
+  $(`.mot_c[data-key=usem${index}]`).prop("checked", msg[key]);
 
 } 
 function encoder_r(key, msg) {
@@ -122,6 +122,10 @@ function adc_r(key, msg) {
 function pid_r(key, msg) {
   $(".pid_v").prop("value", msg[key])
 }
+function motor_r(key, msg) {
+  // replay
+  $(".motor_c").prop("checked", msg[key]);
+} 
 
 function alarm_r(key, msg) {
   let val = msg[key]

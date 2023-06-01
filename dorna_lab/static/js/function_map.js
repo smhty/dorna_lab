@@ -1,5 +1,5 @@
 // map of functions
-var function_map = {"pid_enabled": "pid_r", "alarm": "alarm_r", "id": "id_r", "gravity":"gravity_r","motor": "motor_r", "toollength": "toollength_r",
+var function_map = {"pid_enabled": "pid_r", "alarm": "alarm_r", "id": "id_r", "gravity":"gravity_r", "toollength": "toollength_r",
  "version": "version_r", "uid": "uid_r","motor":"motor_r","encoder":"encoder_r","axis":"axis_r"};
 /*
 $(".joint_v").each(function(index) {
@@ -55,7 +55,11 @@ $(".adc_v").each(function(index) {
 $(".motor_c").each(function(index) {
   let key = $(this).attr("data-key");
   function_map[key] = "motor_r";
-}); 
+});
+$(".mot_c").each(function(index) {
+  let key = $(this).attr("data-key");
+  function_map[key] = "mot_r";
+});  
 $(".encoder_c").each(function(index) {
   let key = $(this).attr("data-key");
   function_map[key] = "encoder_r";

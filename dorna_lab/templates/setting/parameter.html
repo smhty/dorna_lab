@@ -7,7 +7,7 @@
             {% for i in range(5,8) %}
               <td class="border-top-0 border-bottom">
                 <div class="custom-control custom-switch">
-                  <input type="checkbox" class="custom-control-input axis_c" data-cmd="{{cmd["axis"]}}" data-key="axis{{i}}" id="axis_c_{{i}}">
+                  <input type="checkbox" checked = true class="custom-control-input axis_c" data-cmd="{{cmd["axis"]}}" data-key="axis{{i}}" id="axis_c_{{i}}">
                   <label class="custom-control-label" for="axis_c_{{i}}">Axis {{i}}</label>
                 </div>
               </td>
@@ -75,8 +75,8 @@
           <tr >
             <td class="border-top-0 border-bottom" style="">
               <div class="custom-control custom-switch">
-                <input type="checkbox" class="custom-control-input motor_c" data-cmd="axis" data-key="usem{{i}}" id="motor_c_{{i}}">
-                <label class="custom-control-label" for="motor_c_{{i}}">Motor {{i}}</label>
+                <input type="checkbox" class="custom-control-input mot_c" data-cmd="axis" data-key="usem{{i}}" id="mot_c{{i}}">
+                <label class="custom-control-label" for="mot_c{{i}}">Motor {{i}}</label>
               </div>
             <td class="border-top-0 border-bottom">
               <div class="input-group input-group-sm">

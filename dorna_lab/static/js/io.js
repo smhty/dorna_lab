@@ -1,4 +1,4 @@
-$('.out_c,.pwm_c,.gravity_c,.motor_c,.encoder_c').on( 'click', function( e ) {
+$('.out_c,.pwm_c,.gravity_c,.mot_c,.encoder_c').on( 'click', function( e ) {
 	e.preventDefault()
 	let msg = {
 		"cmd":  $(this).attr("data-cmd"),
