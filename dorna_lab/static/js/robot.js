@@ -49,6 +49,10 @@ class Robot{
 		this.l4 = 48.9245*this.scale_factor;
 		this.scale_to_real = 1/this.scale_factor;
 
+		this.n_dof = 6;
+		this.sum_delta = Math.PI/2.0;
+		if(this.n_dof == 6) this.sum_delta = Math.PI;
+
 
 		this.head_pos = new THREE.Vector3(0,0,0);//this.joints_to_xyz([0,0,0,0,0,0]);
 		//let ff = ;
@@ -354,7 +358,9 @@ class Robot{
 	    this.control_head = new THREE.TransformControls( this.camera, this.renderer.domElement );
 	    this.control_head_rotate = new THREE.TransformControls( this.camera, this.renderer.domElement );
 	    this.control_head_rotate.setMode("rotate");
-	    //this.control_head_rotate.setSpace("local");
+	    
+	    this.control_head_rotate.setSpace("local");
+	    
 	    this.control_head.attach( this.mesh_ball );
 	    this.control_head_rotate.attach( this.mesh_ball );
 
@@ -368,7 +374,7 @@ class Robot{
 	    	robot.hider(! event.value, 6);
 	    } );
 	    this.control_head_rotate.addEventListener( 'dragging-changed', function ( event ) {
-	    	console.log("drag changed",event.value)
+	    	//console.log("drag changed",event.value)
 	    	robot.control_camera.enabled = ! event.value;
 	    	robot.hider(! event.value, 7);
 	    } );
@@ -376,16 +382,10 @@ class Robot{
 	    this.control_head.addEventListener( 'objectChange', function ( event ) {
 	    	robot.head_pos.set(robot.mesh_ball.position.x,robot.mesh_ball.position.y,robot.mesh_ball.position.z);
 	    	robot.mesh_ball.position.set(robot.position.x,robot.position.y,robot.position.z)
-	    	/*
-	    	var d = 10.0;
-	    	robot.head_pos.subVectors (robot.head_pos , robot.position);
-	    	robot.head_pos.clampLength (0,d)
-			robot.head_pos.addVectors (robot.position , robot.head_pos);
-			*/
+	    	//robot.set_euler();
 	    	robot.set_xyza(robot.head_pos,robot.abc);
     	} );
 	   	this.control_head_rotate.addEventListener( 'objectChange', function ( event ) {
-	   		
 	    	robot.head_pos.set(robot.mesh_ball.position.x,robot.mesh_ball.position.y,robot.mesh_ball.position.z);
 	    	robot.set_euler();
 	    	robot.set_xyza(robot.head_pos,robot.abc);
@@ -395,21 +395,94 @@ class Robot{
 
 
 	set_euler(){
-		this.euler.setFromQuaternion (this.mesh_ball.quaternion,'YXZ') //transforms to 	ZYX
+		//this.euler.setFromQuaternion (this.mesh_ball.quaternion,'YXZ') //transforms to 	ZYX
+		this.mesh_ball.updateMatrix ()
 
+		let m22 = this.mesh_ball.matrix.elements[0]
+		let m32 = this.mesh_ball.matrix.elements[1]
+		let m23 = this.mesh_ball.matrix.elements[4]
+		let m33 = this.mesh_ball.matrix.elements[5]
+		let m13 = this.mesh_ball.matrix.elements[6]
+		let m21 = this.mesh_ball.matrix.elements[8]
+		let m31 = this.mesh_ball.matrix.elements[9]
+
+		/* This is the form of the matrix: first index is column second is row
+		  | y | z | x |
+		--|---|---|---|----|
+		y | 0 | 1 | 2 | 3  |
+		--|---|---|---|----|
+		z | 4 | 5 | 6 | 7  |
+		--|---|---|---|----|
+		x | 8 | 9 | 10| 11 |
+		-------------------
+		*/
+
+		let ssa = 1.0
+
+		let sd = Math.sin(this.sum_delta); 
+		let cd = Math.cos(this.sum_delta);
+
+		let sa = -m33*ssa;
+		let ca = Math.sqrt(1-sa*sa);
+
+		this.abc[0] = Math.atan2(sa,ca) * 180 / Math.PI;
+
+		if(Math.abs(ca)>0.0001){
+			let sb = m31/ca*ssa;
+			let cb = m32/ca*ssa;
+			this.abc[1] = Math.atan2(sb,cb) * 180 / Math.PI;
+
+			let sg = (m13*cd*ssa+m23*sd)/ca;
+			let cg = (sd*m13-m23*cd*ssa)/ca;
+
+			this.abc[2] = Math.atan2(sg,cg)* 180 / Math.PI;
+		}
+		else{
+			this.abc[2] = 0;
+
+			let sb = -ssa*(m21*cd*sa+m22*sd);
+			let cb = ssa*(-m22*cd*sa+m21*sd);
+
+			this.abc[1] = Math.atan2(sb,cb) * 180 / Math.PI; 
+		}
+		/*
 		this.abc[1] = this.euler.x * 180 / Math.PI; //1,2,0 //201 //
 		this.abc[0] = this.euler.y * 180 / Math.PI;
 		this.abc[2] = this.euler.z * 180 / Math.PI;
+		*/
 
-
+		console.log(this.abc)
 
 	}
 	set_head_ball(){
  	 	this.mesh_ball.position.set(this.position.x,this.position.y,this.position.z);
-  		this.mesh_ball.setRotationFromEuler(new THREE.Euler(this.abc[1]* Math.PI / 180,
-  															this.abc[0] * Math.PI / 180,
-  															this.abc[2] * Math.PI / 180,'YXZ'));
+
+		let ca = Math.cos(this.abc[0]/ 180 * Math.PI);
+		let sa = Math.sin(this.abc[0]/ 180 * Math.PI);
+
+		let cb = Math.cos(this.abc[1]/ 180 * Math.PI);
+		let sb = Math.sin(this.abc[1]/ 180 * Math.PI);
+
+		let cg = Math.cos(this.abc[2]/ 180 * Math.PI);
+		let sg = Math.sin(this.abc[2]/ 180 * Math.PI);
+
+		let ssa = 1.0;
+
+		let sd = Math.sin(this.sum_delta); 
+		let cd = Math.cos(this.sum_delta);
+
+		let mat =  new THREE.Matrix4();
+
+		mat.set(      
+		         -sb*(cd*sg+cg*ssa*sd)+cb*sa*(-cg*cd*ssa+sg*sd),     ca*(-cg*cd*ssa+sg*sd),     cg*ssa*(-cd*sa*sb+cb*sd)+sg*(cb*cd+sa*sb*sd),     0,
+		          ca*cb*ssa,                                         -ssa*sa,                   ca*ssa*sb,                                        0,
+		          cg*(-cd*sb+cb*sa*sd)+ssa*sg*(cb*cd*sa+sb*sd),      ca*(cd*ssa*sg+cg*sd),      sa*sb*(cd*ssa*sg+cg*sd)+cb*(cg*cd-ssa*sg*sd),     0,
+		          0 ,                                                0 ,                        0 ,                                               1
+		       );
+  		this.mesh_ball.setRotationFromMatrix(mat);
+
 	}
+
 
 	hider(show , i){
   		var j;
@@ -571,7 +644,6 @@ class Robot{
 		}
 		*/
 		this.set_joints(this.joints);
-		//this.set_head_ball();
 
 	}
 
@@ -588,7 +660,7 @@ class Robot{
 	        "_server":"knmtc",
 	        "func": "inv","xyzabg":[p.x,p.y,p.z,abc[0],abc[1],abc[2]],"joint_current":this.joints,"all_sol":false
 	        },true, true,function(res,v){
-	        	//console.log(res["result"],v[0].joints)
+	        	console.log("ik result:",res["result"])
 	        	if(res["result"][0]){
 	        		v[0].set_joints(res["result"][0]);
 	        		if(v[1]){
@@ -600,33 +672,7 @@ class Robot{
 	        		v[0].set_joints(v[0].joints);
 	        	}
 	        },[this,ret]);
-		/*
-		if((this.joints[2] > 1 && this.joints[2] < 179 )|| this.joints[2] < -181){
-			this.knocle = -1;
-		}
-		else 
-			this.knocle = 1;
 
-		var sol1 = this.xyza_to_joints(pos,a_value,this.joints[4], 1,this.knocle);
-		var sol2 = this.xyza_to_joints(pos,a_value,this.joints[4],-1,this.knocle);
-
-		var dd = 1;
-
-		var best_sol;
-		
-		var l1 = this.dj(this.joints , sol1);
-		var l2 = this.dj(this.joints , sol2);
-
-		if(l1<l2){
-			best_sol = sol1;
-		}
-		else
-			best_sol = sol2;
-
-		best_sol[4] = b_value;
-		//this.joints = this.xyza_to_joints(pos,a_value);
-		this.set_joints(best_sol);
-		*/
 	}
 
 	check_interior(pos , a_value){

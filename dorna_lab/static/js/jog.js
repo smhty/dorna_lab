@@ -193,8 +193,8 @@ $(".rec_p_b").on("click", function(e) {
 	
 	let comp_pos = position($(this).attr("data-item"));
 	let i=0;
-	for(i=0;i<5+ND_count ;i++){
-		if(i<5||ND[i]){
+	for(i=0;i<6+ND_count ;i++){
+		if(i<6||ND[i]){
 			name1 = "j" + i;
 			name2 = xyz_names[i];
 			if(!(typeof comp_pos[name1]==='undefined'))

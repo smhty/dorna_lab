@@ -153,7 +153,7 @@ class move_cmd{
 		if(this.position_save_needs_update){
 			this.position_save.set(j_pos.x,j_pos.y,j_pos.z);
 			let k=0;
-			for(k=0;k<5+ND_count;k++)if(k<5||ND[k]){this.joint_save[k] = this.joint[k];}
+			for(k=0;k<6+ND_count;k++)if(k<6||ND[k]){this.joint_save[k] = this.joint[k];}
 			this.position_save_needs_update = false;
 		}
 		let i=0;
@@ -284,8 +284,8 @@ class move_cmd{
 		if(this.move_type==0){
 			let i=0;
 			let js = {};
-			for(i=0;i < 5+ND_count ;i++){
-				if(i<5||ND[i]){
+			for(i=0;i < 6+ND_count ;i++){
+				if(i<6||ND[i]){
 					js["j"+i]  = tripleDigit(this.joint_save[i]);
 				}
 			}
@@ -296,8 +296,8 @@ class move_cmd{
 			let p = this.parent_chain.robot.xyz_to_real(this.position_save);
 			let i=0;
 			let cde = {};
-			for(i=5;i<5+ND_count;i++){
-				if(i<5||ND[i]){
+			for(i=5;i<6+ND_count;i++){
+				if(i<6||ND[i]){
 					cde[xyz_names[i]] = tripleDigit(this.joint_save[i]);
 				}
 			}
@@ -365,12 +365,12 @@ class move_cmd{
 		}
 	
 		let i = 0;
-		for (i=0;i<5+ND_count;i++){
-			if(i<5||ND[i]){
+		for (i=0;i<6+ND_count;i++){
+			if(i<6||ND[i]){
 				if(!(typeof cmd["j" + i] === 'undefined'))
 					this.joint[i] = cmd["j" + i ];
 
-				if(i>4)
+				if(i>5)
 					if(!(typeof cmd[xyz_names[i]] === 'undefined'))
 						this.joint[i] = cmd[xyz_names[i] ];
 			}

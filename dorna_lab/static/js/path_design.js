@@ -1,7 +1,7 @@
 // change point
 
-var ND = {5:false,6:false,7:false,8:false};
-var ND_count = 4;
+var ND = {6:false,7:false,8:false};
+var ND_count = 3;
 var xyz_names = ["x","y","z","a","b","c","d","e"]
 var axis_names_to_numbers = {"j0":0,"j1":1,"j2":2,"j3":3,"j4":4,"j5":5,"j6":6,"j7":7,"j8":8,"x":0,"y":1,"z":2,"a":3,"b":4,"c":5,"d":6,"e":7,"f":8};
 function set_ND(){
@@ -10,7 +10,7 @@ function set_ND(){
 		ND[key] = $(this).prop("checked");
 	});
 	$( ".path_design_point_form , .position_form , .jog_form , .set_joint_form").each(function(e){
-		if(ND[$(this).attr("data-key")] || $(this).attr("data-key")<5){
+		if(ND[$(this).attr("data-key")] || $(this).attr("data-key")<6){
 			$(this).prop("style").display = "";
 		}
 		else{
@@ -38,8 +38,8 @@ $( ".path_design_point_prm_v" ).on("change", function(e) {
 	if (space == "joint"){
 		let joint = []
 		let cmd = {};
-		for (let i =0; i < 5+ND_count ; i++) {
-			if(i<5||ND[i]){
+		for (let i =0; i < 6+ND_count ; i++) {
+			if(i<6||ND[i]){
 				joint.push(+$(`.path_design_point_prm_v[data-key=j${i}]`).prop("value"))
 				cmd["j" + i] = joint[i];
 			}
@@ -50,8 +50,8 @@ $( ".path_design_point_prm_v" ).on("change", function(e) {
 	else{
 		let xyzab = []
 		let cmd = {};
-		for (let i =0; i < 5+ND_count ; i++) {
-			if(i<5||ND[i]){
+		for (let i =0; i < 6+ND_count ; i++) {
+			if(i<6||ND[i]){
 				xyzab.push(+$( ".path_design_point_prm_v[data-key=" + xyz_names[i] + "]" ).prop("value"))
 				cmd[xyz_names[i]] = xyzab[i];
 			}
