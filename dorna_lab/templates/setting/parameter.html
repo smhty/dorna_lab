@@ -58,13 +58,13 @@
           <tr >
             <td class="border-top-0 border-bottom" style="">
               <div class="custom-control custom-switch">
-                <input type="checkbox" class="custom-control-input axis_c" data-cmd="{{cmd["axis"]}}" data-key="axis{{i}}" id="axis_c_{{i}}">
-                <label class="custom-control-label" for="axis_c_{{i}}">Motor {{i}}</label>
+                <input type="checkbox" class="custom-control-input motor_c" data-cmd="axis" data-key="usem{{i}}" id="motor_c_{{i}}">
+                <label class="custom-control-label" for="motor_c_{{i}}">Motor {{i}}</label>
               </div>
             <td class="border-top-0 border-bottom">
               <div class="input-group input-group-sm">
                 <div class="input-group-prepend">
-                  <input type="number" class="input-group-text small text-left pprm_v" value="0" data-key=axis{{i}} data-item="pprm{{i}}" disabled>
+                  <input type="number" class="input-group-text small text-left pprm_v" value="0" data-key=pprm{{i}} data-item="pprm{{i}}" disabled>
                 </div>
                 <input class="form-control small text-left pprm_n" type="number" value="0" data-key=axis{{i}} data-item="pprm{{i}}" placeholder= "0" step="1" min="0" list="data_list_pprm_{{i}}">
               </div>                    
@@ -72,13 +72,13 @@
             <td class="border-top-0 border-bottom">
               <div class="input-group input-group-sm">
                 <div class="input-group-prepend">
-                  <input type="number" class="input-group-text small text-left tprm_v" value="0" data-key=axis{{i}} data-item="tprm{{i}}" disabled>
+                  <input type="number" class="input-group-text small text-left tprm_v" value="0" data-key=tprm{{i}} data-item="tprm{{i}}" disabled>
                 </div>
                 <input class="form-control small text-left tprm_n" type="number" value="0" data-key=axis{{i}} data-item="tprm{{i}}" placeholder= "0" step="1" min="0" list="data_list_tprm_{{i}}">
               </div>                    
             </td>                         
             <td class="border-top-0 border-bottom">
-              <button type="button" class="btn btn-primary btn-sm axis_b btn-block" data-cmd={{cmd["axis"]}} data-key="axis{{i}}">
+              <button type="button" class="btn btn-primary btn-sm motor_b btn-block" data-cmd={{cmd["axis"]}} data-key="axis{{i}}" data-num="{{i}}">
               <i class="fal fa-check"></i>
               Set
               </button>              
@@ -107,13 +107,13 @@
           <tr >
             <td class="border-top-0 border-bottom" style="">
               <div class="custom-control custom-switch">
-                <input type="checkbox" class="custom-control-input axis_c" data-cmd="{{cmd["axis"]}}" data-key="axis{{i}}" id="axis_c_{{i}}">
-                <label class="custom-control-label" for="axis_c_{{i}}">Encoder {{i}}</label>
+                <input type="checkbox" class="custom-control-input encoder_c" data-cmd="axis" data-key="usee{{i}}" id="encoder_c_{{i}}">
+                <label class="custom-control-label" for="encoder_c_{{i}}">Encoder {{i}}</label>
               </div>
             <td class="border-top-0 border-bottom">
               <div class="input-group input-group-sm">
                 <div class="input-group-prepend">
-                  <input type="number" class="input-group-text small text-left ppre_v" value="0" data-key=axis{{i}} data-item="ppre{{i}}" disabled>
+                  <input type="number" class="input-group-text small text-left ppre_v" value="0" data-key=ppre{{i}} data-item="ppre{{i}}" disabled>
                 </div>
                 <input class="form-control small text-left ppre_n" type="number" value="0" data-key=axis{{i}} data-item="ppre{{i}}" placeholder= "0" step="1" min="0" list="data_list_ppre_{{i}}">
               </div>                    
@@ -121,13 +121,13 @@
             <td class="border-top-0 border-bottom">
               <div class="input-group input-group-sm">
                 <div class="input-group-prepend">
-                  <input type="number" class="input-group-text small text-left tpre_v" value="0" data-key=axis{{i}} data-item="tpre{{i}}" disabled>
+                  <input type="number" class="input-group-text small text-left tpre_v" value="0" data-key=tpre{{i}} data-item="tpre{{i}}" disabled>
                 </div>
                 <input class="form-control small text-left tpre_n" type="number" value="0" data-key=axis{{i}} data-item="tpre{{i}}" placeholder= "0" step="1" min="0" list="data_list_tpre_{{i}}">
               </div>                    
             </td>                         
             <td class="border-top-0 border-bottom">
-              <button type="button" class="btn btn-primary btn-sm axis_b btn-block" data-cmd={{cmd["axis"]}} data-key="axis{{i}}">
+              <button type="button" class="btn btn-primary btn-sm encoder_b btn-block" data-cmd={{cmd["axis"]}} data-key="axis{{i}}" data-num="{{i}}">
               <i class="fal fa-check"></i>
               Set
               </button>              

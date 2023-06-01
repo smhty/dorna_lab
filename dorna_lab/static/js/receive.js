@@ -64,6 +64,35 @@ function axis_r(key, msg) {
   let index = key.substring(5)
   $(`.ratio_v[data-key=axis${index}]`).prop("value", msg[key].toFixed(3));
 }
+function pprm_r(key, msg) {
+  let index = key.substring(4)
+  $(`.pprm_v[data-key=pprm${index}]`).prop("value", msg[key].toFixed(3));
+}
+function tprm_r(key, msg) {
+  let index = key.substring(4)
+  $(`.tprm_v[data-key=tprm${index}]`).prop("value", msg[key].toFixed(3));
+}
+function ppre_r(key, msg) {
+  let index = key.substring(4)
+  $(`.ppre_v[data-key=ppre${index}]`).prop("value", msg[key].toFixed(3));
+}
+function tpre_r(key, msg) {
+  let index = key.substring(4)
+  $(`.tpre_v[data-key=tpre${index}]`).prop("value", msg[key].toFixed(3));
+}
+
+// motor
+function motor_r(key, msg) {
+  let index = key.substring(4)
+  $(`.motor_c[data-key=usem${index}]`).prop("checked", msg[key]);
+
+} 
+function encoder_r(key, msg) {
+    let index = key.substring(4)
+  $(`.encoder_c[data-key=usee${index}]`).prop("checked", msg[key]);
+}
+
+
 function gravity_r(key, msg) {
   $(`.gravity_c`).prop("checked", msg[key]? true:false);
   $(`.gravity_m_v[data-key=x]`).prop("value", msg["x"].toFixed(3));
@@ -136,15 +165,8 @@ function xyz_r(key, msg) {
   $(`.xyz_v[data-key=${key}]`).text(Number.parseFloat(msg[key]).toFixed(3));
 }
 */
-function encoder_r(key, msg) {
-  $(`.encoder_v[data-key=j${key.substring(7)}]`).text(Number.parseFloat(msg[key]).toFixed(2));
-}
 
-// motor
-function motor_r(key, msg) {
-  // replay
-  $(".motor_c").prop("checked", msg[key]);
-} 
+
 
 // id
 function id_r(key, msg) {

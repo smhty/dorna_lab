@@ -1,4 +1,4 @@
-$('.out_c,.pwm_c,.gravity_c').on( 'click', function( e ) {
+$('.out_c,.pwm_c,.gravity_c,.motor_c,.encoder_c').on( 'click', function( e ) {
 	e.preventDefault()
 	let msg = {
 		"cmd":  $(this).attr("data-cmd"),
@@ -32,6 +32,29 @@ $(".axis_b").on("click", function(e) {
 	msg[$(`.ratio_n[data-key=${key}]`).attr("data-item")] = Number($(`.ratio_n[data-key=${key}]`).prop("value"))
 	send_message(msg)
 });
+
+$(".motor_b").on("click", function(e) {
+	e.preventDefault()
+
+	let msg = {"cmd": "axis"}
+	let key = $(this).attr("data-key");
+	let num = $(this).attr("data-num");
+	msg["pprm"+num] = Number($(`.pprm_n[data-key=${key}]`).prop("value"))
+	msg["tprm"+num] = Number($(`.tprm_n[data-key=${key}]`).prop("value"))
+	send_message(msg)
+});
+$(".encoder_b").on("click", function(e) {
+	e.preventDefault()
+
+	let msg = {"cmd": "axis"}
+	let key = $(this).attr("data-key");
+	let num = $(this).attr("data-num");
+	msg["ppre"+num] = Number($(`.ppre_n[data-key=${key}]`).prop("value"))
+	msg["tpre"+num] = Number($(`.tpre_n[data-key=${key}]`).prop("value"))
+	send_message(msg)
+});
+
+
 
 $(".set_toollength_b").on("click", function(e) {
 	e.preventDefault()
