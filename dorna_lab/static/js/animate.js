@@ -29,20 +29,21 @@ var view_container = document.getElementsByClassName("view_3d")[0]
 function init_scene(){
   // scene
   scene = new THREE.Scene();
+  //scene.scale.set(10,10,10);
   scene.background = new THREE.Color( "#cccccc");
 }
 
 
 function init_collada(){
 
-  original_robot =  new Robot( renderer , camera , scene , control_camera , 1.0 , false);
+  original_robot =  new Robot( renderer , camera , scene , control_camera , 0.35 , false);
 
   chain = new move_chain(scene, camera, renderer,control_camera);
   chain.callback.add(change_ghost_value);
 
   $('.path_design_visible_c').trigger("click");
 
-  let track = new Trail(0xab2800,original_robot,100,0.05,scene);
+  //let track = new Trail(0xab2800,original_robot,100,0.05,scene);
 
   f_dsp = setInterval(frame_display, 1000/frame["fps"])
 
@@ -53,31 +54,41 @@ function graphic_on() {
 
     /*********************/
     // camera
-    camera = new THREE.PerspectiveCamera( 45, $(view_container).width() / $(view_container).height(), 1, 2000 );
-    camera.position.set( 8, 8, 8 );
+    camera = new THREE.PerspectiveCamera( 65, $(view_container).width() / $(view_container).height(), 0.1, 2000 );
+    camera.position.set( 2, 1, 2 );
 
     // Grid
-    var grid = new THREE.GridHelper( 10, 10, 0x444444, 0x888888 );
+    var grid = new THREE.GridHelper( 20, 20, 0x444444, 0x888888 );
+    grid.scale.set(0.1,0.1,0.1);
     scene.add( grid );
     
 
 
-    particleLight = new THREE.PointLight( 0xffffff, 0.5 );
-    particleLight.position.set(0,10,0);
-
-    scene.add( particleLight );
-
-    var light = new THREE.AmbientLight( 0xf0d0a5 ); // soft white light
+   // particleLight = new THREE.PointLight( 0xffffff, 0.5 );
+   //// particleLight.position.set(0,10,0);
+    //scene.add( particleLight );
 
     // Lights
 
-    var directionalLight = new THREE.DirectionalLight( 0xffffff, 1.0 );
-    directionalLight.castShadow = 1;
-    directionalLight.position.set(2,-1,1);
+    var directionalLight = new THREE.DirectionalLight( 0xffffff, 3.0 );
+    directionalLight.castShadow = true;
+    directionalLight.target.position.set(0,0,0);
+    directionalLight.position.set(5,5,5);
+    directionalLight.radius = 4;
+    scene.add(directionalLight);
 
+
+    var directionalLight2 = new THREE.DirectionalLight( 0xedb985, 2.0 );
+    directionalLight2.castShadow = true;
+    directionalLight2.target.position.set(0,0,0);
+    directionalLight2.position.set(5,-5,-5);
+     directionalLight2.radius = 4;
+    scene.add(directionalLight2);
 
     renderer = new THREE.WebGLRenderer( { antialias : true } );
     renderer.setPixelRatio( window.devicePixelRatio );
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.setSize( $(view_container).width(), $(view_container).height() );
     renderer.setClearColor(0xffffff, 1);
     container.appendChild( renderer.domElement );
@@ -88,14 +99,14 @@ function graphic_on() {
 
     // control camera
     control_camera = new THREE.OrbitControls( camera, renderer.domElement );
-    control_camera.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
-    control_camera.dampingFactor = 1.0;
+    //control_camera.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
+    //control_camera.dampingFactor = 0.1;
     control_camera.enableZoom    = true;
     control_camera.enableKeys = false;
-    control_camera.addEventListener( 'change', function(){
-      render();
-      particleLight.position.set(cam.position.x,cam.position.y,cam.position.z);
-    });
+    //control_camera.addEventListener( 'change', function(){
+      //render();
+      //particleLight.position.set(cam.position.x,cam.position.y,cam.position.z);
+    //});
 
 
     // Axis
@@ -235,6 +246,7 @@ function render() {
   if(graphic){
     set_frame(Object.values(position()));
     renderer.render( scene, camera );
+    control_camera.update();
   }
 
 }
@@ -296,7 +308,5 @@ function empty(elem) {
 
 
 
-init_scene()
-graphic_on()
-init_collada()
+
 

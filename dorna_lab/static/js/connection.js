@@ -29,7 +29,17 @@ $(".connect_b").on("click", function(e) {
     $(".connect_stat_disconnected").hide()
     $(".url").text(new URL(socket.url).hostname)
     $(".url_notebook").attr("href", "http://"+new URL(socket.url).hostname+":8888")
-    init_ws()
+
+    send_message({"_server":"config"});
+
+    
+    init_ws();
+    
+ 
+    //send_delayed_msgs();
+    //original_robot =  new Robot( renderer , camera , scene , control_camera , 1.0 , false);
+    //chain = new move_chain(scene, camera, renderer,control_camera);
+    //chain.callback.add(change_ghost_value);
   };
 
   socket.onclose = function(e){

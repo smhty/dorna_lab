@@ -1,11 +1,23 @@
 //in - out - pwm - adc - path design
 
 // receive message functions
+// receive message functions
+var knmtc_response_list = {}; // in the form of "cmd_id" : function. 
+
 
 function on_message(event){
   
   try {
     let msg = JSON.parse(event.data);
+
+    if("cmd_id" in msg){
+      if(String(msg["cmd_id"]) in knmtc_response_list){
+        knmtc_response_list[String(msg["cmd_id"])]["func"](msg, knmtc_response_list[String(msg["cmd_id"])]["vars"]);
+        delete knmtc_response_list[String(msg["cmd_id"])];
+        return;
+      }
+    }
+
     if("to" in msg){
       switch (msg["to"]) {
         case "api.folder.get":
@@ -34,7 +46,10 @@ function on_message(event){
           break
         case "update_check":
           update_check(msg["msg"])
-          break                   
+          break    
+        case "config":
+          configure_version(msg)
+          break                 
       }   
 
     }else{
@@ -53,6 +68,17 @@ function on_message(event){
   }
 
 }
+
+var config_version = [];
+function configure_version(msg){
+    config_version = msg;
+    document.getElementById("robot-v").innerHTML = config_version["model"];
+    init_scene()
+    graphic_on()
+    init_collada()
+}
+
+
 
 /* function map methods */
 

@@ -11,11 +11,20 @@ Useful Robot methodes:
 
 */
 
+///
+//d1 = 0.309664
+//a1 = 0.100039
+//a2 = 0.299983
+//a3 = 0.2085
+//d4 = -0.1331
+//d5 = 0.091502
+//d6 = x  ???
+///
 
 class Robot{
 
-	control_head; control_j0; control_j1; control_j2; control_j3; control_j4; mesh_ball;
-
+	control_head; control_head_rotate; mesh_ball;
+	control_j = new Array();
 	initialized = false;
 
 	constructor(rend, cam,scen,cam_ctr,opac,need_control){
@@ -25,19 +34,39 @@ class Robot{
 		
 		this.control_camera = cam_ctr;
 		this.position = new THREE.Vector3(0,0,0);
+		this.abc = [0,90,90];
+		this.euler = new THREE.Euler( 0, 0, 0, 'ZYX' );
 		this.being_controlled = need_control;
 
 		
 		this.joints = [0,0,0,0,0,0,0];
-		this.scale_factor = 1/80;
+		this.scale_factor = 1;
 
-		this.p0 = new THREE.Vector3(0.0,206.404464*this.scale_factor,95.475806*this.scale_factor);
-		this.l2 = 203.2*this.scale_factor;
+		this.p0 = new THREE.Vector3(0,0,0)//new THREE.Vector3(0.0,2.404464*this.scale_factor,9.475806*this.scale_factor);
+		this.l2 = 2.02*this.scale_factor;
 		this.l3 = 152.4*this.scale_factor;
 		this.offset = {"x":0,"y":0,"z":0};
 		this.l4 = 48.9245*this.scale_factor;
 		this.scale_to_real = 1/this.scale_factor;
-		this.head_pos = this.joints_to_xyz([0,0,0,0,0,0]);
+
+		this.n_dof = 6;
+		this.sum_delta = Math.PI/2.0;
+		if(this.n_dof == 6) this.sum_delta = Math.PI;
+
+
+		this.head_pos = new THREE.Vector3(0,0,0);//this.joints_to_xyz([0,0,0,0,0,0]);
+		//let ff = ;
+        send_message({
+	        "_server":"knmtc",
+	        "func": "frw","joints":[0,0,0,0,0,0]
+	        },true, true,function(res,v){
+	        	v[0].x = res["result"][0]; v[1].x = res["result"][0]; 
+	        	v[0].y=res["result"][1]; v[1].y=res["result"][1];
+	        	v[0].z=res["result"][2]; v[1].z=res["result"][2];
+	        	v[2][0] = res["result"][3];
+	        	v[2][1] = res["result"][4];
+	        	v[2][2] = res["result"][5];
+	        },[this.head_pos,this.position,this.abc]);
 
 		this.a = 0;
 		this.knocle = 1;
@@ -50,14 +79,8 @@ class Robot{
 		this.visible = false;
 
 		//headball
-		let spriteMap = new THREE.TextureLoader().load( "./static/assets/texture/dot.png" );
-		let spriteMaterial = new THREE.SpriteMaterial( { map: spriteMap , sizeAttenuation: true, color : 0x09e41b } );
-		this.sprite = new THREE.Sprite( spriteMaterial );
-		this.sprite.scale.x = this.sprite.scale.y = this.sprite.scale.z = 0.14;
+		this.loader_axis = new THREE.ColladaLoader()
 
-	    this.mesh_ball = this.sprite;
-	    this.scene.add(this.mesh_ball);
-	    this.mesh_ball.position.set(0,0,0);
 
 		this.limits = {"nj0":-160 , "pj0":180, //nj0 got from -175 to -160
 					   "nj1":-90 ,  "pj1":180,
@@ -66,9 +89,6 @@ class Robot{
 					   "nj4":-10000 , "pj4":10000};
 
 		this.Load(need_control);
-
-		if(need_control)	this.create_head_control();
-
 
 		var loader = new THREE.CubeTextureLoader();
 		loader.setPath( './static/assets/texture/' );
@@ -85,26 +105,27 @@ class Robot{
 
 		this.material = new THREE.MeshStandardMaterial({
 			vertexColors: true,
-			roughness: 0.5,
-			metalness : 0.3,
+			roughness: 0.3,
+			//metalness : 0.6,
 			envMap : this.textureCube,
-			emissive : this.normal_color
+			emissive : this.normal_color,
+			side:THREE.DoubleSide
 		});
 
-		if(this.being_controlled)
+		if(!this.being_controlled)
 			this.new_mat()
 		
 		this.callback = $.Callbacks();
 		
-		let init_pos = this.joints_to_xyz([0,0,0,0,0,0]);
-		this.position.set(init_pos.x,init_pos.y,init_pos.z);
+		//let init_pos = this.joints_to_xyz([0,0,0,0,0,0]);
+		//this.position.set(init_pos.x,init_pos.y,init_pos.z);
 
 
 
 	}
 
 	a_get(){
-		return this.joints[1] +this.joints[2] + this.joints[3];
+		return this.abc[0];
 	}
 
 	Load(need_control){
@@ -114,38 +135,58 @@ class Robot{
 
 		this.loader = [new THREE.ColladaLoader(),new THREE.ColladaLoader(),
 						new THREE.ColladaLoader(),new THREE.ColladaLoader(),
-						new THREE.ColladaLoader(),new THREE.ColladaLoader()];
-		this.dae = new Array(6);
+						new THREE.ColladaLoader(),new THREE.ColladaLoader(),new THREE.ColladaLoader()];
+		this.dae = new Array(8);
 		robot.load_index = 0;
 
-		this.loader[0].load("./static/assets/robot/base.dae" , function ( collada ) {robot.dae[0] = collada.scene; if(robot.load_index++>4)robot.load_level2();});
-		this.loader[1].load("./static/assets/robot/arm1.dae" , function ( collada ) {robot.dae[1] = collada.scene; if(robot.load_index++>4)robot.load_level2();});
-		this.loader[2].load("./static/assets/robot/arm2.dae" , function ( collada ) {robot.dae[2] = collada.scene; if(robot.load_index++>4)robot.load_level2();});
-		this.loader[3].load("./static/assets/robot/arm3.dae" , function ( collada ) {robot.dae[3] = collada.scene; if(robot.load_index++>4)robot.load_level2();});
-		this.loader[4].load("./static/assets/robot/arm4.dae" , function ( collada ) {robot.dae[4] = collada.scene; if(robot.load_index++>4)robot.load_level2();});
-		this.loader[5].load("./static/assets/robot/arm5.dae" , function ( collada ) {robot.dae[5] = collada.scene; if(robot.load_index++>4)robot.load_level2();});
+		this.loader[0].load("./static/assets/robot/2s-0.dae" , function ( collada ) {robot.dae[0] = collada.scene; if(robot.load_index++>6)robot.load_level2();});
+		this.loader[1].load("./static/assets/robot/2s-1.dae" , function ( collada ) {robot.dae[1] = collada.scene; if(robot.load_index++>6)robot.load_level2();});
+		this.loader[2].load("./static/assets/robot/2s-2.dae" , function ( collada ) {robot.dae[2] = collada.scene; if(robot.load_index++>6)robot.load_level2();});
+		this.loader[3].load("./static/assets/robot/2s-3.dae" , function ( collada ) {robot.dae[3] = collada.scene; if(robot.load_index++>6)robot.load_level2();});
+		this.loader[4].load("./static/assets/robot/2s-4.dae" , function ( collada ) {robot.dae[4] = collada.scene; if(robot.load_index++>6)robot.load_level2();});
+		this.loader[5].load("./static/assets/robot/2s-5.dae" , function ( collada ) {robot.dae[5] = collada.scene; if(robot.load_index++>6)robot.load_level2();});
+		this.loader[6].load("./static/assets/robot/arm6.dae" , function ( collada ) {robot.dae[6] = collada.scene; if(robot.load_index++>6)robot.load_level2();});
 
 		
+		this.loader_axis.load("./static/assets/robot/axis.dae" , function ( collada ) {
+			robot.dae[7] = collada.scene; 
+			//robot.dae[7].scale.set(0.1,0.1,0.1)
+		    robot.mesh_ball = robot.dae[7];//sprite;
+		    robot.mesh_ball.visible = false;
+		    
+		    robot.mesh_ball.position.set(0,0,0);
+    		if(robot.being_controlled)	robot.create_head_control();
+    		if(robot.load_index++>6)robot.load_level2();
+		});
+		
+
 	}
 
 	load_level2(){
 		var robot = this;
-
+		
+		this.a_info = config_version["a"]
+		this.d_info = config_version["d"]
+		this.alpha_info = config_version["alpha"]
+		this.delta_info = config_version["delta"]
 
 
 		this.robot_scene= new THREE.Group();
+		this.a0_g 		= new THREE.Group();
 		this.a1_g 		= new THREE.Group();
 		this.a2_g 		= new THREE.Group();
 		this.a3_g 		= new THREE.Group();
 		this.a4_g 		= new THREE.Group();
 		this.a5_g 		= new THREE.Group();
+		this.a6_g 		= new THREE.Group();
 		this.focus_point = new THREE.Object3D();	
 
 		//this.a_help = new THREE.AxesHelper(this.scale_to_real/4);
 	
 	
-		this.robot_scene.add(this.dae[0]);
-		this.robot_scene.add(this.a1_g);
+		this.robot_scene.add(this.a0_g);
+		this.a0_g.add(this.dae[0]);
+		this.a0_g.add(this.a1_g);
 		this.a1_g.add(this.dae[1]);
 		this.a1_g.add(this.a2_g);
 		this.a2_g.add(this.dae[2]);
@@ -155,19 +196,23 @@ class Robot{
 		this.a4_g.add(this.dae[4]);
 		this.a4_g.add(this.a5_g);
 		this.a5_g.add(this.dae[5]);
+		this.a5_g.add(this.a6_g);
+		this.a6_g.add(this.dae[6])
 		this.a4_g.add(this.focus_point);
 		//this.a5_g.add(this.a_help);
 
 		let i=0;
-		for(i=0;i<6;i++){
+		for(i=0;i<8;i++){
 			this.dae[i].traverse( function ( child ) {
 		    	if ( child instanceof THREE.Mesh ) {
 		    		child.material = robot.material;
+		    		child.castShadow = true;
+    				child.receiveShadow = true;
 					if(robot.opacity<1){
-			        	child.material.transparent = 1;
-			        	child.material.opacity = robot.opacity;
+			        	//child.material.transparent = 0;
+			        	//child.material.opacity = robot.opacity;
 		    	}
-			    	if(robot.being_controlled){
+			    	if(!robot.being_controlled){
 			    		child.material = robot.ditherMat;
 			    		robot.dither = true;
 			    	}
@@ -178,60 +223,26 @@ class Robot{
 		this.robot_scene.scale.set(this.scale_factor , this.scale_factor , this.scale_factor);
 		this.kinematic([0,0,0,0,0,0]);
 
+		this.scene.add(this.mesh_ball);
 		this.scene.add(this.robot_scene);//last thing to do
-
 		if(this.being_controlled)
-		    for(i=-1;i<5;i++){
-			          var control_c = new THREE.TransformControls( camera, renderer.domElement );
-			          if(i>-1)
-			          	control_c.attach( this.dae[i+1].parent);
-			          else
-			          	control_c.attach( this.focus_point);
+		    for(let i=0;i<6;i++){
+				var control_c = new THREE.TransformControls( camera, renderer.domElement );
+				control_c.attach( this.dae[i+1].parent);
+				robot.control_j.push(control_c)
 
-			          if(i==-1) robot.control_a = control_c;
-			          if(i==4) robot.control_j4 = control_c;
-			          if(i==3) robot.control_j3 = control_c;
-			          if(i==2) robot.control_j2 = control_c;
-			          if(i==1) robot.control_j1 = control_c;
-			          if(i==0) robot.control_j0 = control_c;
-			          /*
-			          if(i!=4 && i!=0){//j1 and j2 and j3 rotate around local Y axis
-			            control_c.showZ = false;
-			            control_c.showY = false;
-			          }
-			          if(i==4){//j0  rotates around local z axis
-			            control_c.showY = false;
-			            control_c.showX = false;
-			          }
-			          if(i==0){//j4 rotates around local x axis
-			            
-			          }*/
-			          control_c.showX = false;
-			          control_c.showZ = false;
+				control_c.setSize(1.0);
+				control_c.setSpace("local" );
+				control_c.setMode( "rotate" );
 
-			          control_c.setSize(0.5);
-			          control_c.setSpace("local" );
-			          control_c.setMode( "rotate" );
-			          this.scene.add( control_c );
+				this.scene.add( control_c );
 
-			        if(i==0)control_c.addEventListener( 'dragging-changed', function ( event) {robot.control_camera.enabled = ! event.value; robot.hider(! event.value,0);  });
-			        if(i==1)control_c.addEventListener( 'dragging-changed', function ( event) {robot.control_camera.enabled = ! event.value; robot.hider(! event.value,1);  });
-			        if(i==2)control_c.addEventListener( 'dragging-changed', function ( event) {robot.control_camera.enabled = ! event.value; robot.hider(! event.value,2);  });
-			        if(i==3)control_c.addEventListener( 'dragging-changed', function ( event) {robot.control_camera.enabled = ! event.value; robot.hider(! event.value,3);});
-			          	//if(event.value && robot.control_mode==3 ){ robot.fixed_pos.set(robot.position.x,robot.position.y,robot.position.z);}  });
-			        if(i==4)control_c.addEventListener( 'dragging-changed', function ( event) {robot.control_camera.enabled = ! event.value; robot.hider(! event.value,4);  });
-			        if(i==-1)control_c.addEventListener( 'dragging-changed', function ( event) { robot.fixed_pos.set(robot.position.x,robot.position.y,robot.position.z);
-			         robot.control_camera.enabled = ! event.value; robot.hider(! event.value,-1);  });
 
-			        if(i==-1)control_c.addEventListener( 'objectChange', function ( event ) { robot.change(-1,this,false);} );
-			        if(i==4)control_c.addEventListener( 'objectChange', function ( event ) { robot.change(4,this,false);} );
-			        if(i==3)control_c.addEventListener( 'objectChange', function ( event ) { robot.change(3,this,false);} );//if(robot.control_mode==1) robot.change(3,this,false);if(robot.control_mode==3) robot.change(3,this,true);} );
-			        if(i==2)control_c.addEventListener( 'objectChange', function ( event ) { robot.change(2,this,false);} );
-			        if(i==1)control_c.addEventListener( 'objectChange', function ( event ) { robot.change(1,this,false);} );
-			        if(i==0)control_c.addEventListener( 'objectChange', function ( event ) { robot.change(0,this,false);} );
+		        control_c.addEventListener( 'dragging-changed', function ( event) {robot.control_camera.enabled = ! event.value; robot.hider(! event.value,i);  });
+				control_c.addEventListener( 'objectChange', function ( event ) { robot.change(i,this,false);} );
 
-		        
 		        }
+
 		//tool head line
 		var material = new THREE.LineBasicMaterial({
 			color: 0x0000ff
@@ -250,10 +261,16 @@ class Robot{
 		//finalize
 		this.robot_scene.rotateY(-Math.PI/2.0);
 		robot.initialized = true;	
-		if(this.being_controlled){	this.set_control_mode(0); this.set_visible(false);}
+		if(this.being_controlled){	this.set_control_mode(0); this.set_visible(true);}
+		this.set_joints([0,0,0,0,0,0])
 	}
 
 	kinematic(js){
+		
+
+
+
+		/*
 		let a = Math.cos((js[0]-180)*Math.PI/180);
 		let b = Math.sin((js[0]-180)*Math.PI/180);
 
@@ -271,43 +288,85 @@ class Robot{
 
 		let k = Math.cos(js[5]*Math.PI/180);
 		let l = Math.sin(js[5]*Math.PI/180);
+		*/
+
+		let clist = [this.a0_g, this.a1_g, this.a2_g,this.a3_g,this.a4_g,this.a5_g,this.a6_g];
+
+		clist[0].matrixAutoUpdate  = false;
+		clist[0].updateMatrix();
+		clist[0].matrix.set(1	,	0	,	0	,	0,
+							0	,	1	,	0	,	0,
+							0	,	0	,	-1	,	0,
+							0	,	0	,	0	,	1);
 
 
+		for(let i=1;i<7;i++){
+			let ct = Math.cos(js[i-1]*Math.PI/180)
+			let st = Math.sin(js[i-1]*Math.PI/180)
+			let ca = Math.cos(this.alpha_info[i])
+			let sa = Math.sin(this.alpha_info[i])
+			let cd = Math.cos(this.delta_info[i])
+			let sd = Math.sin(this.delta_info[i])
+			clist[i].matrixAutoUpdate  = false;
+			clist[i].updateMatrix();
+			clist[i].matrix.set(cd*ct		,	sd	,	-cd*st,	this.a_info[i]*cd/1000 + this.d_info[i]*sd/1000,
+								 -ca*ct*sd + sa*st		,	cd*ca	,	ct*sa+ca*sd*st,	this.a_info[i]*(-ca*sd )/1000 + this.d_info[i]*(cd*ca)/1000,
+								 ct*sa*sd+ca*st		,	-cd*sa	,	ca*ct-sa*sd*st,	this.a_info[i]*(sa*sd)/1000 + this.d_info[i]*(-cd*sa)/1000,
+								 0	,	0	,	0	,	1);
+
+/*
+			clist[i].matrix.set(cd*ct	,	-cd*st	,	sd	,	this.a_info[i]*cd/1000 + this.d_info[i]*sd/1000,
+								 ct*sa*sd+ca*st	,	ca*ct-sa*sd*st	,	-cd*sa	,	this.a_info[i]*(sa*sd)/1000 + this.d_info[i]*(-cd*sa)/1000,
+								 -ca*ct*sd + sa*st	,	ct*sa+ca*sd*st	,	cd*ca	,	this.a_info[i]*(-ca*sd )/1000 + this.d_info[i]*(cd*ca)/1000,
+								 0	,	0	,	0	,	1);
+*/
+
+		}
+		/*
 		this.a1_g.matrixAutoUpdate  = false;
 		this.a1_g.updateMatrix();
 		this.a1_g.matrix.set(-a	,	0	,	-b	,	0,
-							 0	,	1	,	0	,	0,
+							 0	,	1	,	0	,	0,//0.309664,
 							 b	,	0	,	-a	,	0,
 							 0	,	0	,	0	,	1);
 
 
 		this.a2_g.matrixAutoUpdate  = false;
 		this.a2_g.updateMatrix();
-		this.a2_g.matrix.set(c	,	0	,	d	,	95.475806,
-							 d	,	0	,	-c	,	206.404464,
-							 0	,	1	,	0	,	0,
+		this.a2_g.matrix.set(c	,	-d	,	0	,	0.100039,
+							 d	,	c	,	0	,	0,
+							 0	,	0	,	1	,	0,
 							 0	,	0	,	0	,	1);
 
 		this.a3_g.matrixAutoUpdate  = false;
 		this.a3_g.updateMatrix();
-		this.a3_g.matrix.set(e	,	0	,	f	,	203.2,
-							 0	,	1	,	0	,	0,
-							 -f	,	0	,	e	,	0,
+		this.a3_g.matrix.set(e	,	-f	,	0	,	0.299983,
+							 f	,	e	,	0	,	0,
+							 0	,	0	,	1	,	0,
 							 0	,	0	,	0	,	1);
 
 		this.a4_g.matrixAutoUpdate  = false;
 		this.a4_g.updateMatrix();
-		this.a4_g.matrix.set(g	,	0	,	h	,	152.4,
-							 0	,	1	,	0	,	0,
-							 -h	,	0	,	g	,	0,
+		this.a4_g.matrix.set(g	,	-h	,	0	,	0.2085,
+							 h	,	g	,	0	,	0,
+							 0	,	0	,	1	,	-0.1331,
 							 0	,	0	,	0	,	1);
 
 		this.a5_g.matrixAutoUpdate  = false;
 		this.a5_g.updateMatrix();
-		this.a5_g.matrix.set(0	,	1	,	0	,	0,
-							- j	,	0	,	-i	,	0,
-							 -i	,	0	,	j	,	0,
+		this.a5_g.matrix.set(0	,	0	,	-1	,	0.091502,
+							 -j	,	i	,	0	,	0,
+							 -i	,	-j	,	0	,	0.0,
 							 0	,	0	,	0	,	1);
+
+
+		this.a6_g.matrixAutoUpdate  = false;
+		this.a6_g.updateMatrix();
+		this.a6_g.matrix.set(1	,	0	,	0	,	0.009,
+							 0	,	-k	,	l	,	0,
+							 0	,	l	,	k	,	0,
+							 0	,	0	,	0	,	1);
+		*/
 
 		this.focus_point.matrixAutoUpdate  = false;
 		this.focus_point.updateMatrix();
@@ -329,6 +388,7 @@ class Robot{
 			this.a3_g.quaternion.setFromRotationMatrix(this.a3_g.matrix);
 			this.a4_g.quaternion.setFromRotationMatrix(this.a4_g.matrix);
 			this.a5_g.quaternion.setFromRotationMatrix(this.a5_g.matrix);
+			this.a6_g.quaternion.setFromRotationMatrix(this.a6_g.matrix);
 			//this.a5_g.quaternion.y = this.a5_g.quaternion.y;
 
 		}
@@ -339,65 +399,163 @@ class Robot{
 		let robot = this;
 		
 	    this.control_head = new THREE.TransformControls( this.camera, this.renderer.domElement );
+	    this.control_head_rotate = new THREE.TransformControls( this.camera, this.renderer.domElement );
+	    this.control_head_rotate.setMode("rotate");
+	    
+	    this.control_head_rotate.setSpace("local");
+	    
 	    this.control_head.attach( this.mesh_ball );
+	    this.control_head_rotate.attach( this.mesh_ball );
 
-	    this.mesh_ball.rotateOnAxis ( new THREE.Vector3(Math.sqrt(1/3),Math.sqrt(1/3),Math.sqrt(1/3)), -Math.PI*2/3 )
+	    //this.mesh_ball.rotateOnAxis ( new THREE.Vector3(Math.sqrt(1/3),Math.sqrt(1/3),Math.sqrt(1/3)), -Math.PI*2/3 )
 
-	    this.control_head.setSpace("local");
 	    this.scene.add( this.control_head );
+	    this.scene.add( this.control_head_rotate );
 
 	    this.control_head.addEventListener( 'dragging-changed', function ( event ) {
 	    	robot.control_camera.enabled = ! event.value;
-	    	robot.hider(! event.value, 5);
+	    	robot.hider(! event.value, 6);
+	    } );
+	    this.control_head_rotate.addEventListener( 'dragging-changed', function ( event ) {
+	    	//console.log("drag changed",event.value)
+	    	robot.control_camera.enabled = ! event.value;
+	    	robot.hider(! event.value, 7);
 	    } );
 
 	    this.control_head.addEventListener( 'objectChange', function ( event ) {
-	    	robot.head_pos = robot.mesh_ball.position;
-	    	robot.set_xyza(robot.head_pos,robot.a,robot.joints[4]);
-    } );
+	    	robot.head_pos.set(robot.mesh_ball.position.x,robot.mesh_ball.position.y,robot.mesh_ball.position.z);
+	    	robot.mesh_ball.position.set(robot.position.x,robot.position.y,robot.position.z)
+	    	//robot.set_euler();
+	    	robot.set_xyza(robot.head_pos,robot.abc);
+    	} );
+	   	this.control_head_rotate.addEventListener( 'objectChange', function ( event ) {
+	    	robot.head_pos.set(robot.mesh_ball.position.x,robot.mesh_ball.position.y,robot.mesh_ball.position.z);
+	    	robot.set_euler();
+	    	robot.set_xyza(robot.head_pos,robot.abc);
+    	
+    	} );
+	}
+
+
+	set_euler(){
+		//this.euler.setFromQuaternion (this.mesh_ball.quaternion,'YXZ') //transforms to 	ZYX
+		this.mesh_ball.updateMatrix ()
+
+		let m22 = this.mesh_ball.matrix.elements[0]
+		let m32 = this.mesh_ball.matrix.elements[1]
+		let m23 = this.mesh_ball.matrix.elements[4]
+		let m33 = this.mesh_ball.matrix.elements[5]
+		let m13 = this.mesh_ball.matrix.elements[6]
+		let m21 = this.mesh_ball.matrix.elements[8]
+		let m31 = this.mesh_ball.matrix.elements[9]
+
+		/* This is the form of the matrix: first index is column second is row
+		  | y | z | x |
+		--|---|---|---|----|
+		y | 0 | 1 | 2 | 3  |
+		--|---|---|---|----|
+		z | 4 | 5 | 6 | 7  |
+		--|---|---|---|----|
+		x | 8 | 9 | 10| 11 |
+		-------------------
+		*/
+
+		let ssa = 1.0
+
+		let sd = Math.sin(this.sum_delta); 
+		let cd = Math.cos(this.sum_delta);
+
+		let sa = -m33*ssa;
+		let ca = Math.sqrt(1-sa*sa);
+
+		this.abc[0] = Math.atan2(sa,ca) * 180 / Math.PI;
+
+		if(Math.abs(ca)>0.0001){
+			let sb = m31/ca*ssa;
+			let cb = m32/ca*ssa;
+			this.abc[1] = Math.atan2(sb,cb) * 180 / Math.PI;
+
+			let sg = (m13*cd*ssa+m23*sd)/ca;
+			let cg = (sd*m13-m23*cd*ssa)/ca;
+
+			this.abc[2] = Math.atan2(sg,cg)* 180 / Math.PI;
+		}
+		else{
+			this.abc[2] = 0;
+
+			let sb = -ssa*(m21*cd*sa+m22*sd);
+			let cb = ssa*(-m22*cd*sa+m21*sd);
+
+			this.abc[1] = Math.atan2(sb,cb) * 180 / Math.PI; 
+		}
+		/*
+		this.abc[1] = this.euler.x * 180 / Math.PI; //1,2,0 //201 //
+		this.abc[0] = this.euler.y * 180 / Math.PI;
+		this.abc[2] = this.euler.z * 180 / Math.PI;
+		*/
+
+		console.log(this.abc)
 
 	}
+	set_head_ball(){
+ 	 	this.mesh_ball.position.set(this.position.x,this.position.y,this.position.z);
+
+		let ca = Math.cos(this.abc[0]/ 180 * Math.PI);
+		let sa = Math.sin(this.abc[0]/ 180 * Math.PI);
+
+		let cb = Math.cos(this.abc[1]/ 180 * Math.PI);
+		let sb = Math.sin(this.abc[1]/ 180 * Math.PI);
+
+		let cg = Math.cos(this.abc[2]/ 180 * Math.PI);
+		let sg = Math.sin(this.abc[2]/ 180 * Math.PI);
+
+		let ssa = 1.0;
+
+		let sd = Math.sin(this.sum_delta); 
+		let cd = Math.cos(this.sum_delta);
+
+		let mat =  new THREE.Matrix4();
+
+		mat.set(      
+		         -sb*(cd*sg+cg*ssa*sd)+cb*sa*(-cg*cd*ssa+sg*sd),     ca*(-cg*cd*ssa+sg*sd),     cg*ssa*(-cd*sa*sb+cb*sd)+sg*(cb*cd+sa*sb*sd),     0,
+		          ca*cb*ssa,                                         -ssa*sa,                   ca*ssa*sb,                                        0,
+		          cg*(-cd*sb+cb*sa*sd)+ssa*sg*(cb*cd*sa+sb*sd),      ca*(cd*ssa*sg+cg*sd),      sa*sb*(cd*ssa*sg+cg*sd)+cb*(cg*cd-ssa*sg*sd),     0,
+		          0 ,                                                0 ,                        0 ,                                               1
+		       );
+  		this.mesh_ball.setRotationFromMatrix(mat);
+
+	}
+
+
 	hider(show , i){
   		var j;
-  		for(j = -1; j<6; j++){
+  		for(j = 0; j<8; j++){
     		this.hide_this_control(show,j);
   		}
   		this.hide_this_control(true,i);
 	}
 
 	hide_this_control(show, i){
-	  if(i==-1){
-	  	if(this.control_mode!=3)show = false;
-	    this.control_a.showY = show;//showX = show;
-	    this.control_a.enabled = show;
-	  }
-	  if(i==0){
-	    if(this.control_mode!=1)show = false;
-	    this.control_j0.showY = show;//.showZ = show;
-	    this.control_j0.enabled = show;
-	  }
-	  if(i==1){
-	    if(this.control_mode!=1)show = false;
-	    this.control_j1.showY = show;//.showX = show;
-	    this.control_j1.enabled = show;
-	  }
-	  if(i==2){
+	  if(i<6){
 	    if(this.control_mode!=1)show = false;
 
-	    this.control_j2.showY = show;//.showX = show;
-	    this.control_j2.enabled = show;
+    	this.control_j[i].showX = false;
+	    this.control_j[i].showY = false;
+	    this.control_j[i].showZ = show;
+	    if(i==0){
+		    this.control_j[i].showX = false;
+		    this.control_j[i].showY = show;
+		    this.control_j[i].showZ = false;
+		}
+		else if(i==5){
+		    this.control_j[i].showX = show;
+		    this.control_j[i].showY = false;
+		    this.control_j[i].showZ = false;
+		}
+
+	    this.control_j[i].enabled = show;
 	  }
-	  if(i==3){
-	  	if(this.control_mode!=1 /*&& this.control_mode!=3*/)show = false;
-	    this.control_j3.showY = show;//showX = show;
-	    this.control_j3.enabled = show;
-	  }
-	  if(i==4){
-	    if(this.control_mode!=1 && this.control_mode!=3)show = false;
-	    this.control_j4.showY = show;
-	    this.control_j4.enabled = show;
-	  }
-	  if(i==5){
+	  if(i==6){
 	    if(this.control_mode!=2)show = false;
 
 	    this.control_head.showX = show;
@@ -405,64 +563,83 @@ class Robot{
 	    this.control_head.showZ = show;
 	    this.control_head.enabled = show;
 	  }
+	  if(i==7){
+	    if(this.control_mode!=2)show = false;
 
+	    this.control_head_rotate.showX = show;
+	    this.control_head_rotate.showY = show;
+	    this.control_head_rotate.showZ = show;
+	    this.control_head_rotate.enabled = show;
+	  }
 	}
 
 
 	set_control_mode(mode){ 
 	  this.control_mode = mode;
 	  if(mode==0){
-	    this.hide_this_control(false,-1);
 	    this.hide_this_control(false,0);
 	    this.hide_this_control(false,1);
 	    this.hide_this_control(false,2);
 	    this.hide_this_control(false,3);
 	    this.hide_this_control(false,4);
 	    this.hide_this_control(false,5);
+	    this.hide_this_control(false,6);
+	    this.hide_this_control(false,7);
 	  }
 	
 	  if(mode==1){
-	  	this.hide_this_control(false,-1);
 	    this.hide_this_control(true,0);
 	    this.hide_this_control(true,1);
 	    this.hide_this_control(true,2);
 	    this.hide_this_control(true,3);
 	    this.hide_this_control(true,4);
-	    this.hide_this_control(false,5);
+	    this.hide_this_control(true,5);
+	    this.hide_this_control(false,6);
+	    this.hide_this_control(false,7);
 	  }
 
 	  if(mode==2){
-	  	this.hide_this_control(false,-1);
 	    this.hide_this_control(false,0);
 	    this.hide_this_control(false,1);
 	    this.hide_this_control(false,2);
 	    this.hide_this_control(false,3);
 	    this.hide_this_control(false,4);
-	    this.hide_this_control(true,5);
-
-	  }
-	  if(mode==3){
-	  	this.hide_this_control(true,-1);
-	    this.hide_this_control(false,0);
-	    this.hide_this_control(false,1);
-	    this.hide_this_control(false,2);
-	    this.hide_this_control(false,3);
-	    this.hide_this_control(true,4);
 	    this.hide_this_control(false,5);
+	    this.hide_this_control(true,6);
+	    this.hide_this_control(true,7);
+
 	  }
 	
 	}
+	set_joints(js){
+		let joint = js;
+		send_message({
+	        "_server":"knmtc",
+	        "func": "frw","joint":js
+	        },true, true,function(res,v){
+	        	let p = new THREE.Vector3(res["result"][0],res["result"][1],res["result"][2]);
+	        	let abc = [res["result"][3],res["result"][4],res["result"][5]];
+	        	//if(v[0].being_controlled)
+	        		//console.log("final",abc)
+	        	v[0].set_joints_p(v[1],p,abc);
+	        },[this,joint]);
+	}
 
-	set_joints(js){ 	
+	set_joints_p(js,new_pos,abc){
 
 		this.joints = js;
 		let i = 0;
 		
 		this.kinematic(this.joints);
 
-		this.a = this.joints[1] + this.joints[2] + this.joints[3];
-		let new_pos = this.joints_to_xyz(this.joints);
+		//this.a = this.joints[1] + this.joints[2] + this.joints[3];
+		new_pos = this.real_to_xyz(new_pos)
+		//let new_pos = this.joints_to_xyz(this.joints);
 		this.position.set(new_pos.x,new_pos.y,new_pos.z);
+		this.abc[0] = abc[0];
+		this.abc[1] = abc[1];
+		this.abc[2] = abc[2];
+
 		this.set_head_ball();
 		this.callback.fire(this.joints); 
 
@@ -481,45 +658,24 @@ class Robot{
 			}
 		}
 		for(i=0;i<6;i++)
-		this.joints[i] = Math.round(this.joints[i]*1000)/1000;
+			this.joints[i] = Math.round(this.joints[i]*1000)/1000;
 	}
 
-	set_head_ball(){
 
- 	 	this.mesh_ball.position.set(this.position.x,this.position.y,this.position.z);
-  			 	 	
-	}
 
 	change(i,ctrl,fix_head){
 
-		let a_lim = this.allowed_a();
-		a_lim["pa"] = a_lim["pa"] - 0.5;
-		a_lim["na"] = a_lim["na"] + 0.5;
-
 		var old_joints = [this.joints[0],this.joints[1],this.joints[2],this.joints[3],this.joints[4],this.joints[5],this.joints[6]];
-		if( i==0 ) this.joints[0] = 2 * Math.atan2( ctrl.object.quaternion.y , ctrl.object.quaternion.w ) * 180 / Math.PI; //+ 90;//z
-		if( i==1 ) this.joints[1] = 2 * Math.atan2( ctrl.object.quaternion.y , ctrl.object.quaternion.w ) * 180 / Math.PI;//x
-		if( i==2 ) this.joints[2] = 2 * Math.atan2( ctrl.object.quaternion.y , ctrl.object.quaternion.w ) * 180 / Math.PI;//x
-		if( i==3 ) this.joints[3] = 2 * Math.atan2( ctrl.object.quaternion.y , ctrl.object.quaternion.w ) * 180 / Math.PI;//x
-		if( i==4 ) this.joints[4] = range(2 * Math.atan2(ctrl.object.quaternion.y , ctrl.object.quaternion.w ) * 180 / Math.PI + 270);
-		if( i==-1 ){
-			this.joints[3] = 2 * Math.atan2(this.focus_point.quaternion.y ,this.focus_point.quaternion.w ) * 180 / Math.PI;
-			fix_head = 1
-		}
 
-		this.a = (this.joints[1] + this.joints[2] + this.joints[3]);
-
+		if( i==0 ) this.joints[0] = 2 * Math.atan2( ctrl.object.quaternion.y , ctrl.object.quaternion.w ) * 180 / Math.PI; 
+		if( i==1 ) this.joints[1] = 2 * Math.atan2( ctrl.object.quaternion.z , ctrl.object.quaternion.w ) * 180 / Math.PI;
+		if( i==2 ) this.joints[2] = 2 * Math.atan2( ctrl.object.quaternion.z , ctrl.object.quaternion.w ) * 180 / Math.PI;
+		if( i==3 ) this.joints[3] = 2 * Math.atan2( ctrl.object.quaternion.z , ctrl.object.quaternion.w ) * 180 / Math.PI;
+		if( i==4 ) this.joints[4] = 2 * Math.atan2( ctrl.object.quaternion.z , ctrl.object.quaternion.w ) * 180 / Math.PI;
+		if( i==5 ) this.joints[5] = 2 * Math.atan2( ctrl.object.quaternion.x , ctrl.object.quaternion.w ) * 180 / Math.PI;
+		/*
 		var cancel = false;
 
-		if(fix_head){
-			this.a = Math.min(Math.max(this.a , a_lim["na"]),a_lim["pa"]);
-			this.set_xyza(this.fixed_pos,this.a,this.joints[4]);
-			var new_pos = this.joints_to_xyz(this.joints);
-
-			if(Math.abs(new_pos.x-this.fixed_pos.x)>0.001 || Math.abs(new_pos.y-this.fixed_pos.y)>0.001 || Math.abs(new_pos.z-this.fixed_pos.z)>0.001){
-				cancel = true;
-			} 
-		}
 		if(cancel){
 			this.joints[0] = old_joints[0];
 			this.joints[1] = old_joints[1];
@@ -528,10 +684,9 @@ class Robot{
 			this.joints[4] = old_joints[4];
 			this.joints[5] = old_joints[5];
 			this.joints[6] = old_joints[6];
-			this.a = (this.joints[1] + this.joints[2] + this.joints[3]);
 		}
-			this.set_joints(this.joints);
-			this.set_head_ball();
+		*/
+		this.set_joints(this.joints);
 
 	}
 
@@ -539,32 +694,27 @@ class Robot{
 		return Math.pow(range(j1[0]-j2[0]),2) + Math.pow(range(j1[1]-j2[1]),2) + Math.pow(range(j1[2]-j2[2]),2) + Math.pow(range(j1[3]-j2[3]),2) + Math.pow(range(j1[4]-j2[4]),2) 
 	}
 
-	set_xyza(pos,a_value,b_value){
-		if((this.joints[2] > 1 && this.joints[2] < 179 )|| this.joints[2] < -181){
-			this.knocle = -1;
-		}
-		else 
-			this.knocle = 1;
+	set_xyza(pos,abc,ret = null){
+		//inverse here 
 
-		var sol1 = this.xyza_to_joints(pos,a_value,this.joints[4], 1,this.knocle);
-		var sol2 = this.xyza_to_joints(pos,a_value,this.joints[4],-1,this.knocle);
+		var p = this.xyz_to_real(pos);
+		//console.log(abc,pos)
+		 send_message({
+	        "_server":"knmtc",
+	        "func": "inv","xyzabg":[p.x,p.y,p.z,abc[0],abc[1],abc[2]],"joint_current":this.joints,"all_sol":false
+	        },true, true,function(res,v){
+	        	if(res["result"][0]){
+	        		v[0].set_joints(res["result"][0]);
+	        		if(v[1]){
+	        			set_5(v[1],res["result"][0]);
+	        		}
+	        	}
+	        	else{
+	        		console.log("IK failed");
+	        		v[0].set_joints(v[0].joints);
+	        	}
+	        },[this,ret]);
 
-		var dd = 1;
-
-		var best_sol;
-		
-		var l1 = this.dj(this.joints , sol1);
-		var l2 = this.dj(this.joints , sol2);
-
-		if(l1<l2){
-			best_sol = sol1;
-		}
-		else
-			best_sol = sol2;
-
-		best_sol[4] = b_value;
-		//this.joints = this.xyza_to_joints(pos,a_value);
-		this.set_joints(best_sol);
 	}
 
 	check_interior(pos , a_value){
@@ -581,7 +731,7 @@ class Robot{
 	xyza_to_joints(pos , a_value , b , s = 1 , k = 1){
 
 	  let head_2d = new THREE.Vector2( s * Math.sqrt(pos.z*pos.z + pos.x*pos.x) - this.p0.z , pos.y - this.p0.y);
-
+	  return [0,0,0,0,0];
 	  
 	  head_2d.x = head_2d.x - (this.l4 + this.offset.z) *Math.cos(a_value*Math.PI/180);
 	  head_2d.y = head_2d.y - (this.l4 + this.offset.z)*Math.sin(a_value*Math.PI/180);
@@ -613,16 +763,9 @@ class Robot{
 	}
 
 	joints_to_xyz(joints){
-	  let j0 = (joints[0])*Math.PI/180;
-	  let j1 = (joints[1])*Math.PI/180;
-	  let j2 = (joints[1]+joints[2])*Math.PI/180;
-	  let j3 = (joints[1]+joints[2]+joints[3])*Math.PI/180;
-
-	  let head_2d = new THREE.Vector2(this.p0.z + this.l2*Math.cos(j1) + this.l3*Math.cos(j2) + (this.l4 + this.offset.z)*Math.cos(j3),
-	                                  this.p0.y + this.l2*Math.sin(j1) + this.l3*Math.sin(j2) + (this.l4 + this.offset.z)*Math.sin(j3));
-
-	  let result = new THREE.Vector3( head_2d.x*Math.sin(j0) , head_2d.y , head_2d.x*Math.cos(j0));
+	  let result = new THREE.Vector3(1,1,1);
 	  return result;
+	
 	}
 
 	set_visible(show){
@@ -636,7 +779,7 @@ class Robot{
 		}
 		this.visible = show;
 		if(!show)this.set_control_mode(0);
-		this.mesh_ball.visible = show;
+		//this.mesh_ball.visible = show;
 
 	}
 
@@ -651,6 +794,25 @@ class Robot{
 		return result;
 	}
 	allowed_xyza(){
+		var info = {};
+		let other_limits = 1000;
+		info["nx"] = -other_limits;
+		info["px"] = other_limits;
+		info["ny"] = -other_limits;
+		info["py"] = other_limits;
+		info["nz"] = -other_limits;
+		info["pz"] = other_limits;
+		info["na"] = -other_limits;
+		info["pa"] = other_limits;
+		
+		info["pb"] = other_limits;
+		info["nb"] = -other_limits;
+		info["pc"] = other_limits;
+		info["nc"] = -other_limits;
+		info["pd"] = other_limits;
+		info["nd"] = -other_limits;
+
+		return info;
 		var N = 50;
 		var info = {};
 		
@@ -787,7 +949,6 @@ class Robot{
 		info["nb"] = this.limits["nj4"];
 		info["pb"] = this.limits["pj4"];
 
-		let other_limits = 1000000;
 
 		info["pc"] = other_limits;
 		info["nc"] = -other_limits;
@@ -894,15 +1055,39 @@ class Robot{
 			return this.position.y/this.scale_factor ;
 		}
 		if(name=="a"){
-			return this.a_get();
+			return this.abc[0];
 		}
 		if(name=="b"){
-			return this.joints[4];
+			return this.abc[1];
+		}
+		if(name=="c"){
+			return this.abc[2];
 		}
 		return 0;
 	}
 
 	allowed_j(){
+		var info = {};
+		let other_limits = 1000;
+		info["nj0"] = -other_limits;
+		info["pj0"] = other_limits;
+		info["nj1"] = -other_limits;
+		info["pj1"] = other_limits;
+		info["nj2"] = -other_limits;
+		info["pj2"] = other_limits;
+		info["nj3"] = -other_limits;
+		info["pj3"] = other_limits;
+		info["nj4"] = -other_limits;
+		info["pj4"] = other_limits;
+		
+		info["pj5"] = other_limits;
+		info["nj5"] = -other_limits;
+		info["pj6"] = other_limits;
+		info["nj6"] = -other_limits;
+		info["pj7"] = other_limits;
+		info["nj7"] = -other_limits;
+
+		return info;
 		var joint = {"j0":this.joints[0] , "j1":this.joints[1] , "j2":this.joints[2] , "j3":this.joints[3] , "j4":this.joints[4] , "j5":this.joints[5]};
 		var nb = { 
 					"j1": [-40, -45, -50, -60, -70, -80, -90],
@@ -982,8 +1167,6 @@ class Robot{
 		info["nj2"] = j2_limit_down;
 		info["pj2"] = j2_limit_up;
 
-
-		let other_limits = 1000000;
 		info["pj5"] = other_limits;
 		info["nj5"] = -other_limits;
 		info["pj6"] = other_limits;
@@ -996,6 +1179,7 @@ class Robot{
 	}
 
 	check_work_space(){
+		return 1;
 		var joint = {"j0":this.joints[0] , "j1":this.joints[1] , "j2":this.joints[2] , "j3":this.joints[3] , "j4":this.joints[4] , "j5":this.joints[5]};
 		var nb = { 
 					"j1": [-40, -45, -50, -60, -70, -80, -90],
@@ -1137,12 +1321,8 @@ class Robot{
 		}
 		this.ditherShader = DitheredTransparencyShaderMixin(THREE.ShaderLib.standard);
 
-
-
-
-
 		this.ditherMat = new THREE.ShaderMaterial(this.ditherShader);
-
+		this.ditherMat.side = THREE.DoubleSide;
 		let ditherTex = createDitherTexture();
 
 		this.ditherMat.uniforms.ditherTex.value = ditherTex;

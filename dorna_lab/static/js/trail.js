@@ -1,3 +1,4 @@
+/*
 class Trail{
 	positions;
 	material;
@@ -87,3 +88,4 @@ class Trail{
 	}
 	
 }
+*/
