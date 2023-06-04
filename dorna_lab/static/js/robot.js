@@ -268,41 +268,20 @@ class Robot{
 	kinematic(js){
 		
 
-
-
-		/*
-		let a = Math.cos((js[0]-180)*Math.PI/180);
-		let b = Math.sin((js[0]-180)*Math.PI/180);
-
-		let c = Math.cos(js[1]*Math.PI/180);
-		let d = Math.sin(js[1]*Math.PI/180);
-
-		let e = Math.cos(js[2]*Math.PI/180);
-		let f = Math.sin(js[2]*Math.PI/180);
-
-		let g = Math.cos(js[3]*Math.PI/180);
-		let h = Math.sin(js[3]*Math.PI/180);
-
-		let i = Math.cos(-js[4]*Math.PI/180);
-		let j = Math.sin(-js[4]*Math.PI/180);
-
-		let k = Math.cos(js[5]*Math.PI/180);
-		let l = Math.sin(js[5]*Math.PI/180);
-		*/
-
 		let clist = [this.a0_g, this.a1_g, this.a2_g,this.a3_g,this.a4_g,this.a5_g,this.a6_g];
 
 		clist[0].matrixAutoUpdate  = false;
 		clist[0].updateMatrix();
 		clist[0].matrix.set(1	,	0	,	0	,	0,
 							0	,	1	,	0	,	0,
-							0	,	0	,	-1	,	0,
+							0	,	0	,	1	,	0,
 							0	,	0	,	0	,	1);
 
 
 		for(let i=1;i<7;i++){
 			let ct = Math.cos(js[i-1]*Math.PI/180)
 			let st = Math.sin(js[i-1]*Math.PI/180)
+			if(i==1) st *= -1;
 			let ca = Math.cos(this.alpha_info[i])
 			let sa = Math.sin(this.alpha_info[i])
 			let cd = Math.cos(this.delta_info[i])
