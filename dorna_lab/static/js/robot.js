@@ -105,7 +105,7 @@ class Robot{
 
 		this.material = new THREE.MeshStandardMaterial({
 			vertexColors: true,
-			roughness: 0.3,
+			roughness: 0.5,
 			//metalness : 0.6,
 			envMap : this.textureCube,
 			emissive : this.normal_color,
@@ -206,8 +206,8 @@ class Robot{
 			this.dae[i].traverse( function ( child ) {
 		    	if ( child instanceof THREE.Mesh ) {
 		    		child.material = robot.material;
-		    		child.castShadow = true;
-    				child.receiveShadow = true;
+		    		//child.castShadow = true;
+    				//child.receiveShadow = true;
 					if(robot.opacity<1){
 			        	//child.material.transparent = 0;
 			        	//child.material.opacity = robot.opacity;
