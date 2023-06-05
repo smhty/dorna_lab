@@ -8,6 +8,7 @@ var knmtc_response_list = {}; // in the form of "cmd_id" : function.
 function on_message(event){
   
   try {
+    //console.log(event.data)
     let msg = JSON.parse(event.data);
 
     if("cmd_id" in msg){
@@ -72,10 +73,19 @@ function on_message(event){
 var config_version = [];
 function configure_version(msg){
     config_version = msg;
-    document.getElementById("robot-v").innerHTML = config_version["model"];
+    document.getElementById("robot-v").innerHTML = config_version["model"].replace("_"," ").toUpperCase();
     init_scene()
     graphic_on()
     init_collada()
+    $(".versionable" ).each(function( index){
+      let version = $(this).attr("version")
+      if(version==config_version["model"]){
+  
+      }
+      else
+        $(this).hide();
+    })
+    $('.startup-v').val(config_version["startup"]);
 }
 
 
@@ -88,23 +98,23 @@ function out_r(key, msg) {
 
 function axis_r(key, msg) {
   let index = key.substring(5)
-  $(`.ratio_v[data-key=axis${index}]`).prop("value", msg[key].toFixed(3));
+  $(`.ratio_v[data-key=axis${index}]`).prop("value", msg[key].toFixed(to_fixed_val));
 }
 function pprm_r(key, msg) {
   let index = key.substring(4)
-  $(`.pprm_v[data-key=pprm${index}]`).prop("value", msg[key].toFixed(3));
+  $(`.pprm_v[data-key=pprm${index}]`).prop("value", msg[key].toFixed(to_fixed_val));
 }
 function tprm_r(key, msg) {
   let index = key.substring(4)
-  $(`.tprm_v[data-key=tprm${index}]`).prop("value", msg[key].toFixed(3));
+  $(`.tprm_v[data-key=tprm${index}]`).prop("value", msg[key].toFixed(to_fixed_val));
 }
 function ppre_r(key, msg) {
   let index = key.substring(4)
-  $(`.ppre_v[data-key=ppre${index}]`).prop("value", msg[key].toFixed(3));
+  $(`.ppre_v[data-key=ppre${index}]`).prop("value", msg[key].toFixed(to_fixed_val));
 }
 function tpre_r(key, msg) {
   let index = key.substring(4)
-  $(`.tpre_v[data-key=tpre${index}]`).prop("value", msg[key].toFixed(3));
+  $(`.tpre_v[data-key=tpre${index}]`).prop("value", msg[key].toFixed(to_fixed_val));
 }
 
 // motor
@@ -121,10 +131,10 @@ function encoder_r(key, msg) {
 
 function gravity_r(key, msg) {
   $(`.gravity_c`).prop("checked", msg[key]? true:false);
-  $(`.gravity_m_v[data-key=x]`).prop("value", msg["x"].toFixed(3));
-  $(`.gravity_m_v[data-key=y]`).prop("value",msg["y"].toFixed(3));
-  $(`.gravity_m_v[data-key=z]`).prop("value",msg["z"].toFixed(3));
-  $(`.gravity_m_v[data-key=m]`).prop("value", msg["m"].toFixed(3));
+  $(`.gravity_m_v[data-key=x]`).prop("value", msg["x"].toFixed(to_fixed_val));
+  $(`.gravity_m_v[data-key=y]`).prop("value",msg["y"].toFixed(to_fixed_val));
+  $(`.gravity_m_v[data-key=z]`).prop("value",msg["z"].toFixed(to_fixed_val));
+  $(`.gravity_m_v[data-key=m]`).prop("value", msg["m"].toFixed(to_fixed_val));
 }
 function in_r(key, msg) {
   $(`.in_c[data-key=${key}]`).prop("checked", msg[key]? true:false);
@@ -133,10 +143,10 @@ function in_r(key, msg) {
 function pwm_r(key, msg) {
   //key : pwmi
   let index = key.substring(3)
-  $(`.dc_v[data-key=${key}]`).prop("value", msg["duty".concat(index)].toFixed(3));
-  $(`.dc_v[data-key=${key}]`).text( msg["duty".concat(index)].toFixed(3));
-  $(`.freq_v[data-key=${key}]`).prop("value", msg["freq".concat(index)].toFixed(3));
-  $(`.freq_v[data-key=${key}]`).text(msg["freq".concat(index)].toFixed(3));
+  $(`.dc_v[data-key=${key}]`).prop("value", msg["duty".concat(index)].toFixed(to_fixed_val));
+  $(`.dc_v[data-key=${key}]`).text( msg["duty".concat(index)].toFixed(to_fixed_val));
+  $(`.freq_v[data-key=${key}]`).prop("value", msg["freq".concat(index)].toFixed(to_fixed_val));
+  $(`.freq_v[data-key=${key}]`).text(msg["freq".concat(index)].toFixed(to_fixed_val));
   $(`.pwm_c[data-key=${key}]`).prop("value", msg["pwm".concat(index)]? true:false);
   $(`.pwm_c[data-key=${key}]`).prop("checked", msg["pwm".concat(index)]? true:false);
 }
@@ -170,7 +180,7 @@ function alarm_r(key, msg) {
 
 /*
 function joint_r(key, msg) {
-  $(`.joint_v[data-key=${key}]`).text(Number.parseFloat(msg[key]).toFixed(3));
+  $(`.joint_v[data-key=${key}]`).text(Number.parseFloat(msg[key]).toFixed(to_fixed_val));
 }
 */
 
@@ -183,16 +193,16 @@ function uid_r(key, msg) {
 }
 
 function toollength_r(key, msg) {
-  $(`.toollength_v[data-key=${key}]`).val(Number.parseFloat(msg[key]).toFixed(2));
+  $(`.toollength_v[data-key=${key}]`).val(Number.parseFloat(msg[key]).toFixed(to_fixed_val));
   original_robot.tool_head_length_set(Number.parseFloat(msg[key]))
 }
 
 function motion_r(key, msg) {
-  document.getElementById("motion_r_id_"+key).innerHTML = Number.parseFloat(msg[key]).toFixed(3);
+  document.getElementById("motion_r_id_"+key).innerHTML = Number.parseFloat(msg[key]).toFixed(to_fixed_val);
 }
 /*
 function xyz_r(key, msg) {
-  $(`.xyz_v[data-key=${key}]`).text(Number.parseFloat(msg[key]).toFixed(3));
+  $(`.xyz_v[data-key=${key}]`).text(Number.parseFloat(msg[key]).toFixed(to_fixed_val));
 }
 */
 

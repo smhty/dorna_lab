@@ -149,7 +149,7 @@ $(".jog_b").on("mousedown touchstart", function(e) {
 			l = Math.sign( l ) *  Math.abs( $(`.jog_d_v[data-cmd=${msg["cmd"]}]`).prop("value") ) ;
 	}
 
-	msg[$(this).attr("data-key")] = Number((original_robot.value($(this).attr("data-key")) + l).toFixed(3));
+	msg[$(this).attr("data-key")] = Number((original_robot.value($(this).attr("data-key")) + l).toFixed(to_fixed_val));
 
 	// vel, accel, jerk
 	$(`.vaj_s_v[data-value=${$(this).attr("data-type")}]`).each(function() {
@@ -215,10 +215,10 @@ function position(type = "joint"){
 	return pos	
 }
 
-$(".joint_v[data-key=j0]").text("180.000");
-$(".joint_v[data-key=j1]").text("180.000");
-$(".joint_v[data-key=j2]").text("-142.000");
-$(".joint_v[data-key=j3]").text("135.000");
+$(".joint_v[data-key=j0]").text("180.0");
+$(".joint_v[data-key=j1]").text("180.0");
+$(".joint_v[data-key=j2]").text("-142.0");
+$(".joint_v[data-key=j3]").text("135.0");
 
 /*
 $(".joint_v[data-key=j0]").text("161.016");

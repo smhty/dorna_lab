@@ -5,8 +5,8 @@
       <author>Blender User</author>
       <authoring_tool>Blender 3.0.1 commit date:2022-01-25, commit time:17:19, hash:dc2d18018171</authoring_tool>
     </contributor>
-    <created>2023-06-04T18:07:27</created>
-    <modified>2023-06-04T18:07:27</modified>
+    <created>2023-06-05T16:02:38</created>
+    <modified>2023-06-05T16:02:38</modified>
     <unit name="meter" meter="1"/>
     <up_axis>Z_UP</up_axis>
   </asset>
@@ -401,10 +401,10 @@
   <library_visual_scenes>
     <visual_scene id="Scene" name="Scene">
       <node id="arm2" name="arm2" type="NODE">
-        <matrix sid="transform">7.54979e-9 -0.09999998 -9.32682e-5 2.54406e-11 0 -9.32682e-5 0.09999998 0 -0.1 -7.54979e-9 -7.04155e-12 0 0 0 0 1</matrix>
+        <matrix sid="transform">7.54979e-9 -0.09999998 -9.32618e-5 2.54406e-11 0 -9.32618e-5 0.09999998 0 -0.1 -7.54979e-9 -7.04107e-12 0 0 0 0 1</matrix>
         <instance_geometry url="#Cube_004-mesh" name="arm2"/>
         <node id="_390N155_Flanged_Ultra-Thin_Ball_Bearing_v1_1" name="4390N155_Flanged Ultra-Thin Ball Bearing v1:1" type="NODE">
-          <matrix sid="transform">-1.34359e-6 -5.68434e-14 -10 -0.5959205 -1.3439e-6 10 5.68434e-14 1.04235e-7 10 1.3439e-6 -1.34359e-6 4.28799e-8 0 0 0 1</matrix>
+          <matrix sid="transform">-1.34359e-6 -5.68434e-14 -10 -0.5959205 -1.34297e-6 10 5.68434e-14 1.04292e-7 10 1.34297e-6 -1.34359e-6 -1.78744e-8 0 0 0 1</matrix>
           <instance_geometry url="#_390N155_Flanged_Ultra-Thin_Ball_Bearing_v1-mesh" name="4390N155_Flanged Ultra-Thin Ball Bearing v1:1">
             <bind_material>
               <technique_common>
@@ -419,7 +419,7 @@
           </instance_geometry>
         </node>
         <node id="motor_plate_1" name="motor_plate:1" type="NODE">
-          <matrix sid="transform">-1.34359e-6 0 10 -0.4009205 -1.3439e-6 -10 -5.68434e-14 -0.08821312 10 -1.3439e-6 -1.34359e-6 0.4821533 0 0 0 1</matrix>
+          <matrix sid="transform">-1.34359e-6 0 10 -0.4009205 -1.34297e-6 -10 0 -0.08821316 10 -1.34297e-6 -1.34359e-6 0.4821533 0 0 0 1</matrix>
           <instance_geometry url="#motor_plate-mesh" name="motor_plate:1">
             <bind_material>
               <technique_common>

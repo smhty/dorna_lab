@@ -55,7 +55,7 @@ function graphic_on() {
     /*********************/
     // camera
     camera = new THREE.PerspectiveCamera( 65, $(view_container).width() / $(view_container).height(), 0.1, 2000 );
-    camera.position.set( 2, 1, 2 );
+    camera.position.set( 0.7, 0.35, 0.7 );
 
     // Grid
     var grid = new THREE.GridHelper( 20, 20, 0x444444, 0x888888 );
@@ -64,14 +64,19 @@ function graphic_on() {
     
 
 
-   // particleLight = new THREE.PointLight( 0xffffff, 0.5 );
-   //// particleLight.position.set(0,10,0);
-    //scene.add( particleLight );
+    particleLight = new THREE.PointLight( 0xffffff, 0.5 );
+    particleLight.position.set(0,10,0);
 
+    scene.add( particleLight );
+
+    var light = new THREE.AmbientLight( 0xfcf4e8 ); // soft white light
+    var directionalLight = new THREE.DirectionalLight( 0xffffff, 1.0 );
+    directionalLight.position.set(2,-1,1);
+    scene.add( directionalLight );
+    scene.add(light)
     // Lights
-
+    
     var directionalLight = new THREE.DirectionalLight( 0xffffff, 3.0 );
-    directionalLight.castShadow = true;
     directionalLight.target.position.set(0,0,0);
     directionalLight.position.set(5,5,5);
     directionalLight.radius = 4;
@@ -79,16 +84,14 @@ function graphic_on() {
 
 
     var directionalLight2 = new THREE.DirectionalLight( 0xedb985, 2.0 );
-    directionalLight2.castShadow = true;
     directionalLight2.target.position.set(0,0,0);
     directionalLight2.position.set(5,-5,-5);
      directionalLight2.radius = 4;
     scene.add(directionalLight2);
+  
 
     renderer = new THREE.WebGLRenderer( { antialias : true } );
     renderer.setPixelRatio( window.devicePixelRatio );
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.setSize( $(view_container).width(), $(view_container).height() );
     renderer.setClearColor(0xffffff, 1);
     container.appendChild( renderer.domElement );
@@ -112,12 +115,13 @@ function graphic_on() {
     // Axis
     ah = new THREE.AxesHelper(1);
      ah.matrixAutoUpdate = false
+
     ah.renderOrder = 999;
     ah.onBeforeRender = function( renderer ) { renderer.clearDepth(); };//draw Axis helper on top of other meshes
     scene.add( ah );
-    ah.matrix.set(0,1,0,0,
-          0,0,1,0,
-          1,0,0,0,
+    ah.matrix.set(0,0.15,0,0,
+          0,0,0.15,0,
+          0.15,0,0,0,
           0,0,0,1);
  
     ah.matrixWorldNeedsUpdate = true;

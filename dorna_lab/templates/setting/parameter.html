@@ -7,7 +7,7 @@
             {% for i in range(5,8) %}
               <td class="border-top-0 border-bottom">
                 <div class="custom-control custom-switch">
-                  <input type="checkbox" checked = true class="custom-control-input axis_c" data-cmd="{{cmd["axis"]}}" data-key="axis{{i}}" id="axis_c_{{i}}">
+                  <input type="checkbox"  class="custom-control-input axis_c" data-cmd="{{cmd["axis"]}}" data-key="axis{{i}}" id="axis_c_{{i}}">
                   <label class="custom-control-label" for="axis_c_{{i}}">Axis {{i}}</label>
                 </div>
               </td>
@@ -18,8 +18,10 @@
 
 </details>
 <!--aux axes-->
+<div class="versionable" version ="dorna_2">
 <details open>
-  <summary class="bg-secondary border-bottom pl-2 pr-2 text-white">Auxiliary Axes</summary>
+  
+  <summary class="bg-secondary border-bottom pl-2 pr-2 text-white " >Auxiliary Axes</summary>
     
     <div class="card mt-2 mb-2 alert-primary">
       <div class="card-body">
@@ -56,9 +58,10 @@
         {% endfor %}     
       </tbody>
     </table>  
-
 </details>
+</div>
 <!--aux motors Dorna 2S-->
+<div class="versionable" version ="dorna_2s">
 <details open>
   <summary class="bg-secondary border-bottom pl-2 pr-2 text-white">Auxiliary Motors</summary>
     <table class="table table-hover table-sm pl-2 pr-2 mb-0">
@@ -106,8 +109,9 @@
     </table>  
 
 </details>
-
+  </div>
 <!--aux encoders Dorna 2S-->
+<div class="versionable" version ="dorna_2s">
 <details open>
   <summary class="bg-secondary border-bottom pl-2 pr-2 text-white">Auxiliary Encoders</summary>
     <table class="table table-hover table-sm pl-2 pr-2 mb-0">
@@ -155,7 +159,7 @@
     </table>  
 
 </details>
-
+ </div>
 <!--TCP-->
 <details open>
   <summary class="bg-secondary border-bottom pl-2 pr-2 text-white">Tool Length (TCP)</summary>

@@ -1,3 +1,4 @@
+var to_fixed_val = 1;
 function range(x){
 	let y=x;
 	if(x<=-180)	y = x+360;
@@ -52,7 +53,7 @@ class move_cmd{
 		}
 		this.sprite.father = this;
 
-		this.sprite.scale.x = this.sprite.scale.y = this.sprite.scale.z = 0.15; 
+		this.sprite.scale.x = this.sprite.scale.y = this.sprite.scale.z = 0.05; 
 		this.sprite.name = "sprite";
 		this.parent_chain.scene.add( this.sprite );
 		this.update_sprite_pos();
@@ -132,7 +133,7 @@ class move_cmd{
 		return this.joint[1]+this.joint[2]+this.joint[3];
 	}
 	update_sprite_pos(){
-		var j_pos = this.parent_chain.robot.joints_to_xyz(this.joint)
+		var j_pos = this.position;
 		this.sprite.position.set(j_pos.x,j_pos.y,j_pos.z);
 		this.position.set(j_pos.x,j_pos.y,j_pos.z);
 
@@ -366,31 +367,37 @@ class move_cmd{
 
 	callback(){
 			let cc = this;
-			let out = this.parent_chain.robot.xyz_to_real(cc.position);
-
+			//let out = this.parent_chain.robot.xyz_to_real(cc.position);
+			let out = this.parent_chain.robot.position;
+			this.position.set(out.x,out.y,out.z);
+			out = this.parent_chain.robot.xyz_to_real(out);
+			out.x*=1000;
+			out.y*=1000;
+			out.z*=1000;
+			let outabc = this.parent_chain.robot.abc;
 			let message = {
 
 				...{
-					"j0": cc.joint[0].toFixed(3),
-					"j1": cc.joint[1].toFixed(3),
-					"j2": cc.joint[2].toFixed(3),
-					"j3": cc.joint[3].toFixed(3),
-					"j4": cc.joint[4].toFixed(3),
-					"j5": cc.joint[5].toFixed(3),
-					"j6": cc.joint[6].toFixed(3),
-					"j7": cc.joint[7].toFixed(3)
+					"j0": cc.joint[0].toFixed(to_fixed_val),
+					"j1": cc.joint[1].toFixed(to_fixed_val),
+					"j2": cc.joint[2].toFixed(to_fixed_val),
+					"j3": cc.joint[3].toFixed(to_fixed_val),
+					"j4": cc.joint[4].toFixed(to_fixed_val),
+					"j5": cc.joint[5].toFixed(to_fixed_val),
+					"j6": cc.joint[6].toFixed(to_fixed_val),
+					"j7": cc.joint[7].toFixed(to_fixed_val)
 				},
 				...{
-					"x": out["x"].toFixed(3),
-					"y": out["y"].toFixed(3),
-					"z": out["z"].toFixed(3)
+					"x": out["x"].toFixed(to_fixed_val),
+					"y": out["y"].toFixed(to_fixed_val),
+					"z": out["z"].toFixed(to_fixed_val)
 				},
 				...{
-					"a": (cc.joint[1]+cc.joint[2]+cc.joint[3]).toFixed(3),
-					"b": cc.joint[4].toFixed(3),
-					"c": cc.joint[5].toFixed(3),
-					"d": cc.joint[6].toFixed(3),
-					"e": cc.joint[7].toFixed(3)
+					"a": outabc[0].toFixed(to_fixed_val),//(cc.joint[1]+cc.joint[2]+cc.joint[3]).toFixed(3),
+					"b": outabc[1].toFixed(to_fixed_val),//cc.joint[4].toFixed(3),
+					"c": outabc[2].toFixed(to_fixed_val),//cc.joint[5].toFixed(3),
+					"d": cc.joint[6].toFixed(to_fixed_val),
+					"e": cc.joint[7].toFixed(to_fixed_val)
 				},	
 				...{
 					"rel": 0
@@ -648,7 +655,6 @@ class move_chain{
 		}
 		
 		this.controller.callback.add(control_cmd_update);
-		//console.log(as.as);
 	}
 
 	ok(){

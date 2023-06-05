@@ -49,6 +49,7 @@ class DornaConnection(object):
     
     def register_ws(self, ws):
         self.ws_list.append(ws)
+        ws.shell_process(version_data["startup"])
 
     def deregister_ws(self, ws):
         self.ws_list.remove(ws)
@@ -91,7 +92,9 @@ class WebSocket(tornado.websocket.WebSocketHandler):
                 self.shell_kill(msg["prm"][0])
  
             elif msg["_server"] == "config":
-                loop.add_callback(self.emit_message, json.dumps({"to":"config" ,"model":version_data["model"],
+                loop.add_callback(self.emit_message, json.dumps({"to":"config" ,
+                    "model":version_data["model"],
+                    "startup":version_data["startup"],
                     "n_dof":kin.knmtc.dof.n_dof,
                     "alpha":kin.knmtc.dof.alpha,
                     "delta":kin.knmtc.dof.delta,
@@ -107,6 +110,12 @@ class WebSocket(tornado.websocket.WebSocketHandler):
 
             elif msg["_server"] == "func":
                 self.func_process(msg)
+
+            elif msg["_server"] == "startup":
+                version_data["startup"] = msg["text"]
+                json_object = json.dumps(version_data, indent=4)
+                with open("config.log", "w") as outfile:
+                    outfile.write(json_object)
 
             elif msg["_server"] == "db":
                 self.database(msg["prm"][0])

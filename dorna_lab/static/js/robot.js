@@ -145,10 +145,10 @@ class Robot{
 		this.loader[3].load("./static/assets/robot/2s-3.dae" , function ( collada ) {robot.dae[3] = collada.scene; if(robot.load_index++>6)robot.load_level2();});
 		this.loader[4].load("./static/assets/robot/2s-4.dae" , function ( collada ) {robot.dae[4] = collada.scene; if(robot.load_index++>6)robot.load_level2();});
 		this.loader[5].load("./static/assets/robot/2s-5.dae" , function ( collada ) {robot.dae[5] = collada.scene; if(robot.load_index++>6)robot.load_level2();});
-		this.loader[6].load("./static/assets/robot/arm6.dae" , function ( collada ) {robot.dae[6] = collada.scene; if(robot.load_index++>6)robot.load_level2();});
+		this.loader[6].load("./static/assets/robot/2s-6.dae" , function ( collada ) {robot.dae[6] = collada.scene; if(robot.load_index++>6)robot.load_level2();});
 
 		
-		this.loader_axis.load("./static/assets/robot/axis.dae" , function ( collada ) {
+		this.loader_axis.load("./static/assets/robot/2s-6.dae" , function ( collada ) {
 			robot.dae[7] = collada.scene; 
 			//robot.dae[7].scale.set(0.1,0.1,0.1)
 		    robot.mesh_ball = robot.dae[7];//sprite;
@@ -182,8 +182,10 @@ class Robot{
 		this.focus_point = new THREE.Object3D();	
 
 		//this.a_help = new THREE.AxesHelper(this.scale_to_real/4);
-	
-	
+		
+		for(let i=0;i<7;i++){
+			this.dae[i].scale.set(1,-1,1);
+		}
 		this.robot_scene.add(this.a0_g);
 		this.a0_g.add(this.dae[0]);
 		this.a0_g.add(this.a1_g);
@@ -274,14 +276,14 @@ class Robot{
 		clist[0].updateMatrix();
 		clist[0].matrix.set(1	,	0	,	0	,	0,
 							0	,	1	,	0	,	0,
-							0	,	0	,	1	,	0,
+							0	,	0	,	-1	,	0,
 							0	,	0	,	0	,	1);
 
 
 		for(let i=1;i<7;i++){
 			let ct = Math.cos(js[i-1]*Math.PI/180)
 			let st = Math.sin(js[i-1]*Math.PI/180)
-			if(i==1) st *= -1;
+			//if(i==1) st *= -1;
 			let ca = Math.cos(this.alpha_info[i])
 			let sa = Math.sin(this.alpha_info[i])
 			let cd = Math.cos(this.delta_info[i])
@@ -473,7 +475,6 @@ class Robot{
 		this.abc[2] = this.euler.z * 180 / Math.PI;
 		*/
 
-		console.log(this.abc)
 
 	}
 	set_head_ball(){
@@ -519,8 +520,9 @@ class Robot{
 	    if(this.control_mode!=1)show = false;
 
     	this.control_j[i].showX = false;
-	    this.control_j[i].showY = false;
-	    this.control_j[i].showZ = show;
+	    this.control_j[i].showY = show;
+	    this.control_j[i].showZ = false;
+	    /*
 	    if(i==0){
 		    this.control_j[i].showX = false;
 		    this.control_j[i].showY = show;
@@ -531,7 +533,7 @@ class Robot{
 		    this.control_j[i].showY = false;
 		    this.control_j[i].showZ = false;
 		}
-
+		*/
 	    this.control_j[i].enabled = show;
 	  }
 	  if(i==6){
@@ -543,7 +545,7 @@ class Robot{
 	    this.control_head.enabled = show;
 	  }
 	  if(i==7){
-	    if(this.control_mode!=2)show = false;
+	    if(this.control_mode!=3)show = false;
 
 	    this.control_head_rotate.showX = show;
 	    this.control_head_rotate.showY = show;
@@ -585,6 +587,17 @@ class Robot{
 	    this.hide_this_control(false,4);
 	    this.hide_this_control(false,5);
 	    this.hide_this_control(true,6);
+	    this.hide_this_control(false,7);
+
+	  }
+	  	if(mode==3){
+	    this.hide_this_control(false,0);
+	    this.hide_this_control(false,1);
+	    this.hide_this_control(false,2);
+	    this.hide_this_control(false,3);
+	    this.hide_this_control(false,4);
+	    this.hide_this_control(false,5);
+	    this.hide_this_control(false,6);
 	    this.hide_this_control(true,7);
 
 	  }
@@ -613,6 +626,7 @@ class Robot{
 
 		//this.a = this.joints[1] + this.joints[2] + this.joints[3];
 		new_pos = this.real_to_xyz(new_pos)
+
 		//let new_pos = this.joints_to_xyz(this.joints);
 		this.position.set(new_pos.x,new_pos.y,new_pos.z);
 		this.abc[0] = abc[0];
@@ -647,11 +661,11 @@ class Robot{
 		var old_joints = [this.joints[0],this.joints[1],this.joints[2],this.joints[3],this.joints[4],this.joints[5],this.joints[6]];
 
 		if( i==0 ) this.joints[0] = 2 * Math.atan2( ctrl.object.quaternion.y , ctrl.object.quaternion.w ) * 180 / Math.PI; 
-		if( i==1 ) this.joints[1] = 2 * Math.atan2( ctrl.object.quaternion.z , ctrl.object.quaternion.w ) * 180 / Math.PI;
-		if( i==2 ) this.joints[2] = 2 * Math.atan2( ctrl.object.quaternion.z , ctrl.object.quaternion.w ) * 180 / Math.PI;
-		if( i==3 ) this.joints[3] = 2 * Math.atan2( ctrl.object.quaternion.z , ctrl.object.quaternion.w ) * 180 / Math.PI;
-		if( i==4 ) this.joints[4] = 2 * Math.atan2( ctrl.object.quaternion.z , ctrl.object.quaternion.w ) * 180 / Math.PI;
-		if( i==5 ) this.joints[5] = 2 * Math.atan2( ctrl.object.quaternion.x , ctrl.object.quaternion.w ) * 180 / Math.PI;
+		if( i==1 ) this.joints[1] = 2 * Math.atan2( ctrl.object.quaternion.y , ctrl.object.quaternion.w ) * 180 / Math.PI;
+		if( i==2 ) this.joints[2] = 2 * Math.atan2( ctrl.object.quaternion.y , ctrl.object.quaternion.w ) * 180 / Math.PI;
+		if( i==3 ) this.joints[3] = 2 * Math.atan2( ctrl.object.quaternion.y , ctrl.object.quaternion.w ) * 180 / Math.PI;
+		if( i==4 ) this.joints[4] = 2 * Math.atan2( ctrl.object.quaternion.y , ctrl.object.quaternion.w ) * 180 / Math.PI;
+		if( i==5 ) this.joints[5] = 2 * Math.atan2( ctrl.object.quaternion.y , ctrl.object.quaternion.w ) * 180 / Math.PI;
 		/*
 		var cancel = false;
 
