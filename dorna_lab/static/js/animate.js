@@ -64,16 +64,18 @@ function graphic_on() {
     
 
 
-    particleLight = new THREE.PointLight( 0xffffff, 0.5 );
+    particleLight = new THREE.PointLight( 0xffffff, 1 );
     particleLight.position.set(0,10,0);
 
     scene.add( particleLight );
 
-    var light = new THREE.AmbientLight( 0xfcf4e8 ); // soft white light
+    var light = new THREE.AmbientLight( 0x40403b ); // soft white light
+     scene.add(light)
+     /*
     var directionalLight = new THREE.DirectionalLight( 0xffffff, 1.0 );
     directionalLight.position.set(2,-1,1);
     scene.add( directionalLight );
-    scene.add(light)
+   
     // Lights
     
     var directionalLight = new THREE.DirectionalLight( 0xffffff, 3.0 );
@@ -88,7 +90,7 @@ function graphic_on() {
     directionalLight2.position.set(5,-5,-5);
      directionalLight2.radius = 4;
     scene.add(directionalLight2);
-  
+  */
 
     renderer = new THREE.WebGLRenderer( { antialias : true } );
     renderer.setPixelRatio( window.devicePixelRatio );

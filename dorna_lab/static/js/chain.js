@@ -53,7 +53,7 @@ class move_cmd{
 		}
 		this.sprite.father = this;
 
-		this.sprite.scale.x = this.sprite.scale.y = this.sprite.scale.z = 0.05; 
+		this.sprite.scale.x = this.sprite.scale.y = this.sprite.scale.z = 0.02; 
 		this.sprite.name = "sprite";
 		this.parent_chain.scene.add( this.sprite );
 		this.update_sprite_pos();

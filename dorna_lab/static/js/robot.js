@@ -106,13 +106,13 @@ class Robot{
 		this.material = new THREE.MeshStandardMaterial({
 			vertexColors: true,
 			roughness: 0.5,
-			//metalness : 0.6,
+			metalness : 0.3,
 			envMap : this.textureCube,
 			emissive : this.normal_color,
 			side:THREE.DoubleSide
 		});
 
-		if(!this.being_controlled)
+		if(this.being_controlled)
 			this.new_mat()
 		
 		this.callback = $.Callbacks();
@@ -214,7 +214,7 @@ class Robot{
 			        	//child.material.transparent = 0;
 			        	//child.material.opacity = robot.opacity;
 		    	}
-			    	if(!robot.being_controlled){
+			    	if(robot.being_controlled){
 			    		child.material = robot.ditherMat;
 			    		robot.dither = true;
 			    	}
