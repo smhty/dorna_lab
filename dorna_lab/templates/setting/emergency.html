@@ -1,0 +1,60 @@
+<h2>Emergency</h2>
+<p class="text-justify">
+In order to set up the emergency behavior, utilize the provided form below. This form is designed to activate the alarm mode of the robot when a designated input pin is triggered.
+</p>
+
+<!--emergency form-->
+<table class="table table-hover table-sm pl-2 pr-2 mb-0">
+  <thead>
+    <tr>
+      <th scope="col">Alarm activates when</th>
+      <th scope="col">Input pin</th>
+      <th scope="col">Is equal to</th>
+      <th scope="col"></th>
+    </tr>
+  </thead> 
+  <tbody class="table-group-divider">
+      <tr >
+        <td class="border-top-0 border-bottom" style="">
+          <div class="custom-control custom-switch">
+            <input type="checkbox" class="custom-control-input" data-cmd="" data-key="" id="">
+            <label class="custom-control-label" for="">Emergency feature</label>
+          </div>
+        </td>
+        <td class="border-top-0 border-bottom">
+          <div class="input-group input-group-sm">
+            <div class="input-group-prepend">
+              <input type="number" class="input-group-text small text-left" value="0" data-key data-item disabled>
+            </div>
+						<select class="form-control small text-left">
+							<option>0</option>
+							<option>1</option>
+							<option>2</option>
+							<option>3</option>
+							<option>4</option>
+							<option>5</option>
+							<option>6</option>
+							<option>7</option>							
+						</select>
+          </div>                    
+        </td>
+        <td class="border-top-0 border-bottom">
+          <div class="input-group input-group-sm">
+            <div class="input-group-prepend">
+              <input type="number" class="input-group-text small text-left" value="0" data-key data-item disabled>
+            </div>
+						<select class="form-control small text-left">
+							<option>0</option>
+							<option>1</option>
+						</select>
+          </div>                    
+        </td>                       
+        <td class="border-top-0 border-bottom">
+          <button type="button" class="btn btn-primary btn-sm btn-block" data-cmd= data-key= data-num=>
+          <i class="fal fa-check"></i>
+          Set
+          </button>              
+        </td>          
+      </tr>
+  </tbody>
+</table>  
