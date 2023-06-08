@@ -6,7 +6,7 @@ function range(x){
 	return y;
 }
 function tripleDigit(x){
-	return Math.floor(x*1000)/1000;
+	return x.toFixed(3);
 }
 function tripleDigit_vector(v){
 	v.x = tripleDigit(v.x);
@@ -32,7 +32,9 @@ class move_cmd{
 		this.joint_save = [j_values[0], j_values[1], j_values[2], j_values[3], j_values[4], j_values[5], j_values[6], j_values[7]];
 
 		this.position = new THREE.Vector3(0,0,0);
+		this.abc = [0.0, 0.0, 0.0];
 		this.position_save = new THREE.Vector3(0,0,0);
+		this.abc_save = new THREE.Vector3(0,0,0);
 		this.position_save_needs_update = true;
 
 
@@ -129,38 +131,62 @@ class move_cmd{
 		}
 		
 	}
-	a(){
-		return this.joint[1]+this.joint[2]+this.joint[3];
-	}
+
 	update_sprite_pos(){
-		var j_pos = this.position;
-		this.sprite.position.set(j_pos.x,j_pos.y,j_pos.z);
-		this.position.set(j_pos.x,j_pos.y,j_pos.z);
+		send_message({
+	        "_server":"knmtc",
+	        "func": "frw","joint":this.joint
+	        },true, true,function(res,v){
+	        	let p = new THREE.Vector3(res["result"][0],res["result"][1],res["result"][2]);
+	        	let abc = [res["result"][3],res["result"][4],res["result"][5]];
+	        	v[0].update_sprite_pos_stage2(p,abc);
+        },[this]);
+	}
+	
+	update_sprite_pos_stage2(p,abc){
+		p = this.parent_chain.robot.real_to_xyz(p)
+		this.sprite.position.set(p.x,p.y,p.z);
+		this.position.set(p.x,p.y,p.z);
+		this.abc[0] = abc[0];
+		this.abc[1] = abc[1];
+		this.abc[2] = abc[2];
+
 
 		if(this.position_save_needs_update){
-			this.position_save.set(j_pos.x,j_pos.y,j_pos.z);
+			this.position_save.set(p.x,p.y,p.z);
+			this.abc_save[0] = abc[0];
+			this.abc_save[1] = abc[1];
+			this.abc_save[2] = abc[2];
+
 			let k=0;
 			for(k=0;k<5+ND_count;k++)if(k<5||ND[k]){this.joint_save[k] = this.joint[k];}
 			this.position_save_needs_update = false;
 		}
 		let i=0;
 		if(this.move_type==1)for(i=0;i<5;i++)this.joint[i] = range(this.joint[i]);
-
 	}
+
 
 	update_arrow(){
 		if(this.arrow && this.arrow_ready){
-			if(this.move_type==0){
+			if(this.move_type==0 && false){
 				let mj = [0,0,0,0,0,0];
 				let k=0;
 				let i=0;
 				for(i=1;i<4;i++){
 					for(k=0;k<6;k++) mj[k] = this.before.joint[k] + (this.joint[k] - this.before.joint[k])*i/4; //range(this.before.joint[k] + range(this.joint[k] - this.before.joint[k])/2);
 					let mp = this.parent_chain.robot.joints_to_xyz(mj);
-					this.curve_positions[i].set(mp.x,mp.y,mp.z);
+						send_message({
+					        "_server":"knmtc",
+					        "func": "frw","joint":this.joint
+					        },true, true,function(res,v){
+					        	let p = new THREE.Vector3(res["result"][0],res["result"][1],res["result"][2]);
+					        	v[0].set(v[1].real_to_xyz(p));
+					        	console.log(p)
+				        },[this.curve_positions[i],this.parent_chain.robot]);
 				}
 			}
-			if(this.move_type==1){
+			if(this.move_type==1 || true){
 				let i=0;
 				for(i=1;i<4;i++){
 					this.curve_positions[i].set((this.position.x * i + this.before.position.x *(4 - i))/4,
@@ -188,7 +214,7 @@ class move_cmd{
 			this.curve.mesh.computeLineDistances();
 
 			if(this.curve_save_needs_update){
-				if(this.move_type==0){
+				if(this.move_type==0&& false){
 					let mj = [0,0,0,0,0,0];
 					let k=0;
 					let i=0;
@@ -198,7 +224,7 @@ class move_cmd{
 						this.curve_positions_save[i].set(mp.x,mp.y,mp.z);
 					}
 				}
-				if(this.move_type==1){
+				if(this.move_type==1||true){
 					let i=0;
 					for(i=1;i<4;i++){
 						this.curve_positions_save[i].set((this.position_save.x * i + this.before.position_save.x *(4 - i))/4,
@@ -279,7 +305,6 @@ class move_cmd{
 			return Object.assign(Object.assign({"cmd":"jmove", "rel":0},this.prm),js);
 		}
 		if(this.move_type==1){
-			let aa = this.joint_save[1] + this.joint_save[2] + this.joint_save[3];
 			let p = this.parent_chain.robot.xyz_to_real(this.position_save);
 			let i=0;
 			let cde = {};
@@ -288,7 +313,8 @@ class move_cmd{
 					cde[xyz_names[i]] = tripleDigit(this.joint_save[i]);
 				}
 			}
-			return Object.assign( Object.assign({"cmd":"lmove", "rel":0 , "x":tripleDigit(p.x), "y":tripleDigit(p.y), "z":tripleDigit(p.z), "a":tripleDigit(aa), "b":tripleDigit(this.joint_save[4])}
+			return Object.assign( Object.assign({"cmd":"lmove", "rel":0 , "x":tripleDigit(p.x), "y":tripleDigit(p.y), "z":tripleDigit(p.z), 
+				"a":tripleDigit(this.abc_save[0]), "b":tripleDigit(this.abc_save[1]), "c":tripleDigit(this.abc_save[2])}
 				,this.prm),cde);
 		}
 		
@@ -367,14 +393,14 @@ class move_cmd{
 
 	callback(){
 			let cc = this;
-			//let out = this.parent_chain.robot.xyz_to_real(cc.position);
-			let out = this.parent_chain.robot.position;
-			this.position.set(out.x,out.y,out.z);
+			let out = this.parent_chain.robot.xyz_to_real(cc.position);
+			//let out = this.parent_chain.robot.position;
+			//this.position.set(out.x,out.y,out.z);
 			out = this.parent_chain.robot.xyz_to_real(out);
 			out.x*=1000;
 			out.y*=1000;
 			out.z*=1000;
-			let outabc = this.parent_chain.robot.abc;
+			let outabc = cc.abc;
 			let message = {
 
 				...{
@@ -607,12 +633,13 @@ class move_chain{
 			
 			event.preventDefault();
 			
-			raycaster.setFromCamera( mouse, camera );
+			if(! ($('.path_design_visible_c').prop("checked")))
+				return;
 
+			raycaster.setFromCamera( mouse, camera );
 
 			var intersects = raycaster.intersectObjects(this_chain.list_of_sprites);
 			if ( intersects.length > 0 ) {
-
 				let clicked_sprite = intersects[0].object;
 				let j = clicked_sprite.father;
 				this_chain.set_control_cmd(j);
@@ -1041,6 +1068,7 @@ class move_chain{
 
 	create_by_id(msg,text){
 		let command = chain.add(msg);
+
 		// update list
 		update_path_design_list(command,command +": "+ text)
 		$(`.path_design_program_list_b[data-id=${command}]`).click()

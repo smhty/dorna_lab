@@ -14,9 +14,15 @@ class kinematic_class(object):
 			self.knmtc.dof.delta = [0, 0, 0, 0, 0, math.pi/2, 0] 
 			self.knmtc.dof.a = [0, 0 , 95.48, 203.2, 152.4, 0, 0]#[0, 0 , 100.0, 300.0, 208.5, 0, 0]
 			self.knmtc.dof.d = [0, 218.47, 0, 0, 0,48.92, 0]#[0, 309.7, 0, 0,  -133.1, 90.5, 9.707]
-			print("Model set to be: ",model)
-		if model=="Dorna 2":
-			pass
+			
+		if model=="dorna_2":
+			self.knmtc.dof.n_dof = 5 
+			self.knmtc.dof.alpha = [0, 0, math.pi/2, 0, 0, 0, 0] 
+			self.knmtc.dof.delta = [0, 0, 0, 0, 0, math.pi/2, 0] 
+			self.knmtc.dof.a = [0, 0 , 95.48, 203.2, 152.4, 0, 0]
+			self.knmtc.dof.d = [0, 206.4, 0, 0, 0,48.92, 0]
+
+		print("Model set to be: ",model)
 		
 	async def fw(self, ws, server_loop, cmd_id, joint):
 		rtn = {"to": "?", "result": "?", "broadcast": False, "cmd_id": cmd_id, "error": 0}		

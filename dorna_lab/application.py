@@ -20,9 +20,11 @@ os.chdir(os.path.join(PATH))
 
 V_LAB = "2.0.3" 
 
-CONFIG = config.config
-config_file = open('config.log')
-version_data = json.load(config_file)
+CONFIG = config.config               
+
+with open('config.log') as outfile: #importing config.log file
+    config_file = outfile
+    version_data = json.load(outfile)
 loop = tornado.ioloop.IOLoop.current()
 kin = kinematic.kinematic_class(version_data["model"])
 
@@ -218,7 +220,7 @@ class WebSocket(tornado.websocket.WebSocketHandler):
 
         except Exception as ex:
             DORNA.robot.log("error8: "+ str(ex))
-
+            #print("error8: "+ str(ex))
 
     def emit_message(self,msg):
         try:

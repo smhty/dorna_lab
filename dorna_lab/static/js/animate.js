@@ -29,7 +29,6 @@ var view_container = document.getElementsByClassName("view_3d")[0]
 function init_scene(){
   // scene
   scene = new THREE.Scene();
-  //scene.scale.set(10,10,10);
   scene.background = new THREE.Color( "#cccccc");
 }
 
@@ -58,18 +57,18 @@ function graphic_on() {
     camera.position.set( 0.7, 0.35, 0.7 );
 
     // Grid
-    var grid = new THREE.GridHelper( 20, 20, 0x444444, 0x888888 );
+    var grid = new THREE.GridHelper( 10, 10, 0x444444, 0x888888 );
     grid.scale.set(0.1,0.1,0.1);
     scene.add( grid );
     
 
 
-    particleLight = new THREE.PointLight( 0xffffff, 1 );
+    particleLight = new THREE.PointLight( 0x88abba, 0.2 );
     particleLight.position.set(0,10,0);
 
     scene.add( particleLight );
 
-    var light = new THREE.AmbientLight( 0x40403b ); // soft white light
+    var light = new THREE.AmbientLight( 0xb8b7ae ); // soft white light
      scene.add(light)
      /*
     var directionalLight = new THREE.DirectionalLight( 0xffffff, 1.0 );
@@ -237,10 +236,6 @@ function onWindowResize() {
 //
 function animate() {
   anime_id = requestAnimationFrame( animate );
-  //controls.update(); // only required if controls.enableDamping = true, or if controls.autoRotate = true
-  //render();
-  //stats.update();
-  //TWEEN.update();
 }
 
 function render() {

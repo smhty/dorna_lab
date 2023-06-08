@@ -23,7 +23,7 @@ Useful Robot methodes:
 
 class Robot{
 
-	control_head; control_head_rotate; mesh_ball;
+	control_head; control_head_rotate; mesh_ball; axis_helper;
 	control_j = new Array();
 	initialized = false;
 
@@ -37,6 +37,7 @@ class Robot{
 		this.abc = [0,90,90];
 		this.euler = new THREE.Euler( 0, 0, 0, 'ZYX' );
 		this.being_controlled = need_control;
+
 
 		
 		this.joints = [0,0,0,0,0,0,0];
@@ -139,21 +140,17 @@ class Robot{
 		this.dae = new Array(8);
 		robot.load_index = 0;
 
-		this.loader[0].load("./static/assets/robot/2s-0.dae" , function ( collada ) {robot.dae[0] = collada.scene; if(robot.load_index++>6)robot.load_level2();});
-		this.loader[1].load("./static/assets/robot/2s-1.dae" , function ( collada ) {robot.dae[1] = collada.scene; if(robot.load_index++>6)robot.load_level2();});
-		this.loader[2].load("./static/assets/robot/2s-2.dae" , function ( collada ) {robot.dae[2] = collada.scene; if(robot.load_index++>6)robot.load_level2();});
-		this.loader[3].load("./static/assets/robot/2s-3.dae" , function ( collada ) {robot.dae[3] = collada.scene; if(robot.load_index++>6)robot.load_level2();});
-		this.loader[4].load("./static/assets/robot/2s-4.dae" , function ( collada ) {robot.dae[4] = collada.scene; if(robot.load_index++>6)robot.load_level2();});
-		this.loader[5].load("./static/assets/robot/2s-5.dae" , function ( collada ) {robot.dae[5] = collada.scene; if(robot.load_index++>6)robot.load_level2();});
-		this.loader[6].load("./static/assets/robot/2s-6.dae" , function ( collada ) {robot.dae[6] = collada.scene; if(robot.load_index++>6)robot.load_level2();});
-
+		for(let i=0;i<7;i++){
+			this.loader[i].load("./static/assets/robot/"+config_version["model"]+"-"+i+".dae" , function ( collada ) {robot.dae[i] = collada.scene; if(i==6)robot.dae[6].visible = false;if(robot.load_index++>6)robot.load_level2();});
+		}
 		
-		this.loader_axis.load("./static/assets/robot/2s-6.dae" , function ( collada ) {
+		this.loader_axis.load("./static/assets/robot/dorna_2s-6.dae" , function ( collada ) {
 			robot.dae[7] = collada.scene; 
 			//robot.dae[7].scale.set(0.1,0.1,0.1)
 		    robot.mesh_ball = robot.dae[7];//sprite;
 		    robot.mesh_ball.visible = false;
-		    
+
+
 		    robot.mesh_ball.position.set(0,0,0);
     		if(robot.being_controlled)	robot.create_head_control();
     		if(robot.load_index++>6)robot.load_level2();
@@ -165,8 +162,19 @@ class Robot{
 	load_level2(){
 		var robot = this;
 		
-		this.a_info = config_version["a"]
-		this.d_info = config_version["d"]
+		//axis-helper
+		this.axis_helper = new THREE.AxesHelper(1);
+		this.axis_helper.matrixAutoUpdate = false
+		this.axis_helper.renderOrder = 999;
+		this.axis_helper.matrix.set(  0.12,	0,	0,		0,
+								      0,	0,	0.12,	0,
+								      0,	0.12,		0,		0,
+								      0,	0,		0,		1);
+
+		this.axis_helper.matrixWorldNeedsUpdate = true;
+
+		this.a_info 	= config_version["a"]
+		this.d_info 	= config_version["d"]
 		this.alpha_info = config_version["alpha"]
 		this.delta_info = config_version["delta"]
 
@@ -200,6 +208,7 @@ class Robot{
 		this.a5_g.add(this.dae[5]);
 		this.a5_g.add(this.a6_g);
 		this.a6_g.add(this.dae[6])
+		this.a6_g.add(this.axis_helper);
 		this.a4_g.add(this.focus_point);
 		//this.a5_g.add(this.a_help);
 
@@ -263,7 +272,7 @@ class Robot{
 		//finalize
 		this.robot_scene.rotateY(-Math.PI/2.0);
 		robot.initialized = true;	
-		if(this.being_controlled){	this.set_control_mode(0); this.set_visible(true);}
+		if(this.being_controlled){	this.set_control_mode(0); this.set_visible(false);}
 		this.set_joints([0,0,0,0,0,0])
 	}
 
