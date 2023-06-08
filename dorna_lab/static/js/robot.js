@@ -166,9 +166,9 @@ class Robot{
 		this.axis_helper = new THREE.AxesHelper(1);
 		this.axis_helper.matrixAutoUpdate = false
 		this.axis_helper.renderOrder = 999;
-		this.axis_helper.matrix.set(  0.12,	0,	0,		0,
-								      0,	0,	0.12,	0,
-								      0,	0.12,		0,		0,
+		this.axis_helper.matrix.set(  0.04,	0,	0,		0,
+								      0,	0,	0.04,	0,
+								      0,	0.04,		0,		0,
 								      0,	0,		0,		1);
 
 		this.axis_helper.matrixWorldNeedsUpdate = true;

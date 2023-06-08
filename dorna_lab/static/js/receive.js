@@ -50,6 +50,9 @@ function on_message(event){
           break    
         case "config":
           configure_version(msg)
+          break
+        case "emergency":
+          emergency_setting(msg)
           break                 
       }   
 
@@ -88,7 +91,11 @@ function configure_version(msg){
     $('.startup-v').val(config_version["startup"]);
 }
 
-
+function  emergency_setting(msg){
+  $('.emergency-c').prop("checked",msg["emergency_enable"]);
+  $('.emergency-key-v').prop("value",Number(msg["emergency_key"].slice(2)));
+  $('.emergency-val-v').prop("value",msg["emergency_value"]);
+}
 
 /* function map methods */
 

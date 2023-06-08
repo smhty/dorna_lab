@@ -120,9 +120,9 @@ function graphic_on() {
     ah.renderOrder = 999;
     ah.onBeforeRender = function( renderer ) { renderer.clearDepth(); };//draw Axis helper on top of other meshes
     scene.add( ah );
-    ah.matrix.set(0,0.15,0,0,
-          0,0,0.15,0,
-          0.15,0,0,0,
+    ah.matrix.set(0,0.04,0,0,
+          0,0,0.04,0,
+          0.04,0,0,0,
           0,0,0,1);
  
     ah.matrixWorldNeedsUpdate = true;

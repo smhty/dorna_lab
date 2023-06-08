@@ -22,11 +22,11 @@ V_LAB = "2.0.3"
 
 CONFIG = config.config               
 
-with open('config.log') as outfile: #importing config.log file
-    config_file = outfile
-    version_data = json.load(outfile)
+with open('config.log') as infile: #importing config.log file
+    config_file = infile
+    config_data = json.load(infile)
 loop = tornado.ioloop.IOLoop.current()
-kin = kinematic.kinematic_class(version_data["model"])
+kin = kinematic.kinematic_class(config_data["model"])
 
 
 
@@ -46,12 +46,16 @@ class DornaConnection(object):
         self.robot.log("connected")
 
         self.robot.register_callback(self.send_message_to_browser)
+        
+        if(k in config_data for k in ("emergency_enable","emergency_key","emergency_value")):
+            self.robot.set_emergency(enable =config_data["emergency_enable"],   key = config_data["emergency_key"],   value = config_data["emergency_value"])
+        
         self.ws_list = []
 
     
     def register_ws(self, ws):
         self.ws_list.append(ws)
-        ws.shell_process(version_data["startup"])
+        ws.shell_process(config_data["startup"])
 
     def deregister_ws(self, ws):
         self.ws_list.remove(ws)
@@ -95,14 +99,21 @@ class WebSocket(tornado.websocket.WebSocketHandler):
  
             elif msg["_server"] == "config":
                 loop.add_callback(self.emit_message, json.dumps({"to":"config" ,
-                    "model":version_data["model"],
-                    "startup":version_data["startup"],
+                    "model":config_data["model"],
+                    "startup":config_data["startup"],
                     "n_dof":kin.knmtc.dof.n_dof,
                     "alpha":kin.knmtc.dof.alpha,
                     "delta":kin.knmtc.dof.delta,
                     "a":kin.knmtc.dof.a,
                     "d":kin.knmtc.dof.d
                     }))
+
+                if("emergency_enable" in config_data):
+                    loop.add_callback(self.emit_message, json.dumps({"to":"emergency" ,
+                        "emergency_enable":config_data["emergency_enable"],
+                        "emergency_key":config_data["emergency_key"],
+                        "emergency_value":config_data["emergency_value"]
+                        }))
 
             elif msg["_server"] == "update":
                 self.update_process(msg["prm"][0])
@@ -114,10 +125,27 @@ class WebSocket(tornado.websocket.WebSocketHandler):
                 self.func_process(msg)
 
             elif msg["_server"] == "startup":
-                version_data["startup"] = msg["text"]
-                json_object = json.dumps(version_data, indent=4)
+                config_data["startup"] = msg["text"]
+                json_object = json.dumps(config_data, indent=4)
                 with open("config.log", "w") as outfile:
                     outfile.write(json_object)
+
+            elif msg["_server"] == "emergency":
+                config_data["emergency_enable"] = msg["enable"]
+                config_data["emergency_key"] = msg["key"]
+                config_data["emergency_value"] = msg["value"]
+                json_object = json.dumps(config_data, indent=4)
+                with open("config.log", "w") as outfile:
+                    outfile.write(json_object)
+
+                DORNA.robot.set_emergency(enable =config_data["emergency_enable"], key = config_data["emergency_key"],
+                    value = config_data["emergency_value"])
+
+                loop.add_callback(self.emit_message, json.dumps({"to":"emergency" ,
+                    "emergency_enable":config_data["emergency_enable"],
+                    "emergency_key":config_data["emergency_key"],
+                    "emergency_value":config_data["emergency_value"]
+                    }))
 
             elif msg["_server"] == "db":
                 self.database(msg["prm"][0])
@@ -130,7 +158,7 @@ class WebSocket(tornado.websocket.WebSocketHandler):
 
             elif msg["_server"] == "code":
                 try:
-                    eval(msg["code"])#needs to be compatible with asyncio and does the results need to be sent back to the client?
+                    eval(msg["code"])
                 except:
                     DORNA.robot.log("error1: running message error.")
                     #print("error1")
@@ -229,11 +257,6 @@ class WebSocket(tornado.websocket.WebSocketHandler):
             DORNA.robot.log('error9'+ str(ex))
             #print('error9'+ str(ex))
 
-"""
-msg["code"] = "asyncio.create_task(timeline.timeline_data(self, loop, point_data, time_start=0, ticks_per_sec=100000, sample_per_sec=5))":
-msg["code"] = "asyncio.create_task(KNMTC.fw(self, loop, joint=[1, 2, 3, 4, 5, 6]))"
-msg["code"] = "asyncio.create_task(KNMTC.inv(self, loop, xyzabg=[1, 2, 3, 4, 5, 6], joint_current=[1, 2, 3, 4, 5, 6], all_sol=False))"
-"""
 
 if __name__ == '__main__':
     app = [
