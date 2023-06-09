@@ -19,26 +19,35 @@
           </thead>         
           <tbody>
             {% for i in [180, 180, -142, 135, 0,0,0,0]%}
-            <tr class="set_joint_form versionable" data-key="{{loop.index-1}}" version="dorna_2">
-              <td>j{{loop.index-1}}</td>
-              <td>
-                <input type="number" class="form-control set_joint_v small text-center" value="{{i}}" step="0.001" data-key="j{{loop.index-1}}" index="{{loop.index-1}}" placeholder= "{{i}}">
-              </td>
-              <td>
-                <button type="button" class="set_joint_b btn btn-primary btn-block" data-key="j{{loop.index-1}}" data-cmd={{cmd["joint"]}}>Set joint</button>
-              </td>
               {% if loop.index-1 > 4%}
+              <tr class="set_joint_form" data-key="{{loop.index-1}}">
+                <td>j{{loop.index-1}}</td>
+                <td>
+                  <input type="number" class="form-control set_joint_v small text-center" value="{{i}}" step="0.001" data-key="j{{loop.index-1}}" index="{{loop.index-1}}" placeholder= "{{i}}">
+                </td>
+                <td>
+                  <button type="button" class="set_joint_b btn btn-primary btn-block" data-key="j{{loop.index-1}}" data-cmd={{cmd["joint"]}}>Set joint</button>
+                </td>              
                 <td>
                   <button type="button" class="home_joint_b btn btn-dark btn-block" data-key="{{loop.index-1}}" data-dir="-1">Auto homing (-) direction</button>
                 </td>
                 <td>
                   <button type="button" class="home_joint_b btn btn-dark btn-block" data-key="{{loop.index-1}}" data-dir="1">Auto homing (+) direction</button>
                 </td>
+              </tr>
               {% else %}
+              <tr class="set_joint_form versionable" data-key="{{loop.index-1}}" version="dorna_2">
+                <td>j{{loop.index-1}}</td>
+                <td>
+                  <input type="number" class="form-control set_joint_v small text-center" value="{{i}}" step="0.001" data-key="j{{loop.index-1}}" index="{{loop.index-1}}" placeholder= "{{i}}">
+                </td>
+                <td>
+                  <button type="button" class="set_joint_b btn btn-primary btn-block" data-key="j{{loop.index-1}}" data-cmd={{cmd["joint"]}}>Set joint</button>
+                </td>                
                 <td></td>
-                <td></td>                
+                <td></td>
+              </tr>                
               {% endif %}                    
-            </tr>
             {% endfor %}
             <tr class="versionable" version="dorna_2"> 
               <td></td>
