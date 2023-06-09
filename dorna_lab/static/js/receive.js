@@ -80,17 +80,19 @@ function configure_version(msg){
     init_scene()
     graphic_on()
     init_collada()
-    $(".versionable" ).each(function( index){
-      let version = $(this).attr("version")
-      if(version==config_version["model"]){
-  
-      }
-      else
-        $(this).hide();
-    })
+    hide_versionable()
     $('.startup-v').val(config_version["startup"]);
 }
+function hide_versionable(){
+    $(".versionable" ).each(function( index){
+    let version = $(this).attr("version")
+    if(version==config_version["model"]){
 
+    }
+    else
+      $(this).hide();
+  })
+}
 function  emergency_setting(msg){
   $('.emergency-c').prop("checked",msg["emergency_enable"]);
   $('.emergency-key-v').prop("value",Number(msg["emergency_key"].slice(2)));

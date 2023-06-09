@@ -17,6 +17,7 @@ function set_ND(){
 			$(this).prop("style").display = "none";
 		}
 	});
+	hide_versionable()
 	return 0;
 }set_ND()
 
