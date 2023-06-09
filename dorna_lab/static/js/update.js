@@ -21,36 +21,28 @@ function update_print(data) {
 }
 
 function update_check(data) {
-	// no internet
-	if (Object.keys({"ali":1}).lengt == 0){
-			$(".outdate").hide()
-			$(".update").hide()
-			$(".internet").show()
-	
-	}else{
-		let outdate = false
-		for (let key of Object.keys(data)) {
-			// latest version
-			let latest = data[key]
-			$(`.version_v[data-latest=${key}]`).text(latest)
+	let outdate = false
+	for (let key of Object.keys(data)) {
+		// latest version
+		let latest = data[key]
+		$(`.version_v[data-latest=${key}]`).text(latest)
 
-			// current version
-			let current = $(`.version_v[data-current=${key}]`).text()
-			
-			if (latest !== current){
-				outdate = true
-				break
-			}
+		// current version
+		let current = $(`.version_v[data-current=${key}]`).text()
+		
+		if (latest !== current){
+			outdate = true
 		}
-		// show update message
-		if(outdate){
-			$(".outdate").show()
-			$(".update").hide()
-			$(".internet").hide()
-		}else{
-			$(".outdate").hide()
-			$(".update").show()
-			$(".internet").hide()
-		}		
 	}
+	// show update message
+	if(outdate){
+		$(".outdate").show()
+		$(".update").hide()
+		$(".internet").hide()
+	}else{
+		$(".outdate").hide()
+		$(".update").show()
+		$(".internet").hide()
+	}		
+
 }

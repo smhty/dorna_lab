@@ -268,5 +268,6 @@ if __name__ == '__main__':
     app = tornado.web.Application(app, debug=CONFIG["server"]["debug"])
     app.listen(CONFIG["server"]["port"])
     loop.start()
+
     while True:
         time.sleep(1)
