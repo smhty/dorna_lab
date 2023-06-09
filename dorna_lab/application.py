@@ -268,7 +268,7 @@ if __name__ == '__main__':
     def startup_function():
         if "startup" in config_data:
             for line in config_data["startup"].splitlines():
-                if line==" " or line[0]=="#": 
+                if len(line) == 0 or line==" " or line[0]=="#": 
                     continue
                 startup_process = shell.Shell(line)
                 asyncio.create_task(startup_process.run(DORNA, None, loop, DATABASE, None))

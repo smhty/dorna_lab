@@ -540,7 +540,7 @@ function update_sessions_list(msg){
                 <div class="mt-auto mb-auto ml-1 mr-1">&bull;</div>
                 <small class="mt-auto mb-auto "> <b> Ended: </b>  `+a[2]+`</small>
                 <button type="button" class="btn btn-danger btn-sm rounded-0 ml-auto kill_btn" data-key=`+a[0]+" "+dis_str+ ` >End Process</button>
-                <button type="button" class="btn btn-primary btn-sm rounded-0 ml-2 retry_btn" data-key=`+a[0]+` >Retry</button>
+                <button type="button" class="btn btn-primary btn-sm rounded-0 ml-2 retry_btn" data-key=`+a[0]+` >Re-run</button>
               </div>              
             </div>`
       
