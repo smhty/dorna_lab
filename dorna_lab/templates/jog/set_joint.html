@@ -1,5 +1,5 @@
 <div class="modal fade" id="set_joint_modal" tabindex="-1" role="dialog" aria-labelledby="set_joint_modal" aria-hidden="true">  
-  <div class="modal-dialog modal-dialog-scrollable" role="document">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="exampleModalScrollableTitle">Set joint</h5>
@@ -13,7 +13,8 @@
           <thead class="thead-dark">
             <tr>
               <th scope="col">Joint</th>
-              <th scope="col" colspan="2">New value</th>
+              <th scope="col">New value</th>
+              <th scope="col" colspan="3"></th>
             </tr>
           </thead>         
           <tbody>
@@ -23,18 +24,19 @@
               <td>
                 <input type="number" class="form-control set_joint_v small text-center" value="{{i}}" step="0.001" data-key="j{{loop.index-1}}" index="{{loop.index-1}}" placeholder= "{{i}}">
               </td>
-
+              <td>
+                <button type="button" class="set_joint_b btn btn-primary btn-block" data-key="j{{loop.index-1}}" data-cmd={{cmd["joint"]}}>Set joint</button>
+              </td>
               {% if loop.index-1 > 4%}
                 <td>
-                  <div class="btn-group w-100">
-                    <button type="button" class="home_joint_b btn btn-dark" data-key="{{loop.index-1}}">Home joint</button>
-                    <button type="button" class="set_joint_b btn btn-primary" data-key="j{{loop.index-1}}" data-cmd={{cmd["joint"]}}>Set joint</button>
-                  </div>
+                  <button type="button" class="home_joint_b btn btn-dark btn-block" data-key="{{loop.index-1}}" data-dir="-1">Auto homing - direction</button>
+                </td>
+                <td>
+                  <button type="button" class="home_joint_b btn btn-dark btn-block" data-key="{{loop.index-1}}" data-dir="1">Auto homing + direction</button>
                 </td>
               {% else %}
-                <td>
-                  <button type="button" class="set_joint_b btn btn-primary btn-block" data-key="j{{loop.index-1}}" data-cmd={{cmd["joint"]}}>Set joint</button>
-                </td>
+                <td></td>
+                <td></td>                
               {% endif %}                    
             </tr>
             {% endfor %}
@@ -44,6 +46,8 @@
               <td>
                 <button type="button" class="set_joint_b all btn btn-primary btn-block" data-cmd={{cmd["joint"]}}>Set all</button>
               </td>
+              <td></td>
+              <td></td>
             </tr>
           </tbody>
         </table>
