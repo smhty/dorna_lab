@@ -85,7 +85,6 @@ function configure_version(msg){
 }
 function hide_versionable(){
     $(".versionable" ).each(function( index){
-    console.log("ali")
     let version = $(this).attr("version")
     if(version==config_version["model"]){
       $(this).show();
