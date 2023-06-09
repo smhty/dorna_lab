@@ -538,8 +538,9 @@ function update_sessions_list(msg){
                 <div class="mt-auto mb-auto ml-1 mr-1">&bull;</div>
                 <small class="mt-auto mb-auto"> <b> Started:  </b> `+ a[1] +`</small>
                 <div class="mt-auto mb-auto ml-1 mr-1">&bull;</div>
-                <small class="mt-auto mb-auto"> <b> Ended: </b>  `+a[2]+`</small>
+                <small class="mt-auto mb-auto "> <b> Ended: </b>  `+a[2]+`</small>
                 <button type="button" class="btn btn-danger btn-sm rounded-0 ml-auto kill_btn" data-key=`+a[0]+" "+dis_str+ ` >End Process</button>
+                <button type="button" class="btn btn-primary btn-sm rounded-0 ml-2 kill_btn" data-key=`+a[0]+" "+dis_str+ ` >Run Another</button>
               </div>              
             </div>`
       
