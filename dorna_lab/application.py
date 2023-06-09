@@ -266,12 +266,13 @@ if __name__ == '__main__':
     app.listen(CONFIG["server"]["port"]) 
     
     def startup_function():
-        for line in config_data["startup"].splitlines():
-            if line==" " or line[0]=="#": 
-                continue
-            startup_process = shell.Shell(line)
-            asyncio.create_task(startup_process.run(DORNA, None, loop, DATABASE, None))
-            PROCESSES.append(startup_process)
+        if "startup" in config_data:
+            for line in config_data["startup"].splitlines():
+                if line==" " or line[0]=="#": 
+                    continue
+                startup_process = shell.Shell(line)
+                asyncio.create_task(startup_process.run(DORNA, None, loop, DATABASE, None))
+                PROCESSES.append(startup_process)
 
     loop.call_later(delay=1, callback=startup_function)
     loop.start()
