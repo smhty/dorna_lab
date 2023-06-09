@@ -27,8 +27,8 @@ with open('config.log') as infile: #importing config.log file
     config_data = json.load(infile)
 loop = tornado.ioloop.IOLoop.current()
 kin = kinematic.kinematic_class(config_data["model"])
-
-
+DATABASE = db.db_class(os.path.join(PATH, 'flaskr.sqlite'))
+PROCESSES = []
 
 class gui(BaseHandler):
     def get(self, **kwargs):
@@ -52,10 +52,10 @@ class DornaConnection(object):
         
         self.ws_list = []
 
+
     
     def register_ws(self, ws):
         self.ws_list.append(ws)
-        ws.shell_process(config_data["startup"])
 
     def deregister_ws(self, ws):
         self.ws_list.remove(ws)
@@ -74,10 +74,7 @@ class DornaConnection(object):
         for ws in self.ws_list:
             ws.emit_message(msg)
 
-
 DORNA = DornaConnection()
-DATABASE = db.db_class(os.path.join(PATH, 'flaskr.sqlite'))
-PROCESSES = []
 
 
 class WebSocket(tornado.websocket.WebSocketHandler):
@@ -265,8 +262,18 @@ if __name__ == '__main__':
         (r'/static/(.*)', tornado.web.StaticFileHandler,
          {'path': STATIC_PATH_DIR}),
     ]
-    app = tornado.web.Application(app, debug=CONFIG["server"]["debug"])
-    app.listen(CONFIG["server"]["port"])
+    app = tornado.web.Application(app, debug=CONFIG["server"]["debug"]) 
+    app.listen(CONFIG["server"]["port"]) 
+    
+    def startup_function():
+        for line in config_data["startup"].splitlines():
+            if line==" " or line[0]=="#": 
+                continue
+            startup_process = shell.Shell(line)
+            asyncio.create_task(startup_process.run(DORNA, None, loop, DATABASE, None))
+            PROCESSES.append(startup_process)
+
+    loop.call_later(delay=1, callback=startup_function)
     loop.start()
 
     while True:

@@ -530,7 +530,7 @@ function update_sessions_list(msg){
       }
       let elem = `<div class="list-group-item">
               <div class="d-flex w-100">
-                <div> <i class="fa fa-code"></i> `+a[4]+`</div>
+                <div> <i class="fa fa-code"></i> <i class="session-code-v" data-key=`+a[0]+`>`+a[4]+`</i></div>
                 <small class="ml-auto mt-auto mb-auto">`+a[3]+`</small>
               </div>              
               <div class="d-flex w-100">
@@ -540,7 +540,7 @@ function update_sessions_list(msg){
                 <div class="mt-auto mb-auto ml-1 mr-1">&bull;</div>
                 <small class="mt-auto mb-auto "> <b> Ended: </b>  `+a[2]+`</small>
                 <button type="button" class="btn btn-danger btn-sm rounded-0 ml-auto kill_btn" data-key=`+a[0]+" "+dis_str+ ` >End Process</button>
-                <button type="button" class="btn btn-primary btn-sm rounded-0 ml-2 kill_btn" data-key=`+a[0]+" "+dis_str+ ` >Run Another</button>
+                <button type="button" class="btn btn-primary btn-sm rounded-0 ml-2 retry_btn" data-key=`+a[0]+` >Retry</button>
               </div>              
             </div>`
       
@@ -558,6 +558,15 @@ function update_sessions_list(msg){
     })
   });
 
+  $(".retry_btn").on("click", function(e) {
+    let id = $(this).attr("data-key")
+    let msg = $(`.session-code-v[data-key=${id}]`).text()
+    send_message({
+      "_server":"shell",
+      "prm": [msg] 
+    })
+
+  });
 }
 
 function call_for_sessions_list(){

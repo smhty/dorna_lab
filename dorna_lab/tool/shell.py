@@ -46,14 +46,22 @@ class Shell(object):
         asyncio.create_task(db.db_call(socket, server_loop, "SELECT * FROM program"))
 
         msg = {"to": "shell", "msg": "(process id: " + str(self.p.pid) + ") " + "process started at: " +date.today().strftime("%B %d, %Y") + " - " + datetime.now().strftime("%H:%M:%S") + " | raw command: " + self.cmd,"pid":self.p.pid}
-        server_loop.add_callback(ws.emit_message, json.dumps(msg))
+        if(ws):
+            server_loop.add_callback(ws.emit_message, json.dumps(msg))
+        else:
+            for wss in socket.ws_list:
+                server_loop.add_callback(wss.emit_message, json.dumps(msg))
 
         # run the loop
         while True:
             output = await self.p.stdout.readline()
             if output:
                 msg = {"to": "shell","msg": "(process id: " + str(self.p.pid) + ") " + str(output.strip(), "utf-8"),"pid":self.p.pid}
-                server_loop.add_callback(ws.emit_message, json.dumps(msg))
+                if(ws):
+                    server_loop.add_callback(ws.emit_message, json.dumps(msg))
+                else:
+                    for wss in socket.ws_list:
+                        server_loop.add_callback(wss.emit_message, json.dumps(msg))
 
             if self.p.returncode is not None:
                 break
@@ -61,7 +69,12 @@ class Shell(object):
 
         # process completed
         msg = {"to": "shell", "msg": "(process id: " + str(self.p.pid) + ") " + "process completed at: " + date.today().strftime("%B %d, %Y") + " - " + datetime.now().strftime("%H:%M:%S"),"pid":-1}
-        server_loop.add_callback(ws.emit_message, json.dumps(msg))
+        
+        if(ws):
+            server_loop.add_callback(ws.emit_message, json.dumps(msg))
+        else:
+            for wss in socket.ws_list:
+                server_loop.add_callback(wss.emit_message, json.dumps(msg))
         
         #self.p.kill()
         asyncio.create_task(db.db_call(socket, server_loop, 'UPDATE program SET status = "Ended", finish = \" ' + date.today().strftime("%B %d,%Y") +
