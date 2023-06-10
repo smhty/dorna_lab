@@ -25,6 +25,7 @@ CONFIG = config.config
 # initialize config.log
 with open('config.log') as infile: #importing config.log file
     config_data = json.load(infile)
+    """
     # make sure all the keys exists
     if "startup" not in config_data:
         config_data["startup"] = ""
@@ -34,9 +35,11 @@ with open('config.log') as infile: #importing config.log file
         config_data["emergency_key"] = "in0"
     if "emergency_value" not in config_data:
         config_data["emergency_value"] = 1
-
+    """
+"""
 with open("config.log", "w") as infile:
     json.dump(config_data, infile)
+"""
 
 loop = tornado.ioloop.IOLoop.current()
 kin = kinematic.kinematic_class(config_data["model"])
