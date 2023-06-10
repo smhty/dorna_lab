@@ -1,8 +1,6 @@
 import json
 import sys
 
-import sys
-
 # Access the passed argument
 
 if __name__ == '__main__':

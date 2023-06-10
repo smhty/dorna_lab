@@ -139,17 +139,17 @@ class WebSocket(tornado.websocket.WebSocketHandler):
 
             elif msg["_server"] == "startup":
                 config_data["startup"] = msg["text"]
-                json_object = json.dumps(config_data, indent=4)
+                #?json_object = json.dumps(config_data)
                 with open("config.log", "w") as outfile:
-                    outfile.write(json_object)
+                    json.dump(config_data, outfile)
 
             elif msg["_server"] == "emergency":
                 config_data["emergency_enable"] = msg["enable"]
                 config_data["emergency_key"] = msg["key"]
                 config_data["emergency_value"] = msg["value"]
-                json_object = json.dumps(config_data, indent=4)
+                #?json_object = json.dumps(config_data)
                 with open("config.log", "w") as outfile:
-                    outfile.write(json_object)
+                    json.dump(config_data, outfile)
 
                 DORNA.robot.set_emergency(enable =config_data["emergency_enable"], key = config_data["emergency_key"],
                     value = config_data["emergency_value"])
