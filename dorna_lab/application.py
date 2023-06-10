@@ -22,6 +22,7 @@ V_LAB = "2.1.0"
 
 CONFIG = config.config               
 
+# initialize config.log
 with open('config.log') as infile: #importing config.log file
     config_data = json.load(infile)
     # make sure all the keys exists
