@@ -18,7 +18,7 @@ STATIC_PATH_DIR = os.path.join(PATH, 'static')
 # change directory
 os.chdir(os.path.join(PATH))
 
-V_LAB = "2.0.3" 
+V_LAB = "2.1.0" 
 
 CONFIG = config.config               
 
