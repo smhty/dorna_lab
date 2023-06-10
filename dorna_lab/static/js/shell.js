@@ -19,4 +19,8 @@ function shell_print(data, type= "") {
 	// add time
 	shell_editor.replaceRange(type+ data+'\n', CodeMirror.Pos(shell_editor.lastLine()))
 
+	// Scroll the last line into view
+	if ($(".shell_last_line_c").prop("checked")) {
+		shell_editor.scrollIntoView(shell_editor.lastLine());	
+	}
 }

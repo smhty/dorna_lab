@@ -56,7 +56,8 @@ let python_viewer = CodeMirror.fromTextArea($(".python_viewer")[0], {
   readOnly: true,
   mode: "text/x-python",
   tabSize: 4,
-  indentUnit: 4
+  indentUnit: 4,
+  showInvisibles: true,
 })
 python_viewer.refresh();
 
@@ -68,7 +69,8 @@ let python_editor = CodeMirror.fromTextArea($(".python_editor")[0], {
   autoCloseBrackets: true,
   mode: "text/x-python",
   tabSize: 4,
-  indentUnit: 4
+  indentUnit: 4,
+  showInvisibles: true,
 })
 python_editor.refresh();
 
