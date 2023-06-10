@@ -1,7 +1,0 @@
-{
-    "model": "dorna_2s",
-    "startup": "",
-    "emergency_enable": false,
-    "emergency_key": "in0",
-    "emergency_value": 1
-}
