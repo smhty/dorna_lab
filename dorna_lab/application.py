@@ -23,8 +23,20 @@ V_LAB = "2.1.0"
 CONFIG = config.config               
 
 with open('config.log') as infile: #importing config.log file
-    config_file = infile
     config_data = json.load(infile)
+    # make sure all the keys exists
+    if "startup" not in config_data:
+        config_data["startup"] = ""
+    if "emergency_enable" not in config_data:
+        config_data["emergency_enable"] = False
+    if "emergency_key" not in config_data:
+        config_data["emergency_key"] = "in0"
+    if "emergency_value" not in config_data:
+        config_data["emergency_value"] = 1
+
+with open("config.log", "w") as infile:
+    json.dump(config_data, infile)
+
 loop = tornado.ioloop.IOLoop.current()
 kin = kinematic.kinematic_class(config_data["model"])
 DATABASE = db.db_class(os.path.join(PATH, 'flaskr.sqlite'))
@@ -47,7 +59,7 @@ class DornaConnection(object):
 
         self.robot.register_callback(self.send_message_to_browser)
         
-        if(k in config_data for k in ("emergency_enable","emergency_key","emergency_value")):
+        if all([k in config_data for k in ("emergency_enable","emergency_key","emergency_value")]):
             self.robot.set_emergency(enable =config_data["emergency_enable"],   key = config_data["emergency_key"],   value = config_data["emergency_value"])
         
         self.ws_list = []
