@@ -9,7 +9,7 @@ import tornado.websocket
 from flask_to_tornado import BaseHandler
 
 from dorna2 import Dorna, __version__ as V_API
-from tool import db,folder,shell, update, kinematic, timeline
+from tool import db,folder,shell, update, kinematic
 import config
 
 PATH = os.path.dirname(os.path.abspath(__file__))
