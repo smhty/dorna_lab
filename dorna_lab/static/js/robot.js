@@ -177,6 +177,10 @@ class Robot{
 		this.d_info 	= config_version["d"]
 		this.alpha_info = config_version["alpha"]
 		this.delta_info = config_version["delta"]
+		this.p0 = new THREE.Vector3(0,config_version["d"][1]/1000,config_version["a"][2]/1000)//new THREE.Vector3(0.0,2.404464*this.scale_factor,9.475806*this.scale_factor);
+		this.l2 = config_version["a"][3]/1000;
+		this.l3 = config_version["a"][4]/1000;
+		this.l4 = config_version["d"][5]/1000;
 
 
 		this.robot_scene= new THREE.Group();
@@ -304,59 +308,7 @@ class Robot{
 								 ct*sa*sd+ca*st		,	-cd*sa	,	ca*ct-sa*sd*st,	this.a_info[i]*(sa*sd)/1000 + this.d_info[i]*(-cd*sa)/1000,
 								 0	,	0	,	0	,	1);
 
-/*
-			clist[i].matrix.set(cd*ct	,	-cd*st	,	sd	,	this.a_info[i]*cd/1000 + this.d_info[i]*sd/1000,
-								 ct*sa*sd+ca*st	,	ca*ct-sa*sd*st	,	-cd*sa	,	this.a_info[i]*(sa*sd)/1000 + this.d_info[i]*(-cd*sa)/1000,
-								 -ca*ct*sd + sa*st	,	ct*sa+ca*sd*st	,	cd*ca	,	this.a_info[i]*(-ca*sd )/1000 + this.d_info[i]*(cd*ca)/1000,
-								 0	,	0	,	0	,	1);
-*/
-
 		}
-		/*
-		this.a1_g.matrixAutoUpdate  = false;
-		this.a1_g.updateMatrix();
-		this.a1_g.matrix.set(-a	,	0	,	-b	,	0,
-							 0	,	1	,	0	,	0,//0.309664,
-							 b	,	0	,	-a	,	0,
-							 0	,	0	,	0	,	1);
-
-
-		this.a2_g.matrixAutoUpdate  = false;
-		this.a2_g.updateMatrix();
-		this.a2_g.matrix.set(c	,	-d	,	0	,	0.100039,
-							 d	,	c	,	0	,	0,
-							 0	,	0	,	1	,	0,
-							 0	,	0	,	0	,	1);
-
-		this.a3_g.matrixAutoUpdate  = false;
-		this.a3_g.updateMatrix();
-		this.a3_g.matrix.set(e	,	-f	,	0	,	0.299983,
-							 f	,	e	,	0	,	0,
-							 0	,	0	,	1	,	0,
-							 0	,	0	,	0	,	1);
-
-		this.a4_g.matrixAutoUpdate  = false;
-		this.a4_g.updateMatrix();
-		this.a4_g.matrix.set(g	,	-h	,	0	,	0.2085,
-							 h	,	g	,	0	,	0,
-							 0	,	0	,	1	,	-0.1331,
-							 0	,	0	,	0	,	1);
-
-		this.a5_g.matrixAutoUpdate  = false;
-		this.a5_g.updateMatrix();
-		this.a5_g.matrix.set(0	,	0	,	-1	,	0.091502,
-							 -j	,	i	,	0	,	0,
-							 -i	,	-j	,	0	,	0.0,
-							 0	,	0	,	0	,	1);
-
-
-		this.a6_g.matrixAutoUpdate  = false;
-		this.a6_g.updateMatrix();
-		this.a6_g.matrix.set(1	,	0	,	0	,	0.009,
-							 0	,	-k	,	l	,	0,
-							 0	,	l	,	k	,	0,
-							 0	,	0	,	0	,	1);
-		*/
 
 		this.focus_point.matrixAutoUpdate  = false;
 		this.focus_point.updateMatrix();
@@ -365,13 +317,6 @@ class Robot{
 									0	,	0	,	1	,	0,
 									0	,	0	,	0	,	1);
 
-		/*this.a_help.matrixAutoUpdate = false
-    	this.a_help.matrix.set(	1  ,0 ,0 ,0,
-          						0  ,0 ,1 ,(this.l4 + this.tool_head_length)/this.scale_factor,
-					          	0  ,-1,0 ,0,
-					         	0  ,0 ,0 ,1);
-   		this.a_help.matrixWorldNeedsUpdate = true;
-		*/
 		if(this.being_controlled){
 			this.a1_g.quaternion.setFromRotationMatrix(this.a1_g.matrix);
 			this.a2_g.quaternion.setFromRotationMatrix(this.a2_g.matrix);
@@ -797,7 +742,7 @@ class Robot{
 	}
 	allowed_xyza(){
 		var info = {};
-		let other_limits = 1000;
+		let other_limits = 1000*1000;
 		info["nx"] = -other_limits;
 		info["px"] = other_limits;
 		info["ny"] = -other_limits;
@@ -805,16 +750,10 @@ class Robot{
 		info["nz"] = -other_limits;
 		info["pz"] = other_limits;
 		info["na"] = -other_limits;
-		info["pa"] = other_limits;
-		
+		info["pa"] = other_limits;	
 		info["pb"] = other_limits;
 		info["nb"] = -other_limits;
-		info["pc"] = other_limits;
-		info["nc"] = -other_limits;
-		info["pd"] = other_limits;
-		info["nd"] = -other_limits;
 
-		return info;
 		var N = 50;
 		var info = {};
 		
@@ -880,7 +819,7 @@ class Robot{
 			last_l = l;
 		}
 		
-		info["pz"] = this.xyz_to_real(v).z;// a*this.scale_to_real;
+		info["pz"] = this.xyz_to_real(v).z;
 
 
 		//-y
@@ -901,7 +840,7 @@ class Robot{
 			a += l;
 			last_l = l;
 		}
-		info["nz"] = this.xyz_to_real(v).z;//a*this.scale_to_real;
+		info["nz"] = this.xyz_to_real(v).z;
 
 		//+z
 		v.set(this.position.x , this.position.y , this.position.z);
@@ -921,7 +860,7 @@ class Robot{
 			a += l;
 			last_l = l;
 		}
-		info["px"] = this.xyz_to_real(v).x//a*this.scale_to_real;
+		info["px"] = this.xyz_to_real(v).x;
 
 		//-z
 		v.set(this.position.x , this.position.y , this.position.z);
@@ -958,6 +897,7 @@ class Robot{
 		info["nd"] = -other_limits;
 		info["pe"] = other_limits;
 		info["ne"] = -other_limits;
+
 
 
 
@@ -1082,14 +1022,8 @@ class Robot{
 		info["nj4"] = -other_limits;
 		info["pj4"] = other_limits;
 		
-		info["pj5"] = other_limits;
-		info["nj5"] = -other_limits;
-		info["pj6"] = other_limits;
-		info["nj6"] = -other_limits;
-		info["pj7"] = other_limits;
-		info["nj7"] = -other_limits;
 
-		return info;
+
 		var joint = {"j0":this.joints[0] , "j1":this.joints[1] , "j2":this.joints[2] , "j3":this.joints[3] , "j4":this.joints[4] , "j5":this.joints[5]};
 		var nb = { 
 					"j1": [-40, -45, -50, -60, -70, -80, -90],
@@ -1169,12 +1103,12 @@ class Robot{
 		info["nj2"] = j2_limit_down;
 		info["pj2"] = j2_limit_up;
 
-		info["pj5"] = other_limits;
-		info["nj5"] = -other_limits;
-		info["pj6"] = other_limits;
-		info["nj6"] = -other_limits;
-		info["pj7"] = other_limits;
-		info["nj7"] = -other_limits;
+		info["pj5"] = other_limits*1000;
+		info["nj5"] = -other_limits*1000;
+		info["pj6"] = other_limits*1000;
+		info["nj6"] = -other_limits*1000;
+		info["pj7"] = other_limits*1000;
+		info["nj7"] = -other_limits*1000;
 
 		return info;
 

@@ -394,12 +394,11 @@ class move_cmd{
 	callback(){
 			let cc = this;
 			let out = this.parent_chain.robot.xyz_to_real(cc.position);
-			//let out = this.parent_chain.robot.position;
-			//this.position.set(out.x,out.y,out.z);
-			out = this.parent_chain.robot.xyz_to_real(out);
+
 			out.x*=1000;
 			out.y*=1000;
 			out.z*=1000;
+			
 			let outabc = cc.abc;
 			let message = {
 
