@@ -58,7 +58,7 @@ $( ".path_design_point_prm_v" ).on("change", function(e) {
 			}
 		}
 
-		console.log("xyzab: ", xyzab)
+		//console.log("xyzab: ", xyzab)
 		chain.control_cmd.set_cmd(cmd);
 	}
 

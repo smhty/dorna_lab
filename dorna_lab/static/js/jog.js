@@ -110,6 +110,7 @@ $(".jog_b").on("mousedown touchstart", function(e) {
 
 	let info;
 
+
 	if($(this).attr("data-cmd")==="lmove"){
 		info = original_robot.allowed_xyza();
 		if(info["na"]<-9000||info["pa"]>9000){
@@ -129,7 +130,6 @@ $(".jog_b").on("mousedown touchstart", function(e) {
 		limit = limit - 5 * Math.sign(info[s]);
 	}
 	if($(this).attr("data-cmd")==="lmove"){
-
 		limit = limit;
 	}
 
@@ -137,7 +137,6 @@ $(".jog_b").on("mousedown touchstart", function(e) {
 	let f_pos =original_robot.position.clone();
 	f_pos = original_robot.xyz_to_real(f_pos);
 	f_pos[$(this).attr("data-key")] = limit;
-
 	///
 
 	let l = limit - original_robot.value($(this).attr("data-key"));
@@ -149,7 +148,7 @@ $(".jog_b").on("mousedown touchstart", function(e) {
 			l = Math.sign( l ) *  Math.abs( $(`.jog_d_v[data-cmd=${msg["cmd"]}]`).prop("value") ) ;
 	}
 
-	msg[$(this).attr("data-key")] = Number((original_robot.value($(this).attr("data-key")) + l).toFixed(to_fixed_val));
+	msg[$(this).attr("data-key")] = Number((original_robot.value($(this).attr("data-key")) + l)).toFixed(to_fixed_val+3);
 
 	// vel, accel, jerk
 	$(`.vaj_s_v[data-value=${$(this).attr("data-type")}]`).each(function() {
@@ -159,7 +158,6 @@ $(".jog_b").on("mousedown touchstart", function(e) {
 	// get necessary attributes
 
 	send_message(msg)
-
 	if(!$(`.jog_d_c[data-cmd=${msg["cmd"]}]`).prop("checked")){
 		$(document).on("mouseup touchend", function(e) {
 			$(document).unbind("touchend");
