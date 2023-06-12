@@ -158,7 +158,6 @@ $(".jog_b").on("mousedown touchstart", function(e) {
 	// get necessary attributes
 
 	send_message(msg)
-	console.log(msg)
 	if(!$(`.jog_d_c[data-cmd=${msg["cmd"]}]`).prop("checked")){
 		$(document).on("mouseup touchend", function(e) {
 			$(document).unbind("touchend");

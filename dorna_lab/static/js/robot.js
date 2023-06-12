@@ -645,7 +645,6 @@ class Robot{
 		//inverse here 
 
 		var p = this.xyz_to_real(pos);
-		//console.log(abc,pos)
 		 send_message({
 	        "_server":"knmtc",
 	        "func": "inv","xyzabg":[p.x,p.y,p.z,abc[0],abc[1],abc[2]],"joint_current":this.joints,"all_sol":false
@@ -653,6 +652,7 @@ class Robot{
 	        	if(res["result"][0]){
 	        		v[0].set_joints(res["result"][0]);
 	        		if(v[1]){
+	        			console.log("here:",res["result"][0])
 	        			set_5(v[1],res["result"][0]);
 	        		}
 	        	}

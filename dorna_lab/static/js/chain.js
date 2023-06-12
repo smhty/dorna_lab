@@ -347,18 +347,16 @@ class move_cmd{
 			}
 
 		}
-
 		if(!(typeof cmd["x"] === 'undefined')){
 			let v = this.parent_chain.robot.real_to_xyz(new THREE.Vector3(cmd["x"],cmd["y"],cmd["z"]));
 
-			this.position.set(v.x,v.y,v.z);
+			this.position.set(v.x/1000,v.y/1000,v.z/1000);
 
 			if(this.parent_chain.control_cmd == this){
-				this.parent_chain.controller.set_xyza(this.position,cmd["a"],cmd["b"]);
-				set_5(this.joint,this.parent_chain.controller.joints)
+				this.parent_chain.controller.set_xyza(this.position,[cmd["a"],cmd["b"],0],this.joint);
 			}
 			else{
-				set_5(this.joint , this.parent_chain.robot.xyza_to_joints(this.position,cmd["a"],cmd["b"]));
+				set_5(this.joint , this.parent_chain.robot.xyza_to_joints(this.position,[cmd["a"],cmd["b"],0],this.joint));
 			}
 		}
 	
@@ -398,7 +396,7 @@ class move_cmd{
 			out.x*=1000;
 			out.y*=1000;
 			out.z*=1000;
-			
+
 			let outabc = cc.abc;
 			let message = {
 
