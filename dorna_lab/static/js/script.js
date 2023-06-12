@@ -4,9 +4,10 @@ let editor = CodeMirror.fromTextArea($(".script")[0], {
 	lineWrapping: true,
 	matchBrackets: true,
 	autoCloseBrackets: true,
-	mode: "application/json",
+	mode: "text/x-python",
 	tabSize: 4,
 	indentUnit: 4,
+	indentGuide: true,
 })
 
 var charWidth = editor.defaultCharWidth(), basePadding = 4;
@@ -74,48 +75,23 @@ $('.script_play_b').on("click", function(e){
 	}
 	script_index = [[], []]
 	let input_str = editor.getValue();
+	
 	let stack = [];
 
 	let script_replay = $(".script_replay_c").prop("checked")
 	let script_track = $(".script_track_c").prop("checked")
 
+	let json_data = parse_script(input_str)
 	let valid_msg = false
-
-	
-  	for(let i = 0; i < input_str.length; i++) {
-		let ch = input_str.charAt(i);
-
-		if(ch === '{') {
-		  stack.push(i);
-		}
-		else if(ch === '}') {
-		  try {
-		    let start = stack.pop();
-
-		    if(stack.length == 0) {
-						let startPos = editor.posFromIndex(start);
-
-						let end = i + 1;
-						let endPos = editor.posFromIndex(end);
-						let pair = [startPos, endPos];
-
-						let msg = input_str.substring(start, end).replace(/[ \n\t\r]+/g,"");
-						let json_str = JSON.parse(msg);
-
-						//add id and save indices of command
-						if(script_track){
-							json_str["id"] = script_index[0].length +2
-							script_index[0].push(json_str["id"])
-							script_index[1].push(pair)
-						}
-						valid_msg = true
-						send_message(json_str, false, true)
-		    }
-		  } catch(e) {
-		    console.log("Bad input format");
-		  }
-		}
-	};
+	if (json_data.length >= 1) {
+		valid_msg = true
+	}
+	for (let i = 0; i < json_data.length; i++) {
+	  let cmd = json_data[i]["data"];
+	  let id = json_data[i]["startLine"]+1
+	  cmd["id"] = id
+	  send_message(cmd, false, true)
+	}	
 
 	// replay
 	if(script_replay && valid_msg){
@@ -124,7 +100,6 @@ $('.script_play_b').on("click", function(e){
 			"time": 0.001,
 			"id": 1
 		}
-		console.log(cmd)
 		send_message(cmd, false, true)
 	}
 });
@@ -250,3 +225,42 @@ $('.script_delete_b').click(function(e){
 	editor.setValue("")
 })
 change_script_file(null,"","","");
+
+function parse_script(fileContent) {
+  const jsonObjects = [];
+  const lines = fileContent.split('\n');
+  let jsonString = '';
+  let startLine = 1;
+
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+
+    if (line.trim().startsWith('#')) {
+      // Ignore comment lines
+      startLine++;
+      continue;
+    }
+
+    if (jsonString === '') {
+      startLine = i + 1;
+    }
+
+    jsonString += line.trim();
+
+    try {
+      const jsonObject = JSON.parse(jsonString);
+
+      if (typeof jsonObject === 'object' && jsonObject !== null) {
+        // Push the parsed JSON object along with the start line number
+        jsonObjects.push({ data: jsonObject, startLine });
+      }
+
+      jsonString = '';
+    } catch (error) {
+      // Ignore lines that do not form a valid JSON object
+    }
+  }
+
+  return jsonObjects;
+}
+
