@@ -1,10 +1,10 @@
-/*
+
 class Trail{
 	positions;
 	material;
 	line1;
 	line2;
-	constructor(color_hex,robot,max_points,dt,scene,width =2 ){
+	constructor(color_hex,robot,max_points,dt,scene,width =0.5 ){
 		this.visible = true;
 		this.color =  color_hex;
 		this.robot = robot;
@@ -88,4 +88,3 @@ class Trail{
 	}
 	
 }
-*/
