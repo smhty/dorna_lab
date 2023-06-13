@@ -92,8 +92,8 @@ $('.script_play_b').on("click", function(e){
 		//add id and save indices of command
 		if(script_track){
 			cmd["id"] = json_data[i]["startLine"]+1
-			script_index[0].push(cmd["id"])
-			script_index[1].push(pair)
+			//script_index[0].push(cmd["id"])
+			//script_index[1].push(pair)
 		}		
 	  send_message(cmd, false, true)
 	}	
