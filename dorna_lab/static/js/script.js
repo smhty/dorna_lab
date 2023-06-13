@@ -126,9 +126,17 @@ $('.script_play_b').on("click", function(e){
 		}
 	}
 
-	// Rest of the code...
+	// replay
+	if(script_replay && valid_msg){
+		let cmd = {
+			"cmd": "sleep",
+			"time": 0.001,
+			"id": 1
+		}
+		console.log(cmd)
+		send_message(cmd, false, true)
+	}
 });
-
 
 $('.script_convert_b').on("click", function(e){
 	e.preventDefault();
