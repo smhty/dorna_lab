@@ -148,7 +148,7 @@ $(".jog_b").on("mousedown touchstart", function(e) {
 			l = Math.sign( l ) *  Math.abs( $(`.jog_d_v[data-cmd=${msg["cmd"]}]`).prop("value") ) ;
 	}
 
-	msg[$(this).attr("data-key")] = Number((original_robot.value($(this).attr("data-key")) + l)).toFixed(to_fixed_val+3);
+	msg[$(this).attr("data-key")] =  Number((original_robot.value($(this).attr("data-key")) + l).toFixed(to_fixed_val+3));
 
 	// vel, accel, jerk
 	$(`.vaj_s_v[data-value=${$(this).attr("data-type")}]`).each(function() {
