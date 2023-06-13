@@ -206,11 +206,31 @@ $(".rec_p_b").on("click", function(e) {
 });
 
 function position(type = "joint"){
+	/*
 	let pos = {}
 	$("."+type+"_v").each(function(index, element) {
 		pos[$(this).attr("data-key")] = Number($(this).text());
-	});
-	return pos	
+	});*/
+
+	if(type=="joint")
+		return {"j0":position_value["j0"],
+				"j1":position_value["j1"],
+				"j2":position_value["j2"],
+				"j3":position_value["j3"],
+				"j4":position_value["j4"],
+				"j5":position_value["j5"],
+				"j6":position_value["j6"],
+				"j6":position_value["j6"]};
+
+	if(type=="xyz")
+		return {"x":position_value["x"],
+				"y":position_value["y"],
+				"z":position_value["z"],
+				"a":position_value["a"],
+				"b":position_value["b"],
+				"c":position_value["c"],
+				"d":position_value["d"],
+				"e":position_value["e"]};
 }
 
 $(".joint_v[data-key=j0]").text("180.0");

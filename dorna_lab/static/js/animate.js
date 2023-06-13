@@ -163,7 +163,7 @@ function destroy_scene(){
 
 function set_frame(joint){
   if(original_robot.initialized)
-    original_robot.set_joints(joint);
+    original_robot.set_joints_and_position(joint);
 }
 
 
@@ -245,7 +245,9 @@ function render() {
   on_message({"data":JSON.stringify(j)});
   */
   if(graphic){
-    set_frame(Object.values(position()));
+    joints = Object.values(position());
+    xyz = Object.values(position("xyz"));
+    set_frame(joints.concat(xyz));
     renderer.render( scene, camera );
     control_camera.update();
   }

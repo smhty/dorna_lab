@@ -608,6 +608,24 @@ class Robot{
 			this.joints[i] = Math.round(this.joints[i]*1000)/1000;
 	}
 
+	set_joints_and_position(values){
+
+		this.joints = values.slice(0,8);
+		let i = 0;
+		
+		this.kinematic(this.joints);
+
+		let new_pos = this.real_to_xyz(new THREE.Vector3(values[7],values[8],values[9]))
+
+		//let new_pos = this.joints_to_xyz(this.joints);
+		this.position.set(new_pos.x,new_pos.y,new_pos.z);
+		this.abc[0] = values[10];
+		this.abc[1] = values[11];
+		this.abc[2] = values[12];
+
+		this.set_head_ball();
+		this.callback.fire(this.joints); 
+	}
 
 
 	change(i,ctrl,fix_head){
@@ -652,7 +670,6 @@ class Robot{
 	        	if(res["result"][0]){
 	        		v[0].set_joints(res["result"][0]);
 	        		if(v[1]){
-	        			console.log("here:",res["result"][0])
 	        			set_5(v[1],res["result"][0]);
 	        		}
 	        	}

@@ -4,7 +4,7 @@ class Trail{
 	material;
 	line1;
 	line2;
-	constructor(color_hex,robot,max_points,dt,scene,width =0.5 ){
+	constructor(color_hex,robot,max_points,dt,scene,width =0.20 ){
 		this.visible = true;
 		this.color =  color_hex;
 		this.robot = robot;

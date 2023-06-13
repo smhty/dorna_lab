@@ -6,7 +6,7 @@ var knmtc_response_list = {}; // in the form of "cmd_id" : function.
 
 
 function on_message(event){
-  
+
   try {
     //console.log(event.data)
     let msg = JSON.parse(event.data);
@@ -206,8 +206,14 @@ function toollength_r(key, msg) {
   original_robot.tool_head_length_set(Number.parseFloat(msg[key]))
 }
 
+var position_value = {"j0":180,"j1":180,"j2":-142,"j3":135,"j4":0,"j5":0,"j6":0,"j7":0,
+                      "x":0,"y":0,"z":0,"a":0,"b":0,"c":0,"d":0,"e":0};
+
 function motion_r(key, msg) {
+  position_value[key] = Number.parseFloat(msg[key]);
   document.getElementById("motion_r_id_"+key).innerHTML = Number.parseFloat(msg[key]).toFixed(to_fixed_val);
+  if(key=="x" || key=="y"||key=="z")
+      document.getElementById("motion_r_id_"+key).innerHTML = Number.parseFloat(msg[key]).toFixed(to_fixed_val+0);
 }
 /*
 function xyz_r(key, msg) {
