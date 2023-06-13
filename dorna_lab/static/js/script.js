@@ -88,8 +88,10 @@ $('.script_play_b').on("click", function(e){
 	}
 	for (let i = 0; i < json_data.length; i++) {
 	  let cmd = json_data[i]["data"];
-	  let id = json_data[i]["startLine"]+1
-	  cmd["id"] = id
+	  if (script_track) {
+		  let id = json_data[i]["startLine"]+1
+		  cmd["id"] = id
+		}
 	  send_message(cmd, false, true)
 	}	
 
