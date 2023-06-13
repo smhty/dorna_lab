@@ -212,10 +212,11 @@ var position_value = {"j0":180,"j1":180,"j2":-142,"j3":135,"j4":0,"j5":0,"j6":0,
 function motion_r(key, msg) {
   position_value[key] = Number.parseFloat(msg[key]);
   document.getElementById("motion_r_id_"+key).innerHTML = Number.parseFloat(msg[key]).toFixed(to_fixed_val);
+  /*
   if(key=="x" || key=="y"||key=="z"){
       document.getElementById("motion_r_id_"+key).innerHTML = Number.parseFloat(msg[key]).toFixed(to_fixed_val+0);
     }
-
+  */
 }
 /*
 function xyz_r(key, msg) {
