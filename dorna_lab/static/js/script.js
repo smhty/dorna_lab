@@ -88,10 +88,13 @@ $('.script_play_b').on("click", function(e){
 	}
 	for (let i = 0; i < json_data.length; i++) {
 	  let cmd = json_data[i]["data"];
-	  if (script_track) {
-		  let id = json_data[i]["startLine"]+1
-		  cmd["id"] = id
-		}
+
+		//add id and save indices of command
+		if(script_track){
+			cmd["id"] = json_data[i]["startLine"]+1
+			script_index[0].push(cmd["id"])
+			script_index[1].push(pair)
+		}		
 	  send_message(cmd, false, true)
 	}	
 
