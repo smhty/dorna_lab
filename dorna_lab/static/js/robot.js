@@ -749,12 +749,12 @@ class Robot{
 
 	xyz_to_real(v){
 		let result = new THREE.Vector3(v.z,v.x,v.y);
-		result.multiplyScalar(this.scale_to_real);
+		result.multiplyScalar(1000);
 		return result;
 	}
 	real_to_xyz(v){
 		let result = new THREE.Vector3(v.y,v.z,v.x);
-		result.multiplyScalar(1/this.scale_to_real);
+		result.multiplyScalar(1/1000);
 		return result;
 	}
 	allowed_xyza(){

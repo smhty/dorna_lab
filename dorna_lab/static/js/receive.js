@@ -214,7 +214,6 @@ function motion_r(key, msg) {
   document.getElementById("motion_r_id_"+key).innerHTML = Number.parseFloat(msg[key]).toFixed(to_fixed_val);
   if(key=="x" || key=="y"||key=="z"){
       document.getElementById("motion_r_id_"+key).innerHTML = Number.parseFloat(msg[key]).toFixed(to_fixed_val+0);
-      position_value[key] = Number.parseFloat(msg[key])/1000;
     }
 
 }

@@ -1,4 +1,4 @@
-var to_fixed_val = 1;
+var to_fixed_val = 2;
 function range(x){
 	let y=x;
 	if(x<=-180)	y = x+360;
@@ -350,7 +350,7 @@ class move_cmd{
 		if(!(typeof cmd["x"] === 'undefined')){
 			let v = this.parent_chain.robot.real_to_xyz(new THREE.Vector3(cmd["x"],cmd["y"],cmd["z"]));
 
-			this.position.set(v.x/1000,v.y/1000,v.z/1000);
+			this.position.set(v.x,v.y,v.z);
 
 			if(this.parent_chain.control_cmd == this){
 				this.parent_chain.controller.set_xyza(this.position,[cmd["a"],cmd["b"],0],this.joint);
@@ -392,10 +392,6 @@ class move_cmd{
 	callback(){
 			let cc = this;
 			let out = this.parent_chain.robot.xyz_to_real(cc.position);
-
-			out.x*=1000;
-			out.y*=1000;
-			out.z*=1000;
 
 			let outabc = cc.abc;
 			let message = {
