@@ -69,45 +69,66 @@ $('.script_play_b').on("click", function(e){
 	e.preventDefault();
 
 	try {
-		script_index[2].clear()
+		script_index[2].clear();
 	}
 	catch(err) {
 	}
-	script_index = [[], []]
+
+	script_index = [[], []];
 	let input_str = editor.getValue();
-	
 	let stack = [];
 
-	let script_replay = $(".script_replay_c").prop("checked")
-	let script_track = $(".script_track_c").prop("checked")
+	let script_replay = $(".script_replay_c").prop("checked");
+	let script_track = $(".script_track_c").prop("checked");
 
-	let json_data = parse_script(input_str)
-	let valid_msg = false
-	if (json_data.length >= 1) {
-		valid_msg = true
-	}
-	for (let i = 0; i < json_data.length; i++) {
-	  let cmd = json_data[i]["data"];
+	let valid_msg = false;
 
-		//add id and save indices of command
-		if(script_track){
-			cmd["id"] = json_data[i]["startLine"]+1
-			//script_index[0].push(cmd["id"])
-			//script_index[1].push(pair)
-		}		
-	  send_message(cmd, false, true)
-	}	
+	for(let i = 0; i < input_str.length; i++) {
+		let ch = input_str.charAt(i);
 
-	// replay
-	if(script_replay && valid_msg){
-		let cmd = {
-			"cmd": "sleep",
-			"time": 0.001,
-			"id": 1
+		// Ignore the line if it starts with '#'
+		if (ch === '#') {
+			while (i < input_str.length && input_str.charAt(i) !== '\n') {
+				i++;
+			}
+			continue;
 		}
-		send_message(cmd, false, true)
+
+		if(ch === '{') {
+			stack.push(i);
+		}
+		else if(ch === '}') {
+			try {
+				let start = stack.pop();
+
+				if(stack.length == 0) {
+					let startPos = editor.posFromIndex(start);
+
+					let end = i + 1;
+					let endPos = editor.posFromIndex(end);
+					let pair = [startPos, endPos];
+
+					let msg = input_str.substring(start, end).replace(/[ \n\t\r]+/g,"");
+					let json_str = JSON.parse(msg);
+
+					// Add id and save indices of command
+					if(script_track){
+						json_str["id"] = script_index[0].length + 2;
+						script_index[0].push(json_str["id"]);
+						script_index[1].push(pair);
+					}
+					valid_msg = true;
+					send_message(json_str, false, true);
+				}
+			} catch(e) {
+				console.log("Bad input format");
+			}
+		}
 	}
+
+	// Rest of the code...
 });
+
 
 $('.script_convert_b').on("click", function(e){
 	e.preventDefault();
