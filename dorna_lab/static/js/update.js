@@ -21,14 +21,20 @@ function update_print(data) {
 }
 
 function update_check(data) {
+	console.log(data)
 	let outdate = false
 	for (let key of Object.keys(data)) {
+		// make sure the current is visible
+		if ($(`.version_v[data-current=${key}]`).is(':hidden')) {
+			continue
+		}
+
+		// current version
+		let current = $(`.version_v[data-current=${key}]`).text()
 		// latest version
 		let latest = data[key]
 		$(`.version_v[data-latest=${key}]`).text(latest)
 
-		// current version
-		let current = $(`.version_v[data-current=${key}]`).text()
 		
 		if (latest !== current){
 			outdate = true
