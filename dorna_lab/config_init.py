@@ -5,10 +5,11 @@ import sys
 
 if __name__ == '__main__':
 	model = sys.argv[1]
+	path = sys.argv[2]
 	
 	# adjust the model
 	try:
-		with open('config.log') as infile:
+		with open(path) as infile:
 			config_data = json.load(infile)
 			config_data["model"] = model
 	except:
@@ -26,5 +27,5 @@ if __name__ == '__main__':
 		config_data["emergency_value"] = 1
 
 	# write the file
-	with open("config.log", "w") as infile:
+	with open(path, "w") as infile:
 		json.dump(config_data, infile)
