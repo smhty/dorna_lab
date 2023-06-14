@@ -144,7 +144,7 @@ function update_file_list(msg){
         let item = msg["file"][a];
         let elem =`<div class="list-group-item list-group-item-action d-flex p-0 rounded-0">
             <button type="button" class="btn btn-ligh rounded-0 btn file_b"  data-key="`+item+`">
-                <i class="fa fa-file"></i>
+                <i class="far fa-file"></i>
                 `+item+`
             </button>`
          + btn_drp_down_file(item) + `</div>`;
