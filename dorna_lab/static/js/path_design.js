@@ -58,7 +58,6 @@ $( ".path_design_point_prm_v" ).on("change", function(e) {
 			}
 		}
 
-		//console.log("xyzab: ", xyzab)
 		chain.control_cmd.set_cmd(cmd);
 	}
 
@@ -308,6 +307,7 @@ function path_design_move_list_up_down(v){//v=+1 means it goes down, v=-1 means 
 }
 
 function change_ghost_value(position){
+	//console.log("why",position)
 	$(".path_design_point_prm_v" ).each(function( index){
 		$(this).prop("value", position[$(this).attr("data-key")])
 	})

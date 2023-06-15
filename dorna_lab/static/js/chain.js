@@ -356,7 +356,8 @@ class move_cmd{
 				this.parent_chain.controller.set_xyza(this.position,[cmd["a"],cmd["b"],0],this.joint);
 			}
 			else{
-				set_5(this.joint , this.parent_chain.robot.xyza_to_joints(this.position,[cmd["a"],cmd["b"],0],this.joint));
+				//set_5(this.joint , this.parent_chain.robot.xyza_to_joints(this.position,[cmd["a"],cmd["b"],0],this.joint));
+				this.parent_chain.robot.IK(this.position,[cmd["a"],cmd["b"],0],this.joint);
 			}
 		}
 	
@@ -378,10 +379,10 @@ class move_cmd{
 				this.prm[name] = cmd[name];
 			}
 		}
-
-
 		this.update_visuals();
-		if(this===this.parent_chain.control_cmd){
+		
+		
+		if(this===this.parent_chain.control_cmd && !(typeof cmd["j0"] === 'undefined')){
 			this.parent_chain.controller.set_joints(this.joint);
 		}
 		
@@ -394,6 +395,8 @@ class move_cmd{
 			let out = this.parent_chain.robot.xyz_to_real(cc.position);
 
 			let outabc = cc.abc;
+
+
 			let message = {
 
 				...{

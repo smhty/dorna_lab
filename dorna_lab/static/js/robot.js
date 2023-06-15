@@ -181,7 +181,10 @@ class Robot{
 		this.l2 = config_version["a"][3]/1000;
 		this.l3 = config_version["a"][4]/1000;
 		this.l4 = config_version["d"][5]/1000;
-
+		this.sum_delta = 0;
+		for (let i=0;i<this.delta_info.length;i++){
+			this.sum_delta += this.delta_info[i];
+		}
 
 		this.robot_scene= new THREE.Group();
 		this.a0_g 		= new THREE.Group();
@@ -476,18 +479,6 @@ class Robot{
     	this.control_j[i].showX = false;
 	    this.control_j[i].showY = show;
 	    this.control_j[i].showZ = false;
-	    /*
-	    if(i==0){
-		    this.control_j[i].showX = false;
-		    this.control_j[i].showY = show;
-		    this.control_j[i].showZ = false;
-		}
-		else if(i==5){
-		    this.control_j[i].showX = show;
-		    this.control_j[i].showY = false;
-		    this.control_j[i].showZ = false;
-		}
-		*/
 	    this.control_j[i].enabled = show;
 	  }
 	  if(i==6){
@@ -573,7 +564,7 @@ class Robot{
 
 	set_joints_p(js,new_pos,abc){
 
-		this.joints = js;
+		set_5(this.joints , js);
 		let i = 0;
 		
 		this.kinematic(this.joints);
@@ -632,12 +623,12 @@ class Robot{
 
 		var old_joints = [this.joints[0],this.joints[1],this.joints[2],this.joints[3],this.joints[4],this.joints[5],this.joints[6]];
 
-		if( i==0 ) this.joints[0] = 2 * Math.atan2( ctrl.object.quaternion.y , ctrl.object.quaternion.w ) * 180 / Math.PI; 
-		if( i==1 ) this.joints[1] = 2 * Math.atan2( ctrl.object.quaternion.y , ctrl.object.quaternion.w ) * 180 / Math.PI;
-		if( i==2 ) this.joints[2] = 2 * Math.atan2( ctrl.object.quaternion.y , ctrl.object.quaternion.w ) * 180 / Math.PI;
-		if( i==3 ) this.joints[3] = 2 * Math.atan2( ctrl.object.quaternion.y , ctrl.object.quaternion.w ) * 180 / Math.PI;
-		if( i==4 ) this.joints[4] = 2 * Math.atan2( ctrl.object.quaternion.y , ctrl.object.quaternion.w ) * 180 / Math.PI;
-		if( i==5 ) this.joints[5] = 2 * Math.atan2( ctrl.object.quaternion.y , ctrl.object.quaternion.w ) * 180 / Math.PI;
+		if( i==0 ) this.joints[0] = - 2 * Math.atan2( ctrl.object.quaternion.y , ctrl.object.quaternion.w ) * 180 / Math.PI; 
+		if( i==1 ) this.joints[1] = - 2 * Math.atan2( ctrl.object.quaternion.y , ctrl.object.quaternion.w ) * 180 / Math.PI;
+		if( i==2 ) this.joints[2] = - 2 * Math.atan2( ctrl.object.quaternion.y , ctrl.object.quaternion.w ) * 180 / Math.PI;
+		if( i==3 ) this.joints[3] = - 2 * Math.atan2( ctrl.object.quaternion.y , ctrl.object.quaternion.w ) * 180 / Math.PI;
+		if( i==4 ) this.joints[4] = - 2 * Math.atan2( ctrl.object.quaternion.y , ctrl.object.quaternion.w ) * 180 / Math.PI;
+		if( i==5 ) this.joints[5] = - 2 * Math.atan2( ctrl.object.quaternion.y , ctrl.object.quaternion.w ) * 180 / Math.PI;
 		/*
 		var cancel = false;
 
@@ -678,6 +669,24 @@ class Robot{
 	        		v[0].set_joints(v[0].joints);
 	        	}
 	        },[this,ret]);
+
+	}
+
+	IK(pos,abc,ret){
+		//inverse here 
+		var p = this.xyz_to_real(pos);
+		 send_message({
+	        "_server":"knmtc",
+	        "func": "inv","xyzabg":[p.x,p.y,p.z,abc[0],abc[1],abc[2]],"joint_current":null,"all_sol":false
+	        },true, true,function(res,v){
+	        	if(res["result"][0]){
+        			set_5(v[0],res["result"][0]);
+
+	        	}
+	        	else{
+	        		console.log("IK failed");
+	        	}
+	        },[ret]);
 
 	}
 
