@@ -403,7 +403,7 @@ class Robot{
 		let sd = Math.sin(this.sum_delta); 
 		let cd = Math.cos(this.sum_delta);
 
-		let sa = -m33*ssa;
+		let sa = m33*ssa;
 		let ca = Math.sqrt(1-sa*sa);
 
 		this.abc[0] = Math.atan2(sa,ca) * 180 / Math.PI;
@@ -454,9 +454,9 @@ class Robot{
 		let mat =  new THREE.Matrix4();
 
 		mat.set(      
-		         -sb*(cd*sg+cg*ssa*sd)+cb*sa*(-cg*cd*ssa+sg*sd),     ca*(-cg*cd*ssa+sg*sd),     cg*ssa*(-cd*sa*sb+cb*sd)+sg*(cb*cd+sa*sb*sd),     0,
-		          ca*cb*ssa,                                         -ssa*sa,                   ca*ssa*sb,                                        0,
-		          cg*(-cd*sb+cb*sa*sd)+ssa*sg*(cb*cd*sa+sb*sd),      ca*(cd*ssa*sg+cg*sd),      sa*sb*(cd*ssa*sg+cg*sd)+cb*(cg*cd-ssa*sg*sd),     0,
+		         -sb*(cd*sg+cg*ssa*sd)-cb*sa*(-cg*cd*ssa+sg*sd),     ca*(-cg*cd*ssa+sg*sd),     cg*ssa*(cd*sa*sb+cb*sd)+sg*(cb*cd-sa*sb*sd),     0,
+		          ca*cb*ssa,                                         ssa*sa,                   ca*ssa*sb,                                        0,
+		          -cg*(cd*sb+cb*sa*sd)+ssa*sg*(-cb*cd*sa+sb*sd),      ca*(cd*ssa*sg+cg*sd),      -sa*sb*(cd*ssa*sg+cg*sd)+cb*(cg*cd-ssa*sg*sd),     0,
 		          0 ,                                                0 ,                        0 ,                                               1
 		       );
   		this.mesh_ball.setRotationFromMatrix(mat);
