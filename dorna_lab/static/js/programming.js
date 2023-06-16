@@ -544,7 +544,7 @@ function update_sessions_list(msg){
                 <div class="mt-auto mb-auto ml-1 mr-1">&bull;</div>
                 <small class="mt-auto mb-auto "> <b> Ended: </b>  `+a[2]+`</small>
                 <button type="button" class="btn btn-danger btn-sm rounded-0 ml-auto kill_btn" data-key=`+a[0]+" "+dis_str+ ` >End Process</button>
-                <button type="button" class="btn btn-primary btn-sm rounded-0 ml-2 retry_btn" data-key=`+a[0]+` >Re-run</button>
+                <button type="button" class="btn btn-primary btn-sm rounded-0 ml-2 retry_btn" data-key=`+a[0]+` dir=`+a[5]+` >Re-run</button>
               </div>              
             </div>`
       
@@ -565,11 +565,20 @@ function update_sessions_list(msg){
   $(".retry_btn").on("click", function(e) {
     let id = $(this).attr("data-key")
     let msg = $(`.session-code-v[data-key=${id}]`).text()
-    send_message({
-      "_server":"shell",
-      "prm": [msg] 
-    })
-
+    let dir = $(this).attr("dir")
+    if(dir=="none")
+      send_message({
+        "_server":"shell",
+        "prm": [msg] 
+      })
+    else{
+      send_message({
+        "_server":"shell",
+        "prm": [msg], 
+        "dir" : dir
+      })
+      console.log(dir)
+    }
   });
 }
 

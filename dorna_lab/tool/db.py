@@ -51,7 +51,8 @@ class db_class(object):
           start TEXT NOT NULL,
           finish TEXT,
           status TEXT NOT NULL,
-          file TEXT
+          file TEXT,
+          dir TEXT
         );"""
 
         #with current_app.open_resource('tool/schema.sql') as f:
