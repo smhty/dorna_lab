@@ -34,7 +34,7 @@ class move_cmd{
 		this.position = new THREE.Vector3(0,0,0);
 		this.abc = [0.0, 0.0, 0.0];
 		this.position_save = new THREE.Vector3(0,0,0);
-		this.abc_save = new THREE.Vector3(0,0,0);
+		this.abc_save = [0.0, 0.0, 0.0];
 		this.position_save_needs_update = true;
 
 
@@ -351,7 +351,7 @@ class move_cmd{
 			let v = this.parent_chain.robot.real_to_xyz(new THREE.Vector3(cmd["x"],cmd["y"],cmd["z"]));
 
 			this.position.set(v.x,v.y,v.z);
-
+			console.log(this.position)
 			if(this.parent_chain.control_cmd == this){
 				this.parent_chain.controller.set_xyza(this.position,[cmd["a"],cmd["b"],0],this.joint);
 			}
@@ -393,9 +393,7 @@ class move_cmd{
 	callback(){
 			let cc = this;
 			let out = this.parent_chain.robot.xyz_to_real(cc.position);
-
 			let outabc = cc.abc;
-
 
 			let message = {
 
@@ -668,10 +666,13 @@ class move_chain{
 		else program_list_select(cmd.master.id , cmd.dummy - 1  , 2);
 
 
-		function control_cmd_update(position){
+		function control_cmd_update(joints,position,abc){
 			if(chain.control_cmd!=null){
-				set_5(chain.control_cmd.joint , position);
-
+				set_5(chain.control_cmd.joint , joints);
+				chain.control_cmd.position.set(position.x,position.y,position.z)
+				chain.control_cmd.abc[0] = abc[0]
+				chain.control_cmd.abc[1] = abc[1]
+				chain.control_cmd.abc[2] = abc[2]
 				chain.control_cmd.update_visuals();
 				chain.control_cmd.callback();
 			}

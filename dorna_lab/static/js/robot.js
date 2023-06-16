@@ -579,7 +579,7 @@ class Robot{
 		this.abc[2] = abc[2];
 
 		this.set_head_ball();
-		this.callback.fire(this.joints); 
+		this.callback.fire(this.joints, new_pos, this.abc); 
 
 		if(this.being_controlled){ 
 			let work_space = this.check_work_space();
@@ -615,7 +615,7 @@ class Robot{
 		this.abc[2] = values[12];
 
 		this.set_head_ball();
-		this.callback.fire(this.joints); 
+		this.callback.fire(this.joints, new_pos, this.abc); 
 	}
 
 
