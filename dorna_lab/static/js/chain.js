@@ -88,7 +88,7 @@ class move_cmd{
 			geometry.setAttribute( 'position', new THREE.BufferAttribute( new Float32Array( this.ARC_SEGMENTS * 3 ), 3 ) );
 			this.curve = new THREE.CatmullRomCurve3( this.curve_positions,false,'centripetal');
 			//this.curve.tension = 0.2;
-			this.curve.mesh = new THREE.Line( geometry.clone(), new THREE.LineDashedMaterial( { color: 0x4d0005, dashSize: 0.05, gapSize: 0.025 }));// 0xffff00 new THREE.LineBasicMaterial( {color: 0xd4d498,linewidth : 5} ) );
+			this.curve.mesh = new THREE.Line( geometry.clone(), new THREE.LineDashedMaterial( { color: 0x4d0005, dashSize: 0.005, gapSize: 0.0025 }));// 0xffff00 new THREE.LineBasicMaterial( {color: 0xd4d498,linewidth : 5} ) );
 
 			this.curve_positions_save = [new THREE.Vector3( 0, 0, 0 ),
 				new THREE.Vector3( 0, 0 ,0 ),new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, 0, 0 ),
@@ -169,24 +169,31 @@ class move_cmd{
 
 	update_arrow(){
 		if(this.arrow && this.arrow_ready){
-			if(this.move_type==0 && false){
+			console.log(this.curve_save_needs_update)
+			if(this.curve_save_needs_update)
+				this.curve.mesh.material = this.parent_chain.line_basic_material;
+			else
+				this.curve.mesh.material = this.parent_chain.line_dash_material;	
+							
+			if(this.move_type==0 ){
 				let mj = [0,0,0,0,0,0];
 				let k=0;
 				let i=0;
 				for(i=1;i<4;i++){
-					for(k=0;k<6;k++) mj[k] = this.before.joint[k] + (this.joint[k] - this.before.joint[k])*i/4; //range(this.before.joint[k] + range(this.joint[k] - this.before.joint[k])/2);
-					let mp = this.parent_chain.robot.joints_to_xyz(mj);
-						send_message({
-					        "_server":"knmtc",
-					        "func": "frw","joint":this.joint
-					        },true, true,function(res,v){
-					        	let p = new THREE.Vector3(res["result"][0],res["result"][1],res["result"][2]);
-					        	v[0].set(v[1].real_to_xyz(p));
-					        	console.log(p)
-				        },[this.curve_positions[i],this.parent_chain.robot]);
+					for(k=0;k<6;k++){
+						mj[k] = this.before.joint[k] + (this.joint[k] - this.before.joint[k])*i/4; 
+					}
+					send_message({
+				        "_server":"knmtc",
+				        "func": "frw","joint":mj//this.joint
+				        },true, true,function(res,v){
+				        	let p = new THREE.Vector3(res["result"][0],res["result"][1],res["result"][2]);
+				        	p = v[1].real_to_xyz(p)
+				        	v[0].set(p.x,p.y,p.z);
+			        },[this.curve_positions[i],this.parent_chain.robot]);
 				}
 			}
-			if(this.move_type==1 || true){
+			if(this.move_type==1){
 				let i=0;
 				for(i=1;i<4;i++){
 					this.curve_positions[i].set((this.position.x * i + this.before.position.x *(4 - i))/4,
@@ -194,7 +201,6 @@ class move_cmd{
 					(this.position.z * i + this.before.position.z * (4 - i) )/4);
 				}
 			}
-
 
 			this.curve_positions[0].set(this.before.position.x,this.before.position.y,this.before.position.z);
 			this.curve_positions[4].set(this.position.x,this.position.y,this.position.z);
@@ -214,6 +220,7 @@ class move_cmd{
 			this.curve.mesh.computeLineDistances();
 
 			if(this.curve_save_needs_update){
+				
 				if(this.move_type==0&& false){
 					let mj = [0,0,0,0,0,0];
 					let k=0;
@@ -500,6 +507,9 @@ class move_chain{
 		update_path_design_list(0 , 0 +": "+ "Initial")
 		//$(`.path_design_program_list_b[data-id=${0}]`).click()
 
+
+		this.line_dash_material = new THREE.LineDashedMaterial( { color: 0x4d0005, dashSize: 0.005, gapSize: 0.0025 });
+		this.line_basic_material = new THREE.LineBasicMaterial( {color: 0x4d0005} );
 
 		this.end = this.first;
 		this.raycaster = new THREE.Raycaster();
@@ -1137,6 +1147,7 @@ class master_cmd{
 			geometry_save.setAttribute( 'position', new THREE.BufferAttribute(this.positions_save , 3 ) );
 			this.curve_save = new THREE.Line(geometry_save, new THREE.LineBasicMaterial( {color: 0x4d0005} ) );
 			this.base.parent_chain.scene.add(this.curve_save);
+
 
 			this.curve_save_needs_update = true;
 

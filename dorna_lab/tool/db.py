@@ -31,14 +31,14 @@ class db_class(object):
             rtn["result"] = res_txt
 
             self.con.commit()
-
+            server_loop.add_callback(socket.emit_all, json.dumps(rtn))
         except Exception as ex:
             rtn["error"] = 1
             rtn["error_ex"] = ex
             
         
         #socket.emit_all(json.dumps(rtn))
-        server_loop.add_callback(socket.emit_all, json.dumps(rtn))
+
         return rtn
 
     def close_db(self, e=None):
