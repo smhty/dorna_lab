@@ -10,11 +10,13 @@
       <div class="modal-body">
         <!--folder-->
           <!--actions-->
-          <div class="d-flex border bg-light">
+          <div class="d-flex border bg-light mb-4">
+            <!--
             <button type="button" class="btn btn-light rounded-0 home_folder_b border-right">
               <i class="fal fa-bookmark"></i>
               Projects
             </button>
+            -->
 
             <button type="button" class="btn btn-light rounded-0 back_folder_b border-right">
               <i class="fal fa-long-arrow-alt-left"></i>
@@ -45,15 +47,21 @@
 
           </div> 
 
+          <!--popular folder-->
+          <div class="d-flex flex-row mb-4">
+            <button type="button" class="btn btn-outline-primary home_folder_b mr-2">Projects</button>
+            <button type="button" class="btn btn-outline-primary example_folder_b mr-2">Examples</button>
+          </div>
 
           <!--path-->
-            <nav aria-label="breadcrumb" id="breadcrumb_area" class="mb-2 mt-2 bg-light">
+            <nav aria-label="breadcrumb" id="breadcrumb_area" class="mb-2 bg-light">
               <ol class="breadcrumb path_breadcrumb m-0" id="path_breadcrumb_id">
               </ol>
             </nav>
 
             <div class="mb-auto mt-auto path_b pl-2" id="path_b" data-key='{{config["folder"]["path_home"]}}'>{{config["folder"]["path_home"]}}</div>
             <div class="mb-auto mt-auto path_home_b pl-2" id="path_home_b" data-key='{{config["folder"]["path_home"]}}' hidden="true">{{config["folder"]["path_home"]}}</div>
+            <div class="mb-auto mt-auto path_example_b pl-2" id="path_example_b" data-key='{{config["folder"]["path_example"]}}' hidden="true">{{config["folder"]["path_example"]}}</div>
             <div class="mb-auto mt-auto path_blk_b pl-2" id="path_blk_b" data-key='{{config["folder"]["path_blockly"]}}' hidden="true">{{config["folder"]["path_blockly"]}}</div>
             <div class="mb-auto mt-auto path_py_b pl-2" id="path_py_b" data-key='{{config["folder"]["path_python"]}}' hidden="true">{{config["folder"]["path_python"]}}</div>
             <div class="mb-auto mt-auto path_path_design_b pl-2" id="path_path_design_b" data-key='{{config["folder"]["path_path_design"]}}' hidden="true">{{config["folder"]["path_path_design"]}}</div>

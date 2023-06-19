@@ -1,6 +1,7 @@
 config = {
 	"folder": {
 		"path_home": "/home/dorna/Projects",
+		"path_example": "/home/dorna/Downloads/example",
 		"path_blockly": "/home/dorna/Projects/blockly",
 		"path_python": "/home/dorna/Projects/python",
 		"path_path_design": "/home/dorna/Projects/path_design",
