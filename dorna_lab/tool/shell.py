@@ -34,19 +34,15 @@ class Shell(object):
         self.cmd = cmd
 
     async def run(self, socket, ws, server_loop, db, dir = None):
-        if(dir==None):
-            self.p = await asyncio.create_subprocess_shell(
-                self.cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.STDOUT)
-        else:
-            self.p = await asyncio.create_subprocess_shell(
-                self.cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.STDOUT, cwd=dir)
-        if(dir==None):   
-            asyncio.create_task(db.db_call(socket, server_loop, "INSERT INTO program VALUES (" + str(self.p.pid) + ",'" + date.today().strftime("%B %d,%Y") +
-                             " - " + datetime.now().strftime("%H:%M:%S") + "', '---' , 'running', '"+self.cmd+"','none')"))
 
-        else:
-            asyncio.create_task(db.db_call(socket, server_loop, "INSERT INTO program VALUES (" + str(self.p.pid) + ",'" + date.today().strftime("%B %d,%Y") +
-                             " - " + datetime.now().strftime("%H:%M:%S") + "', '---' , 'running', '"+self.cmd+"' ,'"+dir+"')"))
+        self.p = await asyncio.create_subprocess_shell(
+            self.cmd, stdout=asyncio.subprocess.PIPE, stderr=asyncio.subprocess.STDOUT)
+
+        if(dir==None):
+            dir= 'none'
+
+        asyncio.create_task(db.db_call(socket, server_loop, "INSERT INTO program VALUES (" + str(self.p.pid) + ",'" + date.today().strftime("%B %d,%Y") +
+                         " - " + datetime.now().strftime("%H:%M:%S") + "', '---' , 'running', '"+self.cmd+"' ,'"+dir+"')"))
 
         asyncio.create_task(db.db_call(socket, server_loop, "SELECT * FROM program"))
 
