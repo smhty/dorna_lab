@@ -478,10 +478,9 @@ $('.blockly_play_b').click(function(e){
   })
 
   setTimeout(function() { 
-  //send_message({"cmd": "sudo python3 "+path+'/'+name}, "shell")
     send_message({
     "_server":"shell",
-    "prm": ["sudo python3 "+path+'/'+name],
+    "prm": ["cd " + path +" && sudo python3 " + name],//["sudo python3 "+path+'/'+name],
     "dir": path
   })
   /*  
