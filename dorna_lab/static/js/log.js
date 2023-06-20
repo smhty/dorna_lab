@@ -21,7 +21,7 @@ function log_print(data, type= "") {
 
 	// add time
 	let date = new Date().toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, "$1")
-	log_editor.replaceRange(type+"("+date+")"+ data+'\n', CodeMirror.Pos(log_editor.lastLine()))
+	log_editor.replaceRange(type+"["+date+"] "+ data+'\n', CodeMirror.Pos(log_editor.lastLine()))
 
 	// Scroll the last line into view
 	if ($(".log_last_line_c").prop("checked")) {
