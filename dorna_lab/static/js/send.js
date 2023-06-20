@@ -27,7 +27,7 @@ function send_message(msg, id = false, stringify=true,response_function,variable
   socket.send(msg);
   
   if(not_server_message)
-  	log_print(msg, "🟢 ")
+  	log_print(msg, "🟢")
 }
 
 function send_delayed_msgs(){
