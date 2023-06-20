@@ -284,6 +284,6 @@ function print_log(msg){
   if("cmd" in msg && msg["cmd"] == "motion"){
     return 0
   }
-  log_print(JSON.stringify(msg), "❮ ")
+  log_print(JSON.stringify(msg), "🔵 ")
 
 }
