@@ -113,13 +113,17 @@ class WebSocket(tornado.websocket.WebSocketHandler):
             elif msg["_server"] == "config":
                 loop.add_callback(self.emit_message, json.dumps({"to":"config" ,
                     "model":config_data["model"],
-                    "startup":config_data["startup"],
                     "n_dof":kin.knmtc.dof.n_dof,
                     "alpha":kin.knmtc.dof.alpha,
                     "delta":kin.knmtc.dof.delta,
                     "a":kin.knmtc.dof.a,
                     "d":kin.knmtc.dof.d
                     }))
+
+                if("startup" in config_data):
+                    loop.add_callback(self.emit_message, json.dumps({"to":"startup" ,
+                        "startup":config_data["startup"]
+                        }))
 
                 if("emergency_enable" in config_data):
                     loop.add_callback(self.emit_message, json.dumps({"to":"emergency" ,
@@ -137,11 +141,17 @@ class WebSocket(tornado.websocket.WebSocketHandler):
             elif msg["_server"] == "func":
                 self.func_process(msg)
 
-            elif msg["_server"] == "startup":
+            elif msg["_server"] == "startup_set":
                 config_data["startup"] = msg["text"]
                 #?json_object = json.dumps(config_data)
                 with open("config.log", "w") as outfile:
                     json.dump(config_data, outfile)
+
+            elif msg["_server"] == "startup_get":
+                if("startup" in config_data):
+                    loop.add_callback(self.emit_message, json.dumps({"to":"startup" ,
+                        "startup":config_data["startup"]
+                        }))
 
             elif msg["_server"] == "emergency":
                 config_data["emergency_enable"] = msg["enable"]
@@ -284,9 +294,12 @@ if __name__ == '__main__':
     def startup_function():
         if "startup" in config_data:
             for line in config_data["startup"].splitlines():
-                if len(line) == 0 or line==" " or line[0]=="#": 
+                if len(line) == 0 or line==" ": 
                     continue
-                startup_process = shell.Shell(line)
+                if line[0]=="#":
+                    continue
+                file_path_and_name = os.path.split(os.path.abspath(line))
+                startup_process = shell.Shell("cd "+file_path_and_name[0]+" & sudo python3 " + file_path_and_name[1].split(".")[0] + ".py")
                 asyncio.create_task(startup_process.run(DORNA, None, loop, DATABASE, None))
                 PROCESSES.append(startup_process)
 

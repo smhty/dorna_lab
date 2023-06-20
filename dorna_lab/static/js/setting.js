@@ -4,8 +4,14 @@ $('.axis_c').on("change", function(e){
 
 $('.startup-b').on("click",function(e){
 	e.preventDefault();
-	send_message({"_server":"startup","text":$('.startup-v').val()});
+	send_message({"_server":"startup_set","text":$('.startup-v').val()});
 })
+
+$('.startup-cancel-b').on("click",function(e){
+	e.preventDefault();
+	send_message({"_server":"startup_get"});
+})
+
 
 $('.emergency-b').on("click",function(e){
 	e.preventDefault();

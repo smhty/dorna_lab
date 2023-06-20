@@ -90,21 +90,8 @@ class move_cmd{
 			//this.curve.tension = 0.2;
 			this.curve.mesh = new THREE.Line( geometry.clone(), new THREE.LineDashedMaterial( { color: 0x4d0005, dashSize: 0.005, gapSize: 0.0025 }));// 0xffff00 new THREE.LineBasicMaterial( {color: 0xd4d498,linewidth : 5} ) );
 
-			this.curve_positions_save = [new THREE.Vector3( 0, 0, 0 ),
-				new THREE.Vector3( 0, 0 ,0 ),new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, 0, 0 ),
-				new THREE.Vector3( 0, 0, 0 )];
-			var geometry_save = new THREE.BufferGeometry();
-			geometry_save.setDrawRange( 0 , this.ARC_SEGMENTS );
-			geometry_save.setAttribute( 'position', new THREE.BufferAttribute( new Float32Array( this.ARC_SEGMENTS * 3 ), 3 ) );
-			this.curve_save = new THREE.CatmullRomCurve3( this.curve_positions_save,false,'centripetal');
-			//this.curve.tension = 0.2;
-			this.curve_save.mesh = new THREE.Line( geometry_save.clone(), new THREE.LineBasicMaterial( {color: 0x4d0005} ) );
-
-
 			this.parent_chain.scene.add(this.curve.mesh);
-			this.parent_chain.scene.add(this.curve_save.mesh);
 
-			this.curve_save_needs_update = true;
 
 			this.arrow_ready = true;
 
@@ -219,56 +206,7 @@ class move_cmd{
 			this.curve.mesh.geometry.computeBoundingSphere();
 			this.curve.mesh.computeLineDistances();
 
-			if(this.curve_save_needs_update){
-				
-				if(this.move_type==0&& false){
-					let mj = [0,0,0,0,0,0];
-					let k=0;
-					let i=0;
-					for(i=1;i<4;i++){
-						for(k=0;k<6;k++) mj[k] = this.before.joint_save[k] + (this.joint_save[k] - this.before.joint_save[k])*i/4; //range(this.before.joint[k] + range(this.joint[k] - this.before.joint[k])/2);
-						let mp = this.parent_chain.robot.joints_to_xyz(mj);
-						this.curve_positions_save[i].set(mp.x,mp.y,mp.z);
-					}
-				}
-				if(this.move_type==1||true){
-					let i=0;
-					for(i=1;i<4;i++){
-						this.curve_positions_save[i].set((this.position_save.x * i + this.before.position_save.x *(4 - i))/4,
-						(this.position_save.y * i + this.before.position_save.y * (4 - i) )/4,
-						(this.position_save.z * i + this.before.position_save.z * (4 - i) )/4);
-					}
-				}
-
-
-				this.curve_positions_save[0].set(this.before.position_save.x,this.before.position_save.y,this.before.position_save.z);
-				this.curve_positions_save[4].set(this.position_save.x,this.position_save.y,this.position_save.z);
-
-				var position_save = this.curve_save.mesh.geometry.attributes.position;
-
-				for ( var i = 0; i < this.ARC_SEGMENTS; i ++ ) {
-
-					var t = i / ( this.ARC_SEGMENTS - 1 );
-					this.curve_save.getPoint( t, this.test_point );
-					position_save.setXYZ( i, this.test_point.x, this.test_point.y, this.test_point.z );
-
-
-				}
-
-				position_save.needsUpdate = true;
-				this.curve_save.mesh.geometry.computeBoundingSphere();
-
-			}
-
-			/*
-			//this.ah.position.set(this.middle_position.x,this.middle_position.y,this.middle_position.z);
-			let dir = new THREE.Vector3().subVectors(this.position, this.before.position);
-			let l = dir.length();
-			dir.normalize();
-			this.ah.setDirection(dir);
-			this.ah.setLength( Math.min(l,0.51),0.5 *  Math.min(l,0.51)/0.51 ,0.05 *  Math.min(l,0.51)/0.51);
-	*/
-			this.curve_save_needs_update = false;
+			//this.curve_save_needs_update = false;
 		}
 	}
 
@@ -291,7 +229,6 @@ class move_cmd{
 
 		if(this.arrow&&this.arrow_ready){
 			this.parent_chain.scene.remove(this.curve.mesh);
-			this.parent_chain.scene.remove(this.curve_save.mesh);
 		}
 		this.parent_chain.scene.remove(this.sprite);
 
@@ -438,7 +375,6 @@ class move_cmd{
 		this.save_cmd = this.read();
 		this.curve_save_needs_update = true;
 		
-
 		this.position_save_needs_update = true;
 
 		this.update_sprite_pos();
@@ -1141,14 +1077,6 @@ class master_cmd{
 			this.curve = new THREE.Line(geometry, new THREE.LineDashedMaterial( { color: 0x4d0005, dashSize: 0.05, gapSize: 0.025 }) );
 			this.base.parent_chain.scene.add(this.curve);
 
-			var geometry_save = new THREE.BufferGeometry();
-			geometry_save.setDrawRange( 0 , this.ARC_SEGMENTS );
-			this.positions_save = new Float32Array( this.ARC_SEGMENTS * 3 );
-			geometry_save.setAttribute( 'position', new THREE.BufferAttribute(this.positions_save , 3 ) );
-			this.curve_save = new THREE.Line(geometry_save, new THREE.LineBasicMaterial( {color: 0x4d0005} ) );
-			this.base.parent_chain.scene.add(this.curve_save);
-
-
 			this.curve_save_needs_update = true;
 
 		}
@@ -1208,7 +1136,7 @@ class master_cmd{
 			this.curve.geometry.computeBoundingSphere();
 			this.curve.computeLineDistances();
 
-			if(this.curve_save_needs_update){
+			if(this.curve_save_needs_update && false){ //probably needs to be deleted
 				var a = new THREE.Vector3().subVectors(this.dummies[0].position_save,this.base.position_save);
 				var b = new THREE.Vector3().subVectors(this.dummies[1].position_save,this.base.position_save);
 				var aa = a.dot(a);
@@ -1254,8 +1182,6 @@ class master_cmd{
 
 		//this.base.master = null;
 		this.base.parent_chain.scene.remove(this.curve);
-		this.base.parent_chain.scene.remove(this.curve_save);
-
 	}
 
 	save(){

@@ -51,6 +51,9 @@ function on_message(event){
         case "config":
           configure_version(msg)
           break
+        case "startup":
+          $('.startup-v').val(msg["startup"]);
+          break
         case "emergency":
           emergency_setting(msg)
           break                 
@@ -81,7 +84,7 @@ function configure_version(msg){
     graphic_on()
     init_collada()
     hide_versionable()
-    $('.startup-v').val(config_version["startup"]);
+
 }
 function hide_versionable(){
     $(".versionable" ).each(function( index){
