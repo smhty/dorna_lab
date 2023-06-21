@@ -208,7 +208,8 @@ function update_file_list(msg){
         "prm": [path+"/"+name , path+"/"+new_name_formatted] 
       });
     }
-    reload_file_list()
+        setTimeout(function(){reload_file_list();}, 500);
+
   });
 
   $(".delete_b").on("click", function(e) {
@@ -234,7 +235,7 @@ function update_file_list(msg){
         "prm": [path+"/"+name] 
       })
     }
-    reload_file_list()
+    setTimeout(function(){reload_file_list();}, 500);
   });
 
   $(".copy_b").on("click", function(e) {
@@ -382,7 +383,8 @@ $(".new_folder_b").on("click", function(e) {
       "func": "folder_new",
       "prm": [path+"/"+new_folder_name] 
     })
-    reload_file_list()
+    setTimeout(function(){reload_file_list();}, 500);
+
     
 });
 
@@ -419,7 +421,8 @@ $(".paste_b").on("click", function(e) {
     "func": "folder_copy",
       "prm": [path_old,path_new] 
     })
-    reload_file_list()
+    setTimeout(function(){reload_file_list();}, 500);
+   
     
 });
 
