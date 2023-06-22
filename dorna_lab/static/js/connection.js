@@ -6,8 +6,8 @@ This file includes:
 
 var socket;
 // initialize url
-$(".robot_url").prop("value","ws://"+document.domain+"/ws")
-$(".robot_url").prop("placeholder","ws://"+document.domain+"/ws")
+$(".robot_url").prop("value","wss://"+document.domain+":80"+"/ws")
+$(".robot_url").prop("placeholder","wss://"+document.domain+"/ws")
 $(".url").text(document.domain)
 
 // button event to connect to WebSocket
