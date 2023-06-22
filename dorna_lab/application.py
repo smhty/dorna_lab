@@ -6,9 +6,6 @@ import asyncio
 import tornado.ioloop
 import tornado.web
 import tornado.websocket
-import tornado.httpserver
-import ssl
-
 from flask_to_tornado import BaseHandler
 
 from dorna2 import Dorna, __version__ as V_API
@@ -292,17 +289,8 @@ if __name__ == '__main__':
          {'path': STATIC_PATH_DIR}),
     ]
     app = tornado.web.Application(app, debug=CONFIG["server"]["debug"]) 
-    #app.listen(CONFIG["server"]["port"]) 
+    app.listen(CONFIG["server"]["port"]) 
     
-    http_server  =  tornado.httpserver.HTTPServer(
-    app, 
-    ssl_options = {
-        "certfile": os.path.join("keys/", "cert.crt"),
-        "keyfile": os.path.join("keys/", "private.key")
-    })
-
-    http_server .listen(CONFIG["server"]["port"])
-
     def startup_function():
         if "startup" in config_data:
             for line in config_data["startup"].splitlines():
@@ -315,8 +303,6 @@ if __name__ == '__main__':
                 asyncio.create_task(startup_process.run(DORNA, None, loop, DATABASE, None))
                 PROCESSES.append(startup_process)
 
-
-    loop = tornado.ioloop.IOLoop.current()
     loop.call_later(delay=1, callback=startup_function)
     loop.start()
 
