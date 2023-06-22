@@ -7,7 +7,7 @@ $(".home_joint_b").on("click", function(e) {
 	
 	let msg = {
 	  "_server": "shell",
-	  "prm":  ["sudo python3 /home/dorna/Downloads/example/home/main.py --Host localhost --Index "+index+ " --Value "+value+ " --Dir "+dir ],
+	  "prm":  ["cd /home/dorna/Downloads/example/home/ && sudo python3 main.py --Host localhost --Index "+index+ " --Value "+value+ " --Dir "+dir ],
 
 	}
 	send_message(msg)
