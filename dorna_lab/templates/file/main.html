@@ -59,6 +59,7 @@
               </ol>
             </nav>
 
+
             <div class="mb-auto mt-auto path_b pl-2" id="path_b" data-key='{{config["folder"]["path_home"]}}'>{{config["folder"]["path_home"]}}</div>
             <div class="mb-auto mt-auto path_home_b pl-2" id="path_home_b" data-key='{{config["folder"]["path_home"]}}' hidden="true">{{config["folder"]["path_home"]}}</div>
             <div class="mb-auto mt-auto path_example_b pl-2" id="path_example_b" data-key='{{config["folder"]["path_example"]}}' hidden="true">{{config["folder"]["path_example"]}}</div>
@@ -73,7 +74,9 @@
         <!--action-->
         <button type="button" class="btn btn-primary mb-1 file_save_b">Save Here</button>
         <button type="button" class="btn btn-primary mb-1 file_open_b" >Open</button>  
-        <button type="button" class="btn btn-primary mb-1 file_cancel_b">Cancel</button> 
+        <button type="button" class="btn btn-primary mb-1 file_cancel_b">Cancel</button>
+        <input  class="mb-auto mt-auto pl-2" id="file_address_input"  value="" readonly></input>
+ 
             <!--/main content-->
       </div>
     </div>

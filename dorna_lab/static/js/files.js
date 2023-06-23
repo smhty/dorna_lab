@@ -6,10 +6,9 @@ var script_file_path = ""
 
 
 
-
 function empty_file_list(){
   list = document.getElementById("fileList");
-  $(list).empty();
+  $(list).empty(); //maybe better to use .remove() ?
 }
 function reload_file_list(){
   let path = $("#path_b").attr("data-key")
@@ -30,10 +29,10 @@ function btn_drp_down_folder(item) {
       <button class="dropdown-item duplicate_b" ftype="folder" data-key="`+item+`">Duplicate </button>
     </div></div> `;
 }
-function btn_drp_down_file(item) {
-
+function btn_drp_down_file(item,path) {/*id="btnGroupDrop1"*/
+  var tot_path = path+"/"+item;
   return `<div class="flex-grow-1"></div>
-    <div class="border-left"><button id="btnGroupDrop1" type="button" class="btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-h"></i>
+    <div class="border-left"><button type="button" class="btn file_drp_dwn_btn" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" path="`+tot_path+`"><i class="fas fa-ellipsis-h"></i>
     </button>
     <div class="dropdown-menu" aria-labelledby="btnGroupDrop1" style="">
       <button class="dropdown-item rename_b" ftype="file" data-key="`+item+`">Rename   </button>
@@ -41,7 +40,7 @@ function btn_drp_down_file(item) {
       <button class="dropdown-item copy_b" ftype="file" data-key="`+item+`">Copy </button>
       <button class="dropdown-item duplicate_b" ftype="file" data-key="`+item+`">Duplicate </button>
       <button class="dropdown-item download_b" ftype="file" data-key="`+item+`">Download </button>
-      <button class="dropdown-item copy_add_b" ftype="file" data-key="`+item+`">Copy Address </button>
+      <button class="dropdown-item btn_clp_brd" path="`+tot_path+`" data-clipboard-target="#file_address_input" >Copy Address </button>
     </div></div> `;
 }
 
@@ -68,6 +67,9 @@ var save_name = ""
 var save_dst = ""
 
 var explorer_mode = 0   // 0 is none, 1 is save, 2 is open
+
+var clipboard = new ClipboardJS('.btn_clp_brd');
+
 
 function update_file_list(msg){
   open_file_name = ""
@@ -147,10 +149,10 @@ function update_file_list(msg){
                 <i class="far fa-file"></i>
                 `+item+`
             </button>`
-         + btn_drp_down_file(item) + `</div>`;
+         + btn_drp_down_file(item,$("#path_b").attr("data-key")) + `</div>`;
         $(elem).appendTo(list);
   }
-
+  
   $(".folder_b").on("click", function(e) {
     // init path
     let path = $("#path_b").attr("data-key") + "/" + $(this).attr("data-key");
@@ -268,11 +270,10 @@ function update_file_list(msg){
     })
     
   });
-  $(".copy_add_b").on("click", function(e) {
-    let name = $(this).attr("data-key")
-    let path = $("#path_b").attr("data-key") 
-    let full_path = path + "/" + name;
-    copyToClipboardAsync(full_path);
+  
+  $(".file_drp_dwn_btn").on("click", function(e) {
+    let path = $(this).attr("path")
+    $("#file_address_input").attr("value",path);
   });
 }
 
