@@ -133,22 +133,20 @@ $(".jog_b").on("mousedown touchstart", function(e) {
 		limit = limit;
 	}
 
-	///
-	let f_pos =original_robot.position.clone();
-	f_pos = original_robot.xyz_to_real(f_pos);
-	f_pos[$(this).attr("data-key")] = limit;
-	///
+	let current_value = original_robot.value($(this).attr("data-key"));
+	
+	let l = limit - current_value;
 
-	let l = limit - original_robot.value($(this).attr("data-key"));
-
-	if(Math.abs(l)>=0.4)
-		l = l - Math.sign(l)*0.5;
+	let d = 1.0;
+	if(Math.abs(l)>d)
+		l = l - Math.sign(l)*d;
 
 	if($(`.jog_d_c[data-cmd=${msg["cmd"]}]`).prop("checked")){
 			l = Math.sign( l ) *  Math.abs( $(`.jog_d_v[data-cmd=${msg["cmd"]}]`).prop("value") ) ;
 	}
-
-	msg[$(this).attr("data-key")] =  Number((original_robot.value($(this).attr("data-key")) + l).toFixed(to_fixed_val+3));
+	
+	limit = Number((current_value + l).toFixed(to_fixed_val+2));
+	msg[$(this).attr("data-key")] = limit;
 
 	// vel, accel, jerk
 	$(`.vaj_s_v[data-value=${$(this).attr("data-type")}]`).each(function() {
@@ -220,7 +218,8 @@ function position(type = "joint"){
 				"j4":position_value["j4"],
 				"j5":position_value["j5"],
 				"j6":position_value["j6"],
-				"j6":position_value["j6"]};
+				"j6":position_value["j6"],
+				"j7":position_value["j7"]};
 
 	if(type=="xyz")
 		return {"x":position_value["x"],

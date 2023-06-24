@@ -606,13 +606,12 @@ class Robot{
 		
 		this.kinematic(this.joints);
 
-		let new_pos = this.real_to_xyz(new THREE.Vector3(values[7],values[8],values[9]))
-
+		let new_pos = this.real_to_xyz(new THREE.Vector3(values[8],values[9],values[10]))
 		//let new_pos = this.joints_to_xyz(this.joints);
 		this.position.set(new_pos.x,new_pos.y,new_pos.z);
-		this.abc[0] = values[10];
-		this.abc[1] = values[11];
-		this.abc[2] = values[12];
+		this.abc[0] = values[11];
+		this.abc[1] = values[12];
+		this.abc[2] = values[13];
 
 		this.set_head_ball();
 		this.callback.fire(this.joints, new_pos, this.abc); 
@@ -1012,6 +1011,15 @@ class Robot{
 		}
 		if(name=="j4"){
 			return this.joints[4];
+		}
+		if(name=="j5" || name=="c"){
+			return this.joints[5];
+		}
+		if(name=="j6"|| name=="d"){
+			return this.joints[6];
+		}
+		if(name=="j7"|| name=="e"){
+			return this.joints[7];
 		}
 		if(name=="x"){
 			return this.position.z/this.scale_factor ;
