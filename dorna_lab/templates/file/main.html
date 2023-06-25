@@ -60,7 +60,7 @@
 
 
 
-          <!--path list-->
+          <!--saved path list-->
             <div class="mb-auto mt-auto path_b pl-2" id="path_b" data-key='{{config["folder"]["path_home"]}}'>{{config["folder"]["path_home"]}}</div>
             <div class="mb-auto mt-auto path_home_b pl-2" id="path_home_b" data-key='{{config["folder"]["path_home"]}}' hidden="true">{{config["folder"]["path_home"]}}</div>
             <div class="mb-auto mt-auto path_example_b pl-2" id="path_example_b" data-key='{{config["folder"]["path_example"]}}' hidden="true">{{config["folder"]["path_example"]}}</div>
@@ -69,7 +69,8 @@
             <div class="mb-auto mt-auto path_path_design_b pl-2" id="path_path_design_b" data-key='{{config["folder"]["path_path_design"]}}' hidden="true">{{config["folder"]["path_path_design"]}}</div>
             <div class="mb-auto mt-auto path_script_b pl-2" id="path_script_b" data-key='{{config["folder"]["path_script"]}}' hidden="true">{{config["folder"]["path_script"]}}</div>
 
-        <ul class="list-group mb-2 list-file" id="fileList" style="height: 200px; overflow-y: scroll"></ul>
+        <!--list of files and folders-->
+        <ul class="list-group mb-2 list-file" id="fileList"></ul>
 
         <!--action-->
         <button type="button" class="btn btn-primary mb-1 file_save_b">Save Here</button>
