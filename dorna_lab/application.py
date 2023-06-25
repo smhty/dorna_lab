@@ -154,9 +154,12 @@ class WebSocket(tornado.websocket.WebSocketHandler):
                         }))
 
             elif msg["_server"] == "emergency":
-                config_data["emergency_enable"] = msg["enable"]
-                config_data["emergency_key"] = msg["key"]
-                config_data["emergency_value"] = msg["value"]
+                if("enable" in msg):
+                    config_data["emergency_enable"] = msg["enable"]
+                if("key" in msg):
+                    config_data["emergency_key"] = msg["key"]
+                if("value" in msg):
+                    config_data["emergency_value"] = msg["value"]
                 #?json_object = json.dumps(config_data)
                 with open("config.log", "w") as outfile:
                     json.dump(config_data, outfile)

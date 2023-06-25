@@ -9,49 +9,48 @@
       </div>
       <div class="modal-body">
         <!--folder-->
-          <!--actions-->
-          <div class="d-flex border bg-light mb-4">
-            <!--
-            <button type="button" class="btn btn-light rounded-0 home_folder_b border-right">
-              <i class="fal fa-bookmark"></i>
-              Projects
-            </button>
-            -->
-
-            <button type="button" class="btn btn-light rounded-0 back_folder_b border-right">
-              <i class="fal fa-long-arrow-alt-left"></i>
-              Back
-            </button>
-
-            <button type="button" class="btn btn-light rounded-0 up_folder_b border-right">
-              <i class="fal fa-long-arrow-alt-up"></i>
-              Up
-            </button>
-
-            <div class="flex-grow-1"></div>
-
-            <button type="button" class="btn btn-light rounded-0 file_upload_b border-left">
-              <i class="fal fa-upload"></i>
-              Upload
-            </button>
-
-            <button type="button" class="btn btn-light rounded-0 paste_b border-left">
-              <i class="fal fa-paste"></i>
-              Paste
-            </button>
-
-            <button type="button" class="btn btn-light rounded-0 new_folder_b border-left">
-              <i class="fal fa-plus-circle"></i>
-              New Folder
-            </button>
-
-          </div> 
 
           <!--popular folder-->
           <div class="d-flex flex-row mb-4">
             <button type="button" class="btn btn-outline-primary home_folder_b mr-2">Projects</button>
             <button type="button" class="btn btn-outline-primary example_folder_b mr-2">Examples</button>
           </div>
+
+          <!--actions-->
+          <div class="d-flex flex-column border bg-light mb-2">
+            <div class="d-flex flex-row">
+              <button type="button" class="btn btn-light rounded-0 back_folder_b border-right">
+                <i class="fal fa-long-arrow-alt-left"></i>
+                Back
+              </button>
+
+              <button type="button" class="btn btn-light rounded-0 up_folder_b border-right">
+                <i class="fal fa-long-arrow-alt-up"></i>
+                Up
+              </button>
+
+              <div class="flex-grow-1"></div>
+
+              <button type="button" class="btn btn-light rounded-0 file_upload_b border-left">
+                <i class="fal fa-upload"></i>
+                Upload
+              </button>
+
+              <button type="button" class="btn btn-light rounded-0 paste_b border-left">
+                <i class="fal fa-paste"></i>
+                Paste
+              </button>
+
+              <button type="button" class="btn btn-light rounded-0 new_folder_b border-left">
+                <i class="fal fa-plus-circle"></i>
+                New Folder
+              </button>
+            </div>
+
+            <!--full path-->
+            <input class="form-control form-control-sm" id="file_address_input" type="text" value="" readonly>
+
+          </div> 
 
           <!--path-->
             <nav aria-label="breadcrumb" id="breadcrumb_area" class="mb-2 bg-light">
@@ -60,6 +59,8 @@
             </nav>
 
 
+
+          <!--path list-->
             <div class="mb-auto mt-auto path_b pl-2" id="path_b" data-key='{{config["folder"]["path_home"]}}'>{{config["folder"]["path_home"]}}</div>
             <div class="mb-auto mt-auto path_home_b pl-2" id="path_home_b" data-key='{{config["folder"]["path_home"]}}' hidden="true">{{config["folder"]["path_home"]}}</div>
             <div class="mb-auto mt-auto path_example_b pl-2" id="path_example_b" data-key='{{config["folder"]["path_example"]}}' hidden="true">{{config["folder"]["path_example"]}}</div>
@@ -68,15 +69,12 @@
             <div class="mb-auto mt-auto path_path_design_b pl-2" id="path_path_design_b" data-key='{{config["folder"]["path_path_design"]}}' hidden="true">{{config["folder"]["path_path_design"]}}</div>
             <div class="mb-auto mt-auto path_script_b pl-2" id="path_script_b" data-key='{{config["folder"]["path_script"]}}' hidden="true">{{config["folder"]["path_script"]}}</div>
 
-        <ul class="list-group mb-2 list-file" id="fileList">
-        </ul>
+        <ul class="list-group mb-2 list-file" id="fileList" style="height: 200px; overflow-y: scroll"></ul>
 
         <!--action-->
         <button type="button" class="btn btn-primary mb-1 file_save_b">Save Here</button>
         <button type="button" class="btn btn-primary mb-1 file_open_b" >Open</button>  
-        <button type="button" class="btn btn-primary mb-1 file_cancel_b">Cancel</button>
-        <input  class="mb-auto mt-auto pl-2" id="file_address_input"  value="" readonly></input>
- 
+        <button type="button" class="btn btn-primary mb-1 file_cancel_b">Cancel</button> 
             <!--/main content-->
       </div>
     </div>

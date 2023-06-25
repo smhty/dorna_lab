@@ -16,14 +16,11 @@ $('.startup-cancel-b').on("click",function(e){
 $('.emergency-b').on("click",function(e){
 	e.preventDefault();
 	send_message({	"_server":"emergency",
-					"enable":$('.emergency-c').prop("checked"),
 					"key":"in"+$('.emergency-key-l').val(),
 					"value":parseInt($('.emergency-val-l').val())});
 });
 $('.emergency-c').on("change", function(e){
 	e.preventDefault();
 	send_message({	"_server":"emergency",
-					"enable":$('.emergency-c').prop("checked"),
-					"key":"in"+$('.emergency-key-l').val(),
-					"value":parseInt($('.emergency-val-l').val())});
+					"enable":$('.emergency-c').prop("checked")});
 })
