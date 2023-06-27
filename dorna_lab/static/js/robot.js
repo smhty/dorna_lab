@@ -1021,14 +1021,15 @@ class Robot{
 		if(name=="j7"|| name=="e"){
 			return this.joints[7];
 		}
+		let real_pos = this.xyz_to_real(this.position);
 		if(name=="x"){
-			return this.position.z/this.scale_factor ;
+			return real_pos.x ;
 		}
 		if(name=="y"){
-			return  this.position.x/this.scale_factor;
+			return  real_pos.y;
 		}
 		if(name=="z"){
-			return this.position.y/this.scale_factor ;
+			return real_pos.z ;
 		}
 		if(name=="a"){
 			return this.abc[0];
