@@ -174,7 +174,7 @@ var text_code_Json = {
   ],
   "previousStatement": null,
   "nextStatement": null,
-  "colour": 230,
+  "colour": 210,
   "tooltip": "",
   "helpUrl": ""
 }
@@ -263,20 +263,24 @@ Blockly.Python['comment_statement'] = function(block) {
 
 var label_text_Json = {
   "type": "label_text",
-  "message0": "%1",
+  "message0": "%1 = %2",
   "args0": [
     {
       "type": "field_input",
       "name": "label",
       "text": "j0"
+    },                
+    {
+        "type": "input_value",
+        "name": "input",
+      }
+    ],
+    "inputsInline": false,
+    "output": null,
+    "colour": 75,
+    "tooltip": "",
+    "helpUrl": ""
     }
-  ],
-  "inputsInline": true,
-  "output": "label",
-  "colour": 75,
-  "tooltip": "",
-  "helpUrl": ""
-}
 Blockly.Blocks['label_text'] = {
   init: function() {
     this.jsonInit(label_text_Json);
@@ -289,9 +293,11 @@ Blockly.Blocks['label_text'] = {
 };
 Blockly.Python['label_text'] = function(block) {
   var text_label = block.getFieldValue('label');
-  // TODO: Assemble Python into code variable.
   var code = text_label;
-  // TODO: Change ORDER_ATOMIC to the correct strength.
+  var value_input = Blockly.Python.valueToCode(block, 'input', Blockly.JavaScript.ORDER_NONE);
+  if(value_input){
+    code += "=" + value_input;
+  }
   return [code, Blockly.Python.ORDER_ATOMIC];
 };
 
@@ -427,7 +433,7 @@ var method_Json = {
   ],
   "previousStatement": null,
   "nextStatement": null,
-  "colour": 90,
+  "colour": 195,
   "tooltip": "",
   "helpUrl": ""
 }
@@ -463,19 +469,23 @@ function del_start_space(str){
 }
 
 
-function create_list_blocks(name){
+function create_list_blocks(name){//javad
     var list_Json = {
       "type": name + "_list",
-      "message0": "%1",
+      "message0": "%1 = %2",
       "args0": [
         {
           "type": "field_dropdown",
           "name": "label",
           "options": lists[name+"_list"]
+        },
+                {
+          "type": "input_value",
+          "name": "input",
         }
       ],
-      "inputsInline": true,
-      "output": "label",
+      "inputsInline": false,
+      "output": null,
       "colour": 75,
       "tooltip": "",
       "helpUrl": ""
@@ -493,8 +503,12 @@ function create_list_blocks(name){
     };
     Blockly.Python[name+'_list'] = function(block) {
       var dropdown = block.getFieldValue('label');
+      var value_input = Blockly.Python.valueToCode(block, 'input', Blockly.JavaScript.ORDER_NONE);
       // TODO: Assemble Python into code variable.
       var code = dropdown;
+      if(value_input){
+        code += "=" + value_input;
+      }
       // TODO: Change ORDER_ATOMIC to the correct strength.
       return [code, Blockly.Python.ORDER_ATOMIC];
     };
@@ -608,7 +622,7 @@ function create_casual_function_blocks(name){
           "inputsInline": true,
           "previousStatement": null,
           "nextStatement": null,
-          "colour": 320,
+          "colour": 285,
           "tooltip": "",
           "helpUrl": ""
         });
@@ -716,7 +730,7 @@ function create_casual_function_blocks(name){
           }
         }
         
-        let last_element = this.inputList[this.inputList.length-1];//javad working here
+        let last_element = this.inputList[this.inputList.length-1];
         const last_element_conection = last_element.connection.targetConnection;
         if (last_element_conection) {
             this.appendValueInput('ADD' + (this.inputCounter++));
@@ -862,6 +876,7 @@ create_list_blocks('cmd');
 create_list_blocks('rapid');
 create_list_blocks('coord');
 create_list_blocks('mcoord');
+
 
 create_num_input_blocks('num_0_inf_0',0,10000,0.001);
 create_num_input_blocks('num_0_inf_1',0,10000000,1);
