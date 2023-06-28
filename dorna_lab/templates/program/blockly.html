@@ -282,7 +282,8 @@
     <category name="Move" colour="30">
       <label text="Joint Move"></label>
         <block type="jmove">  
-          <value name="inputs">
+          <mutation items="4"></mutation>
+          <value name="ADD0">
               <block type="set_label">
                 <value name="label">
                   <block type="coord_list"><field name="label">j0</field> </block>
@@ -292,7 +293,7 @@
                 </value>
               </block>
           </value> 
-          <value name="inputs">
+          <value name="ADD1">
               <block type="set_label">
                 <value name="label">
                   <block type="rapid_list"><field name="label">vel</field> </block>
@@ -302,8 +303,7 @@
                 </value>
               </block>
           </value> 
-
-          <value name="inputs">
+          <value name="ADD2">
               <block type="set_label">
                 <value name="label">
                   <block type="val_list"><field name="label">rel</field> </block>
@@ -313,7 +313,7 @@
                 </value>
               </block>
           </value> 
-          <value name="inputs">
+          <value name="ADD3">
               <block type="set_label">
                 <value name="label">
                    <block type="label_text"><field name="label">timeout</field> </block>
@@ -328,8 +328,9 @@
         <sep gap="32"></sep>
         <label text="Line Move"></label>
 
-        <block type="lmove">  
-          <value name="inputs">
+        <block type="lmove">
+          <mutation items="4"></mutation>  
+          <value name="ADD0">
               <block type="set_label">
                 <value name="label">
                   <block type="coord_list"><field name="label">x</field> </block>
@@ -339,7 +340,7 @@
                 </value>
               </block>
           </value> 
-          <value name="inputs">
+          <value name="ADD1">
               <block type="set_label">
                 <value name="label">
                   <block type="rapid_list"><field name="label">vel</field> </block>
@@ -349,8 +350,7 @@
                 </value>
               </block>
           </value> 
-
-          <value name="inputs">
+          <value name="ADD2">
               <block type="set_label">
                 <value name="label">
                   <block type="val_list"><field name="label">rel</field> </block>
@@ -360,7 +360,7 @@
                 </value>
               </block>
           </value> 
-          <value name="inputs">
+          <value name="ADD3">
               <block type="set_label">
                 <value name="label">
                    <block type="label_text"><field name="label">timeout</field> </block>
@@ -376,7 +376,8 @@
         <label text="Circle Move"></label>
 
           <block type="cmove">
-            <value name="inputs">
+            <mutation items="6"></mutation>
+            <value name="ADD0">
               <block type="set_label">
                 <value name="label">
                    <block type="label_text"><field name="label">turn</field> </block>
@@ -385,65 +386,65 @@
                   <block type="num_0_inf_1"><field name="NUM">0</field> </block>
                 </value>
               </block>
-          </value> 
-            <value name="inputs">
-              <block type="set_label">
-                <value name="label">
-                  <block type="mcoord_list"><field name="label">mj0</field> </block>
-                </value>
-                <value name="input">
-                  <block type="math_number"><field name="NUM">10.0</field> </block>
-                </value>
-              </block>
-          </value>   
-          <value name="inputs">
-              <block type="set_label">
-                <value name="label">
-                  <block type="coord_list"><field name="label">j0</field> </block>
-                </value>
-                <value name="input">
-                  <block type="math_number"><field name="NUM">0.0</field> </block>
-                </value>
-              </block>
-          </value> 
-          <value name="inputs">
-              <block type="set_label">
-                <value name="label">
-                  <block type="rapid_list"><field name="label">vel</field> </block>
-                </value>
-                <value name="input">
-                  <block type="num_0_inf_0"><field name="NUM">0.0</field> </block>
-                </value>
-              </block>
-          </value> 
-
-          <value name="inputs">
-              <block type="set_label">
-                <value name="label">
-                  <block type="val_list"><field name="label">rel</field> </block>
-                </value>
-                <value name="input">
-                  <block type="num_0_1_1"><field name="NUM">0.0</field> </block>
-                </value>
-              </block>
-          </value> 
-          <value name="inputs">
-              <block type="set_label">
-                <value name="label">
-                   <block type="label_text"><field name="label">timeout</field> </block>
-                </value>
-                <value name="input">
-                  <block type="math_number"><field name="NUM">-1</field> </block>
-                </value>
-              </block>
-          </value> 
+            </value> 
+              <value name="ADD1">
+                <block type="set_label">
+                  <value name="label">
+                    <block type="mcoord_list"><field name="label">mj0</field> </block>
+                  </value>
+                  <value name="input">
+                    <block type="math_number"><field name="NUM">10.0</field> </block>
+                  </value>
+                </block>
+            </value>   
+            <value name="ADD2">
+                <block type="set_label">
+                  <value name="label">
+                    <block type="coord_list"><field name="label">j0</field> </block>
+                  </value>
+                  <value name="input">
+                    <block type="math_number"><field name="NUM">0.0</field> </block>
+                  </value>
+                </block>
+            </value> 
+            <value name="ADD3">
+                <block type="set_label">
+                  <value name="label">
+                    <block type="rapid_list"><field name="label">vel</field> </block>
+                  </value>
+                  <value name="input">
+                    <block type="num_0_inf_0"><field name="NUM">0.0</field> </block>
+                  </value>
+                </block>
+            </value> 
+            <value name="ADD4">
+                <block type="set_label">
+                  <value name="label">
+                    <block type="val_list"><field name="label">rel</field> </block>
+                  </value>
+                  <value name="input">
+                    <block type="num_0_1_1"><field name="NUM">0.0</field> </block>
+                  </value>
+                </block>
+            </value> 
+            <value name="ADD5">
+                <block type="set_label">
+                  <value name="label">
+                     <block type="label_text"><field name="label">timeout</field> </block>
+                  </value>
+                  <value name="input">
+                    <block type="math_number"><field name="NUM">-1</field> </block>
+                  </value>
+                </block>
+            </value> 
         </block>
     </category>
 
     <category name="Stop" colour="60">
       <label text="Halt"></label>
-        <block type="halt">          
-          <value name="inputs">
+        <block type="halt">      
+          <mutation items="1"></mutation>    
+          <value name="ADD0">
               <block type="set_label">
                 <value name="label">
                   <block type="label_text"><field name="label">accel</field> </block>
@@ -459,7 +460,8 @@
         <block type="get_alarm"></block>
         <sep gap="5"></sep>
         <block type="set_alarm">
-          <value name="inputs">
+          <mutation items="1"></mutation>
+          <value name="ADD0">
               <block type="set_label">
                 <value name="label">
                   <block type="label_text"><field name="label">enable</field> </block>
@@ -477,7 +479,8 @@
       <block type="get_all_joint"></block>
       <sep gap="5"></sep>
       <block type="get_joint">
-        <value name="inputs">
+        <mutation items="1"></mutation>
+        <value name="ADD0">
               <block type="set_label">
                 <value name="label">
                    <block type="label_text"><field name="label">index</field> </block>
@@ -490,7 +493,8 @@
       </block>
       <sep gap="5"></sep>
       <block type="set_joint">
-          <value name="inputs">
+        <mutation items="2"></mutation>
+          <value name="ADD0">
               <block type="set_label">
                 <value name="label">
                    <block type="label_text"><field name="label">val</field> </block>
@@ -500,7 +504,7 @@
                 </value>
               </block>
           </value> 
-            <value name="inputs">
+            <value name="ADD1">
               <block type="set_label">
                 <value name="label">
                    <block type="label_text"><field name="label">index</field> </block>
@@ -517,7 +521,8 @@
       <block type="get_all_pose"></block>
       <sep gap="5"></sep>
       <block type="get_pose">
-        <value name="inputs">
+        <mutation items="1"></mutation>
+        <value name="ADD0">
               <block type="set_label">
                 <value name="label">
                    <block type="label_text"><field name="label">index</field> </block>
@@ -533,7 +538,8 @@
       <block type="get_toollength"></block>
       <sep gap="5"></sep>
       <block type="set_toollength">
-          <value name="inputs">
+        <mutation items="1"></mutation>
+          <value name="ADD0">
               <block type="set_label">
                 <value name="label">
                   <block type="label_text"><field name="label">length</field> </block>
@@ -551,7 +557,8 @@
         <block type="get_all_output"></block>
         <sep gap="5"></sep>
         <block type="get_output">
-          <value name="inputs">
+          <mutation items="1"></mutation>
+          <value name="ADD0">
               <block type="set_label">
                 <value name="label">
                    <block type="label_text"><field name="label">index</field> </block>
@@ -564,7 +571,8 @@
         </block>
         <sep gap="5"></sep>
         <block type="set_output">
-            <value name="inputs">
+          <mutation items="3"></mutation>
+            <value name="ADD0">
               <block type="set_label">
                 <value name="label">
                    <block type="label_text"><field name="label">queue</field> </block>
@@ -574,7 +582,7 @@
                 </value>
               </block>
           </value>
-           <value name="inputs">
+           <value name="ADD1">
               <block type="set_label">
                 <value name="label">
                    <block type="label_text"><field name="label">val</field> </block>
@@ -584,7 +592,7 @@
                 </value>
               </block>
           </value> 
-            <value name="inputs">
+            <value name="ADD2">
               <block type="set_label">
                 <value name="label">
                    <block type="label_text"><field name="label">index</field> </block>
@@ -601,7 +609,8 @@
          <block type="get_all_input"></block>
         <sep gap="5"></sep>
         <block type="get_input">
-            <value name="inputs">
+          <mutation items="1"></mutation>
+            <value name="ADD0">
               <block type="set_label">
                 <value name="label">
                    <block type="label_text"><field name="label">index</field> </block>
@@ -616,7 +625,8 @@
         <sep gap="32"></sep>
         <label text="PWM"></label>
           <block type="get_pwm">
-            <value name="inputs">
+            <mutation items="1"></mutation>
+            <value name="ADD0">
               <block type="set_label">
                 <value name="label">
                    <block type="label_text"><field name="label">index</field> </block>
@@ -629,7 +639,8 @@
         </block>
         <sep gap="5"></sep>
         <block type="get_freq">
-            <value name="inputs">
+          <mutation items="1"></mutation>
+            <value name="ADD0">
               <block type="set_label">
                 <value name="label">
                    <block type="label_text"><field name="label">index</field> </block>
@@ -642,7 +653,8 @@
         </block>
         <sep gap="5"></sep>
         <block type="get_duty">
-            <value name="inputs">
+          <mutation items="1"></mutation>
+            <value name="ADD0">
               <block type="set_label">
                 <value name="label">
                    <block type="label_text"><field name="label">index</field> </block>
@@ -655,7 +667,8 @@
         </block>
         <sep gap="5"></sep>
         <block type="set_pwm">
-          <value name="inputs">
+          <mutation items="3"></mutation>
+          <value name="ADD0">
               <block type="set_label">
                 <value name="label">
                    <block type="label_text"><field name="label">queue</field> </block>
@@ -665,7 +678,7 @@
                 </value>
               </block>
           </value>
-            <value name="inputs">
+            <value name="ADD1">
               <block type="set_label">
                 <value name="label">
                    <block type="label_text"><field name="label">enable</field> </block>
@@ -675,7 +688,7 @@
                 </value>
               </block>
           </value> 
-            <value name="inputs">
+            <value name="ADD2">
               <block type="set_label">
                 <value name="label">
                    <block type="label_text"><field name="label">index</field> </block>
@@ -688,7 +701,8 @@
         </block>
         <sep gap="5"></sep>
         <block type="set_freq">
-            <value name="inputs">
+          <mutation items="3"></mutation>
+            <value name="ADD0">
               <block type="set_label">
                 <value name="label">
                    <block type="label_text"><field name="label">queue</field> </block>
@@ -698,7 +712,7 @@
                 </value>
               </block>
           </value>
-            <value name="inputs">
+            <value name="ADD1">
               <block type="set_label">
                 <value name="label">
                    <block type="label_text"><field name="label">freq</field> </block>
@@ -708,7 +722,7 @@
                 </value>
               </block>
           </value> 
-            <value name="inputs">
+            <value name="ADD2">
               <block type="set_label">
                 <value name="label">
                    <block type="label_text"><field name="label">index</field> </block>
@@ -721,7 +735,8 @@
         </block>
         <sep gap="5"></sep>
         <block type="set_duty">
-            <value name="inputs">
+          <mutation items="3"></mutation>
+            <value name="ADD0">
               <block type="set_label">
                 <value name="label">
                    <block type="label_text"><field name="label">queue</field> </block>
@@ -731,7 +746,7 @@
                 </value>
               </block>
           </value>
-            <value name="inputs">
+            <value name="ADD1">
               <block type="set_label">
                 <value name="label">
                    <block type="label_text"><field name="label">val</field> </block>
@@ -741,7 +756,7 @@
                 </value>
               </block>
           </value> 
-            <value name="inputs">
+            <value name="ADD2">
               <block type="set_label">
                 <value name="label">
                    <block type="label_text"><field name="label">index</field> </block>
@@ -756,7 +771,8 @@
         <sep gap="32"></sep>
         <label text="ADC"></label>
         <block type="get_adc">
-            <value name="inputs">
+          <mutation items="1"></mutation>
+            <value name="ADD0">
               <block type="set_label">
                 <value name="label">
                    <block type="label_text"><field name="label">index</field> </block>
@@ -771,8 +787,8 @@
 
     <category name="Wait" colour="150">
       <label text="Wait for Input Pin"></label>
-        <block type="probe">
-          <value name="inputs">
+        <block type="probe"><mutation items="2"></mutation>
+          <value name="ADD0">
               <block type="set_label">
                 <value name="label">
                    <block type="label_text"><field name="label">val</field> </block>
@@ -782,7 +798,7 @@
                 </value>
               </block>
           </value> 
-            <value name="inputs">
+            <value name="ADD1">
               <block type="set_label">
                 <value name="label">
                    <block type="label_text"><field name="label">index</field> </block>
@@ -794,8 +810,8 @@
           </value>
         </block>
       <label text="Wait for Encoder Index"></label>
-        <block type="iprobe">
-          <value name="inputs">
+        <block type="iprobe"><mutation items="2"></mutation>
+          <value name="ADD0">
               <block type="set_label">
                 <value name="label">
                    <block type="label_text"><field name="label">val</field> </block>
@@ -805,7 +821,7 @@
                 </value>
               </block>
           </value> 
-            <value name="inputs">
+            <value name="ADD1">
               <block type="set_label">
                 <value name="label">
                    <block type="label_text"><field name="label">index</field> </block>
@@ -818,8 +834,8 @@
         </block>
 
       <label text="Sleep in Seconds"></label>
-        <block type="sleep">
-          <value name="inputs">
+        <block type="sleep"><mutation items="1"></mutation>
+          <value name="ADD0">
               <block type="set_label">
                 <value name="label">
                   <block type="label_text"><field name="label">val</field> </block>
@@ -837,8 +853,8 @@
       <label text="Motor"></label>
         <block type="get_motor"></block>
         <sep gap="5"></sep>
-        <block type="set_motor">
-          <value name="inputs">
+        <block type="set_motor"><mutation items="1"></mutation>
+          <value name="ADD0">
               <block type="set_label">
                 <value name="label">
                   <block type="label_text"><field name="label">enable</field> </block>
@@ -854,8 +870,8 @@
       <label text="Gravity Compensation"></label>
         <block type="get_gravity"></block>
         <sep gap="5"></sep>
-        <block type="set_gravity">
-          <value name="inputs">
+        <block type="set_gravity"><mutation items="5"></mutation>
+          <value name="ADD0">
               <block type="set_label">
                 <value name="label">
                   <block type="label_text"><field name="label">z</field> </block>
@@ -865,7 +881,7 @@
                 </value>
               </block>
           </value>
-          <value name="inputs">
+          <value name="ADD1">
               <block type="set_label">
                 <value name="label">
                   <block type="label_text"><field name="label">y</field> </block>
@@ -875,7 +891,7 @@
                 </value>
               </block>
           </value>
-          <value name="inputs">
+          <value name="ADD2">
               <block type="set_label">
                 <value name="label">
                   <block type="label_text"><field name="label">x</field> </block>
@@ -885,7 +901,7 @@
                 </value>
               </block>
           </value>
-          <value name="inputs">
+          <value name="ADD3">
               <block type="set_label">
                 <value name="label">
                   <block type="label_text"><field name="label">mass</field> </block>
@@ -895,7 +911,7 @@
                 </value>
               </block>
           </value>
-          <value name="inputs">
+          <value name="ADD4">
               <block type="set_label">
                 <value name="label">
                   <block type="label_text"><field name="label">enable</field> </block>
@@ -909,8 +925,8 @@
 
       <sep gap="32"></sep>
       <label text="Auxiliary Axes"></label>
-      <block type="get_axis">
-        <value name="inputs">
+      <block type="get_axis"><mutation items="1"></mutation>
+        <value name="ADD0">
               <block type="set_label">
                 <value name="label">
                    <block type="label_text"><field name="label">index</field> </block>
@@ -922,8 +938,8 @@
           </value>
       </block>
       <sep gap="5"></sep>
-      <block type="set_axis">
-          <value name="inputs">
+      <block type="set_axis"><mutation items="2"></mutation>
+          <value name="ADD0">
               <block type="set_label">
                 <value name="label">
                    <block type="label_text"><field name="label">ratio</field> </block>
@@ -933,7 +949,7 @@
                 </value>
               </block>
           </value> 
-            <value name="inputs">
+            <value name="ADD1">
               <block type="set_label">
                 <value name="label">
                    <block type="label_text"><field name="label">index</field> </block>
@@ -943,14 +959,14 @@
                 </value>
               </block>
           </value>
-        </block>
+      </block>
 
       <sep gap="32"></sep>
       <label text="PID"></label>
       <block type="get_pid"></block>
       <sep gap="5"></sep>
-      <block type="set_pid">
-          <value name="inputs">
+      <block type="set_pid"><mutation items="2"></mutation>
+          <value name="ADD0">
               <block type="set_label">
                 <value name="label">
                    <block type="label_text"><field name="label">duration</field> </block>
@@ -960,7 +976,7 @@
                 </value>
               </block>
           </value> 
-            <value name="inputs">
+            <value name="ADD1">
               <block type="set_label">
                 <value name="label">
                    <block type="label_text"><field name="label">treshold</field> </block>
@@ -985,7 +1001,8 @@
 
     <category name="Messages" colour="240">
         <block type="val">
-          <value name="inputs">
+          <mutation items="1"></mutation>
+          <value name="ADD0">
               <block type="key_in">
                 <value name="key">
                   <block type="val_list"><field name="label">in0</field> </block>
@@ -1002,8 +1019,8 @@
     </category>
 
     <category name="Connection" colour="270">
-        <block type="connect">
-          <value name="inputs">
+        <block type="connect"><mutation items="2"></mutation>
+          <value name="ADD0">
               <block type="set_label">
                 <value name="label">
                   <block type="label_text"><field name="label">port</field> </block>
@@ -1013,7 +1030,7 @@
                 </value>
               </block>
           </value>
-            <value name="inputs">
+            <value name="ADD1">
               <block type="set_label">
                 <value name="label">
                   <block type="label_text"><field name="label">host</field> </block>
@@ -1030,8 +1047,8 @@
 
     <category name="Play" colour="300">
       <label text="Play a Command"></label>
-        <block type="play">  
-          <value name="inputs">
+        <block type="play">  <mutation items="2"></mutation>
+          <value name="ADD0">
               <block type="set_label">
                 <value name="label">
                   <block type="label_text"><field name="label">msg</field> </block>
@@ -1041,7 +1058,7 @@
                 </value>
               </block>
           </value>
-          <value name="inputs">
+          <value name="ADD1">
               <block type="set_label">
                 <value name="label">
                    <block type="label_text"><field name="label">timeout</field> </block>
@@ -1056,8 +1073,8 @@
         <sep gap="32"></sep>  
         <label text="Play a Script File"></label>
 
-        <block type="play_script"> 
-          <value name="inputs">
+        <block type="play_script"> <mutation items="2"></mutation>
+          <value name="ADD0">
               <block type="set_label">
                 <value name="label">
                    <block type="label_text"><field name="label">timeout</field> </block>
@@ -1067,7 +1084,7 @@
                 </value>
               </block>
           </value> 
-          <value name="inputs">
+          <value name="ADD1">
               <block type="set_label">
                 <value name="label">
                   <block type="label_text"><field name="label">script_path</field> </block>
@@ -1082,8 +1099,8 @@
     </category>
 
     <category name="Log" colour="330">
-        <block type="log">
-            <value name="inputs">
+        <block type="log"><mutation items="1"></mutation>
+            <value name="ADD0">
               <block type="set_label">
                 <value name="label">
                   <block type="label_text"><field name="label">msg</field> </block>

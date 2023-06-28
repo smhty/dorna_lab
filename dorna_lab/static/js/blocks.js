@@ -45,14 +45,11 @@ add_lists(mcoord_list ,"mcoord_list")
 
 var set_label_Json ={
   "type": "set_label",
-  "message0": "%1 = %2 %3",
+  "message0": "%1 = %2",
   "args0": [
     {
       "type": "input_value",
       "name": "label"
-    },
-    {
-      "type": "input_dummy"
     },
     {
       "type": "input_value",
@@ -60,12 +57,11 @@ var set_label_Json ={
     }
   ],
   "inputsInline": true,
-  "previousStatement": null,
-  "nextStatement": null,
+  "output": null,
   "colour": 120,
   "tooltip": "",
   "helpUrl": ""
-}
+};
 
 Blockly.Blocks['set_label'] = {
   init: function() {
@@ -81,13 +77,13 @@ Blockly.Python['set_label'] = function(block) {
   var value_label = Blockly.Python.valueToCode(block, 'label', Blockly.Python.ORDER_NONE);
   var value_input = Blockly.Python.valueToCode(block, 'input', Blockly.Python.ORDER_NONE);
 
-  var code;
+  var code = "";
   if(value_input)
-    code = value_label+"=" + value_input + ", ";
+    code = value_label+"=" + value_input;
   else
     code = value_label
 
-  return code;
+  return  [code, Blockly.Python.ORDER_NONE];
 };
 
 
@@ -102,8 +98,7 @@ var key_in_Json ={
     }
   ],
   "inputsInline": true,
-  "previousStatement": null,
-  "nextStatement": null,
+  "output": null,
   "colour": 120,
   "tooltip": "",
   "helpUrl": ""
@@ -120,20 +115,10 @@ Blockly.Blocks['key_in'] = {
 };
 Blockly.Python['key_in'] = function(block) {
   var value_key = Blockly.Python.valueToCode(block, 'key', Blockly.Python.ORDER_NONE);
-  // TODO: Assemble Python into code variable.
-  /*
-
-  let k1 = value_key.lastIndexOf("(");
-  let k2 = value_key.lastIndexOf(")");
-  if(k1!=-1 && k2!=-1){
-    value_key = value_key.slice(k1+1,k2)
-  }
-*/
   var code = value_key;
 
-  return code;
-};
-
+  return [code, Blockly.JavaScript.ORDER_NONE];
+}
 
 
 var set_var_json = {
@@ -311,7 +296,7 @@ Blockly.Python['label_text'] = function(block) {
 };
 
 
-
+/*
 var val_Json = {
   "type": "val",
   "message0": "val %1",
@@ -344,7 +329,7 @@ Blockly.Python['val'] = function(block) {
   return code;
 };
 
-
+*/
 var dic_key_Json = {
   "type": "dic_key",
   "message0": "%1 [ %2 ]",
@@ -557,29 +542,19 @@ function create_number_drpdown_blocks(name,n,zero=0){
     };
 }
 
-function create_casual_function_blocks(name,input=true){
+function create_casual_function_blocks_no_inputs(name){
 
     Blockly.Blocks[name] = {
       init: function() {
         this.jsonInit({
           "type": name,
-          "message0": name + "%1"+((input) ? " %2" : ""),
-          "args0": ((input) ? [
-             {
-              "type": "input_value",
-              "name": "ret"
-            },
+          "message0": "%1" + name ,
+          "args0": [
             {
-              "type": "input_statement",
-              "name": "inputs"//,
-              //"check": "set_label"
-            }
-          ]:[
-             {
               "type": "input_value",
               "name": "ret"
             }
-          ]),
+          ],
           "inputsInline": true,
           "previousStatement": null,
           "nextStatement": null,
@@ -587,28 +562,170 @@ function create_casual_function_blocks(name,input=true){
           "tooltip": "",
           "helpUrl": ""
         });
-        var thisBlock = this;
-        this.setTooltip(function() {
-          return name;
-        });
       }
     };
   Blockly.Python[name] = function(block) {
     var value_ret = Blockly.Python.valueToCode(block, 'ret', Blockly.Python.ORDER_NONE);
+    var code = 'robot.'+name+'()\n';
+    if(value_ret!=""){
+      code = value_ret + " = " + code
+    }
+    return code;
+  };
+
+}
+
+function create_casual_function_blocks(name){
+
+    Blockly.Blocks[name] = {
+      //
+       // Counter for the next input to add to this block.
+       // @type {number}
+      inputCounter: 1,
+
+       // Minimum number of inputs for this block.
+       // @type {number}
+      minInputs: 1,
+
+      //
+       // Block for concatenating any number of strings.
+       // @this {Blockly.Block}
+       //
+      init: function() {
+        this.jsonInit({
+          "type": name,
+          "message0": "%1 "+name+" %2",
+          "args0": [
+            {
+              "type": "input_value",
+              "name": "ret"
+            },
+            {
+              "type": "input_value",
+              "name": "ADD0"
+            }
+          ],
+          "inputsInline": true,
+          "previousStatement": null,
+          "nextStatement": null,
+          "colour": 320,
+          "tooltip": "",
+          "helpUrl": ""
+        });
+
+      },
+
+      mutationToDom: function() {
+        const container = Blockly.utils.xml.createElement('mutation');
+        const inputNames = this.inputList.map((input) => input.name).join(',');
+        container.setAttribute('inputs', inputNames);
+        container.setAttribute('next', this.inputCounter);
+        return container;
+      },
+
+      domToMutation: function(xmlElement) {
+        if (xmlElement.getAttribute('inputs')) {
+          this.deserializeInputs_(xmlElement);
+        } else {
+          this.deserializeCounts_(xmlElement);
+        }
+      },
+
+      deserializeInputs_: function(xmlElement) {
+        const items = xmlElement.getAttribute('inputs');
+        if (items) {
+          const inputNames = items.split(',');
+          this.inputList = [];
+          inputNames.forEach((name) => this.appendValueInput(name));
+          this.inputList[1]
+              .appendField(name);
+        }
+        const next = parseInt(xmlElement.getAttribute('next'));
+        this.inputCounter = next;
+      },
+
+      deserializeCounts_: function(xmlElement) {
+        const itemCount = Math.max(
+            parseInt(xmlElement.getAttribute('items'), 10), this.minInputs);
+        for (let i = this.minInputs; i < itemCount; i++) {
+          this.appendValueInput('ADD' + i);
+        }
+        this.inputCounter = itemCount;
+      },
+
+      getIndexForNewInput: function(connection) {
+        if (!connection.targetConnection) {
+          // this connection is available
+          return null;
+        }
+
+        let connectionIndex;
+        for (let i = 0; i < this.inputList.length; i++) {
+          if (this.inputList[i].connection == connection) {
+            connectionIndex = i;
+          }
+        }
+
+        if (connectionIndex == this.inputList.length - 1) {
+          // this connection is the last one and already has a block in it, so
+          // we should add a new connection at the end.
+          return this.inputList.length + 1;
+        }
+
+        const nextInput = this.inputList[connectionIndex + 1];
+        const nextConnection = nextInput && nextInput.connection.targetConnection;
+        if (nextConnection && !nextConnection.sourceBlock_.isInsertionMarker()) {
+          return connectionIndex + 1;
+        }
+
+        // Don't add new connection
+        return null;
+      },
+
+      onPendingConnection: function(connection) {
+        const insertIndex = this.getIndexForNewInput(connection);
+        if (insertIndex == null) {
+          return;
+        }
+        this.appendValueInput('ADD' + (this.inputCounter++));
+        this.moveNumberedInputBefore(this.inputList.length - 1, insertIndex);
+      },
+
+
+      finalizeConnections: function() {
+        if (this.inputList.length > this.minInputs + 1) {
+          let toRemove = [];
+          this.inputList.forEach((input) => {
+            const targetConnection = input.connection.targetConnection;
+            if (!targetConnection && input.name!="ret") {
+              toRemove.push(input.name);
+            }
+          });
+
+          if (this.inputList.length - toRemove.length < this.minInputs) {
+            // Always show at least two inputs
+            toRemove = toRemove.slice(this.minInputs);
+          }
+          toRemove.forEach((inputName) => this.removeInput(inputName));
+          // The first input should have the block text. If we removed the
+          // first input, add the block text to the new first input.
+          if (this.inputList[1].fieldRow.length == 0) {
+            this.inputList[1]
+                .appendField(name);
+          }
+        }
+      },
+    };
+
+  Blockly.Python[name] = function(block) {
+    var value_ret = Blockly.Python.valueToCode(block, 'ret', Blockly.Python.ORDER_NONE);
     var code = 'robot.'+name+'(';
 
-    if(input){
-      var statements_inputs = Blockly.Python.statementToCode(block, 'inputs');
-      if(statements_inputs.indexOf("\t")==0){
-        statements_inputs = statements_inputs.slice(1,statements_inputs.length)
-      }
-
-      let f = statements_inputs.lastIndexOf(',');
-      if(f!=-1)
-       code = code + statements_inputs.slice(0,f);
-      else
-        code = code + statements_inputs;
-
+    let i = 0;//loop over all inputs (other than ret)
+    while(Blockly.Python.valueToCode(block, 'ADD'+i, Blockly.Python.ORDER_NONE)){
+      if(i!=0)code+=", "
+      code += Blockly.Python.valueToCode(block, 'ADD'+i, Blockly.Python.ORDER_NONE);
+      i += 1;
     }
 
     code = code + ')\n';
@@ -750,7 +867,7 @@ create_casual_function_blocks('rmove');
 create_casual_function_blocks('cmove');
 
 create_casual_function_blocks('connect');
-create_casual_function_blocks('close',false);
+create_casual_function_blocks_no_inputs('close');
 create_casual_function_blocks('play');
 create_casual_function_blocks('play_script');
 create_casual_function_blocks('log');
@@ -760,24 +877,24 @@ create_casual_function_blocks('probe');
 create_casual_function_blocks('iprobe');
 create_casual_function_blocks('halt');
 create_casual_function_blocks('sleep');
-create_casual_function_blocks('version',false);
-create_casual_function_blocks('uid',false);
-create_casual_function_blocks('recv',false);
-create_casual_function_blocks('track_cmd',false);
+create_casual_function_blocks_no_inputs('version');
+create_casual_function_blocks_no_inputs('uid');
+create_casual_function_blocks_no_inputs('recv');
+create_casual_function_blocks_no_inputs('track_cmd');
 
-create_casual_function_blocks('get_alarm',false);
+create_casual_function_blocks_no_inputs('get_alarm');
 create_casual_function_blocks('set_alarm');
-create_casual_function_blocks('get_all_joint',false);
+create_casual_function_blocks_no_inputs('get_all_joint');
 create_casual_function_blocks('get_joint');
 create_casual_function_blocks('set_joint');
-create_casual_function_blocks('get_all_pose',false);
+create_casual_function_blocks_no_inputs('get_all_pose');
 create_casual_function_blocks('get_pose');
-create_casual_function_blocks('get_toollength',false);
+create_casual_function_blocks_no_inputs('get_toollength');
 create_casual_function_blocks('set_toollength');
-create_casual_function_blocks('get_all_output',false);
+create_casual_function_blocks_no_inputs('get_all_output');
 create_casual_function_blocks('get_output');
 create_casual_function_blocks('set_output');
-create_casual_function_blocks('get_all_input',false);
+create_casual_function_blocks_no_inputs('get_all_input');
 create_casual_function_blocks('get_input');
 create_casual_function_blocks('get_pwm');
 create_casual_function_blocks('set_pwm');
@@ -786,12 +903,57 @@ create_casual_function_blocks('set_freq');
 create_casual_function_blocks('get_duty');
 create_casual_function_blocks('set_duty');
 create_casual_function_blocks('get_adc');
-create_casual_function_blocks('get_motor',false);
+create_casual_function_blocks_no_inputs('get_motor');
 create_casual_function_blocks('set_motor');
-create_casual_function_blocks('get_gravity',false);
+create_casual_function_blocks_no_inputs('get_gravity');
 create_casual_function_blocks('set_gravity');
 create_casual_function_blocks('get_axis');
 create_casual_function_blocks('set_axis');
-create_casual_function_blocks('get_pid',false);
+create_casual_function_blocks_no_inputs('get_pid');
 create_casual_function_blocks('set_pid');
-create_casual_function_blocks('reset_pid',false);
+create_casual_function_blocks_no_inputs('reset_pid');
+
+
+
+Blockly.InsertionMarkerManager.prototype.update = function(dxy, dragTarget) {
+  const newCandidate = this.getCandidate_(dxy);
+
+  this.wouldDeleteBlock_ = this.shouldDelete_(!!newCandidate, dragTarget);
+
+  const shouldUpdate =
+      this.wouldDeleteBlock_ || this.shouldUpdatePreviews_(newCandidate, dxy);
+
+  if (shouldUpdate) {
+    // Begin monkey patch
+    if (newCandidate &&
+        newCandidate.closest &&
+        newCandidate.closest.sourceBlock_.onPendingConnection) {
+      newCandidate.closest.sourceBlock_
+          .onPendingConnection(newCandidate.closest);
+      if (!this.pendingBlocks) {
+        this.pendingBlocks = new Set();
+      }
+      this.pendingBlocks.add(newCandidate.closest.sourceBlock_);
+    }
+    // End monkey patch
+    // Don't fire events for insertion marker creation or movement.
+    Blockly.Events.disable();
+    this.maybeHidePreview_(newCandidate);
+    this.maybeShowPreview_(newCandidate);
+    Blockly.Events.enable();
+  }
+};
+
+const oldDispose = Blockly.InsertionMarkerManager.prototype.dispose;
+Blockly.InsertionMarkerManager.prototype.dispose = function() {
+  if (this.pendingBlocks) {
+    this.pendingBlocks.forEach((block) => {
+      if (block.finalizeConnections) {
+        block.finalizeConnections();
+      }
+    });
+  }
+  oldDispose.call(this);
+};
+
+
