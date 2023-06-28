@@ -133,7 +133,7 @@ function update_file_list(msg){
 
   for( a in msg["folder"]){
         let item = msg["folder"][a];
-        let elem =`<div class="list-group-item list-group-item-action d-flex p-0 rounded-0">
+        let elem =`<div class="list-group-item list-group-item-action d-flex p-0 rounded-0 f-list-group-item" data-key="`+item+`">
             <button type="button" class="btn btn-ligh rounded-0 btn folder_b"  data-key="`+item+`">
                 <i class="fas fa-folder"></i>
                 `+item+`
@@ -144,7 +144,7 @@ function update_file_list(msg){
   }
   for( a in msg["file"]){
         let item = msg["file"][a];
-        let elem =`<div class="list-group-item list-group-item-action d-flex p-0 rounded-0">
+        let elem =`<div class="list-group-item list-group-item-action d-flex p-0 rounded-0 f-list-group-item" data-key="`+item+`">
             <button type="button" class="btn btn-ligh rounded-0 btn file_b"  data-key="`+item+`">
                 <i class="far fa-file"></i>
                 `+item+`
@@ -177,8 +177,16 @@ function update_file_list(msg){
     })
     $(this).parent().addClass("active");
 
-  });
+    let pathname = $("#path_b").attr("data-key") + "/" + name;
+    $("#file_address_input").attr("value",pathname);
 
+  });
+  /*
+  $(".f-list-group-item").on("click", function(e) {
+    let key = $(this).attr("data-key");
+    $(`.file_b[data-key=${key}]`).trigger('click');
+  });
+  */
   $(".rename_b").on("click", function(e) {
     let name = $(this).attr("data-key")
     let type = $(this).attr("ftype")
@@ -274,6 +282,12 @@ function update_file_list(msg){
   $(".file_drp_dwn_btn").on("click", function(e) {
     let path = $(this).attr("path")
     $("#file_address_input").attr("value",path);
+
+    $(".list-file").children().each(function( index){
+      $(this).removeClass( "active" );
+    });
+    $(this).parent().parent().addClass("active");
+
   });
 }
 
