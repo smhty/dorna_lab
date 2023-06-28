@@ -646,8 +646,8 @@ function create_casual_function_blocks(name){
 
       deserializeCounts_: function(xmlElement) {
         const itemCount = Math.max(
-            parseInt(xmlElement.getAttribute('items'), 10), this.minInputs);
-        for (let i = this.minInputs; i < itemCount; i++) {
+            parseInt(xmlElement.getAttribute('items'), 10)+1, this.minInputs);
+        for (let i = this.minInputs; i < itemCount ; i++) {
           this.appendValueInput('ADD' + i);
         }
         this.inputCounter = itemCount;
@@ -702,10 +702,11 @@ function create_casual_function_blocks(name){
             }
           });
 
-          if (this.inputList.length - toRemove.length < this.minInputs) {
+          if (this.inputList.length - toRemove.length < this.minInputs+1) {
             // Always show at least two inputs
             toRemove = toRemove.slice(this.minInputs);
           }
+          this.inputCounter = this.inputCounter - toRemove.length;
           toRemove.forEach((inputName) => this.removeInput(inputName));
           // The first input should have the block text. If we removed the
           // first input, add the block text to the new first input.
@@ -714,7 +715,21 @@ function create_casual_function_blocks(name){
                 .appendField(name);
           }
         }
-      },
+        
+        let last_element = this.inputList[this.inputList.length-1];//javad working here
+        const last_element_conection = last_element.connection.targetConnection;
+        if (last_element_conection) {
+            this.appendValueInput('ADD' + (this.inputCounter++));
+        }
+        let i = -1;
+          this.inputList.forEach((input) => {
+            if(i>-1){
+              input.name = 'ADD'+i;
+            }
+            i++;
+        });
+        
+      }
     };
 
   Blockly.Python[name] = function(block) {
