@@ -532,7 +532,7 @@ function create_number_drpdown_blocks(name,n,zero=0){
     ],
     "inputsInline": true,
     "output": "label",
-    "colour": 75,
+    "colour": 225,
     "tooltip": "",
     "helpUrl": ""
   }
@@ -572,7 +572,7 @@ function create_casual_function_blocks_no_inputs(name){
           "inputsInline": true,
           "previousStatement": null,
           "nextStatement": null,
-          "colour": 320,
+          "colour": 285,
           "tooltip": "",
           "helpUrl": ""
         });
