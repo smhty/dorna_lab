@@ -800,6 +800,7 @@ function create_casual_function_blocks(name){
   };
 
 }
+/*
 function create_dict_block(){
 
     Blockly.Blocks['dict'] = {
@@ -948,7 +949,7 @@ function create_dict_block(){
 }
 
 create_dict_block();
-
+*/
 Blockly.Blocks["function_call"] = {
       init: function() {
         this.jsonInit({
@@ -1059,9 +1060,10 @@ create_list_blocks('coord');
 create_list_blocks('mcoord');
 
 
-create_num_input_blocks('num_0_inf_0',0,10000,0.001);
+create_num_input_blocks('num_0_inf_0',0,10000,0.0001);
 create_num_input_blocks('num_0_inf_1',0,10000000,1);
 create_num_input_blocks('num_1_inf_1',1,10000000,1);
+create_num_input_blocks('num_1_inf_0',1,10000000,0.0001);
 create_num_input_blocks('num_0_1_1',0,1,1);
 create_num_input_blocks('num_freq',0,120000000,0.001);
 create_num_input_blocks('num_duty',0,100,0.001);
@@ -1096,7 +1098,6 @@ create_casual_function_blocks('halt');
 create_casual_function_blocks('sleep');
 create_casual_function_blocks_no_inputs('version');
 create_casual_function_blocks_no_inputs('uid');
-create_casual_function_blocks_no_inputs('recv');
 create_casual_function_blocks_no_inputs('track_cmd');
 create_casual_function_blocks_no_inputs('last_cmd');
 create_casual_function_blocks_no_inputs('last_msg');
