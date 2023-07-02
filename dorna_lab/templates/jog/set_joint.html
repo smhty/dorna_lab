@@ -19,7 +19,16 @@
           </thead>         
           <tbody>
             <tr class="set_joint_form versionable" version="dorna_2s">
-              <td colspan="5">The main five axes of the robot are equipped with pre-calibrated absolute encoders and do not require any set joint operation. Use this section for the auxiliary axes only.</td>
+              <td colspan="5">
+                <div class="card alert-primary">
+                  <div class="card-body">
+                    <h5 class="card-title">Notice</h5>
+                    <p class="card-text">
+                      The main five axes of the robot are equipped with pre-calibrated absolute encoders and do not require any set joint operation. Use this section for the auxiliary axes only.         
+                    </p>
+                  </div>
+                </div>
+              </td>
             </tr>  
             {% for i in [180, 180, -142, 135, 0,0,0,0]%}
               {% if loop.index-1 > 4%}
