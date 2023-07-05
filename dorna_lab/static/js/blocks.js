@@ -633,6 +633,7 @@ function create_casual_function_blocks(name, dbutton = false, dbutton_type = nul
 
             let comp_pos = dbutton_type;
             let i=0;
+            let delete_list = [];
             for(i=0;i<5+ND_count ;i++){
               if(i<5||ND[i]){
                 let name_joint = "j" + i;
@@ -665,12 +666,27 @@ function create_casual_function_blocks(name, dbutton = false, dbutton_type = nul
                 let added_block_id=Blockly.Xml.appendDomToWorkspace(xml,workspace)
                 let added_block = workspace.getBlockById(added_block_id);
                 last_input.connection.connect(added_block.outputConnection);
+
+                //check if there is any connection with blocks with the same label
+                for(let i=1 ; i <block.inputList.length-2; i++){
+                  let connected_to = block.inputList[i].connection.targetConnection;
+                  if(connected_to){
+                    let in_block = connected_to.sourceBlock_;
+                    if(in_block.getFieldValue("label") == name_f){
+                      delete_list.push(in_block);
+                    }
+                  }
+                }
+                for(let j=0;j<delete_list.length;j++){
+                  delete_list[j].dispose();
+                }
+                block.finalizeConnections();
               }
             }
 
 
         }
-       b.image_field = new  Blockly.FieldImage("https://www.gstatic.com/codesite/ph/images/star_on.gif", 15, 15,"*",onclick);
+       b.image_field = new  Blockly.FieldImage("http://"+document.domain+"/static/icon/position-icon.png", 20, 20,"*",onclick);
        b.inputList[0].appendField(b.image_field);//this.image_field);
       }
     }
@@ -682,27 +698,6 @@ function create_casual_function_blocks(name, dbutton = false, dbutton_type = nul
       minInputs: 1,
 
       init: function() { 
-        /*
-        this.jsonInit({
-          "type": name,
-          "message0": "%1 "+name+" %2",
-          "args0": [
-            {
-              "type": "input_value",
-              "name": "ret"
-            },
-            {
-              "type": "input_value",
-              "name": "ADD0"
-            }
-          ],
-          "inputsInline": true,
-          "previousStatement": null,
-          "nextStatement": null,
-          "colour": 285,
-          "tooltip": "",
-          "helpUrl": ""
-        });*/
         this.setHelpUrl('');
         this.setColour(285);
         this.appendValueInput('ret');
