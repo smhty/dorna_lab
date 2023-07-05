@@ -357,6 +357,15 @@ $(".example_folder_b").on("click", function(e) {
     });
 });
 
+$(".wizard_folder_b").on("click", function(e) {
+  let path = $(this).attr("data-key")
+    send_message({
+      "_server":"folder",
+    "func": "get",
+      "prm": [path] 
+    });
+});
+
 $(".new_folder_b").on("click", function(e) {
     let path = $("#path_b").attr("data-key")
     let new_folder_name = "new_folder";
