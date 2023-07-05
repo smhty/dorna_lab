@@ -611,6 +611,7 @@ function create_casual_function_blocks_no_inputs(name){
         });
       }
     };
+
   Blockly.Python[name] = function(block) {
     var value_ret = Blockly.Python.valueToCode(block, 'ret', Blockly.Python.ORDER_NONE);
     var code = 'robot.'+name+'()\n';
@@ -622,23 +623,66 @@ function create_casual_function_blocks_no_inputs(name){
 
 }
 
-function create_casual_function_blocks(name){
+function create_casual_function_blocks(name, dbutton = false, dbutton_type = null){
+
+    let create_image_field = function(b){
+
+      if (b.inputList[0].fieldRow.length == 0 && dbutton) {
+        let block = b;
+        let onclick = function(){
+
+            let comp_pos = dbutton_type;
+            let i=0;
+            for(i=0;i<5+ND_count ;i++){
+              if(i<5||ND[i]){
+                let name_joint = "j" + i;
+                let name_xyz = xyz_names[i];
+                let name_f = "";
+                let value = 0.0;
+                let comp_pos = position(dbutton_type);
+
+                if(!(typeof comp_pos[name_joint]==='undefined')){
+                  value = comp_pos[name_joint];
+                  name_f = name_joint;
+                }
+                if(!(typeof comp_pos[name_xyz]==='undefined')){
+                  value = comp_pos[name_xyz];
+                  name_f = name_xyz;
+                }
+
+                let last_input = block.inputList[block.inputList.length - 1];
+                let last_input_number = Number(last_input.name.split("ADD")[1])
+                let new_input_string = "ADD"+(last_input_number+1);
+                let new_input =  block.appendValueInput(new_input_string);
+                block.inputCounter ++;
+                let xml = Blockly.Xml.textToDom(`<xml>                
+                  <block type="coord_list"><field name="label">`+name_f+`</field>
+                  <value name="input">
+                  <block type="math_number"><field name="NUM">`+value.toFixed(3)+`</field> </block>
+                  </value>
+                  </block></xml>`
+                );
+                let added_block_id=Blockly.Xml.appendDomToWorkspace(xml,workspace)
+                let added_block = workspace.getBlockById(added_block_id);
+                last_input.connection.connect(added_block.outputConnection);
+              }
+            }
+
+
+        }
+       b.image_field = new  Blockly.FieldImage("https://www.gstatic.com/codesite/ph/images/star_on.gif", 15, 15,"*",onclick);
+       b.inputList[0].appendField(b.image_field);//this.image_field);
+      }
+    }
 
     Blockly.Blocks[name] = {
-      //
-       // Counter for the next input to add to this block.
-       // @type {number}
+
       inputCounter: 1,
 
-       // Minimum number of inputs for this block.
-       // @type {number}
       minInputs: 1,
 
-      //
-       // Block for concatenating any number of strings.
-       // @this {Blockly.Block}
-       //
-      init: function() {
+      init: function() { 
+        /*
         this.jsonInit({
           "type": name,
           "message0": "%1 "+name+" %2",
@@ -658,7 +702,19 @@ function create_casual_function_blocks(name){
           "colour": 285,
           "tooltip": "",
           "helpUrl": ""
-        });
+        });*/
+        this.setHelpUrl('');
+        this.setColour(285);
+        this.appendValueInput('ret');
+        this.appendValueInput('ADD0').appendField(name);
+        this.setTooltip('');
+        this.setInputsInline(true);
+        this.setPreviousStatement(true);
+        this.setNextStatement(true);
+
+        if(dbutton){
+         create_image_field(this)
+        }
 
       },
 
@@ -684,16 +740,21 @@ function create_casual_function_blocks(name){
           const inputNames = items.split(',');
           this.inputList = [];
           inputNames.forEach((name) => this.appendValueInput(name));
-          this.inputList[1]
-              .appendField(name);
+          create_image_field(this)
+          for(let i=0 ; i <this.inputList.length; i++){
+            if(this.inputList[i].name.indexOf("ADD")==0){
+              this.inputList[i].appendField(name);
+              break;
+            }
+          }
+
         }
         const next = parseInt(xmlElement.getAttribute('next'));
         this.inputCounter = next;
       },
 
       deserializeCounts_: function(xmlElement) {
-        const itemCount = Math.max(
-            parseInt(xmlElement.getAttribute('items'), 10)+1, this.minInputs);
+        const itemCount = Math.max( parseInt(xmlElement.getAttribute('items'), 10)+1, this.minInputs);
         for (let i = this.minInputs; i < itemCount ; i++) {
           this.appendValueInput('ADD' + i);
         }
@@ -757,12 +818,16 @@ function create_casual_function_blocks(name){
           toRemove.forEach((inputName) => this.removeInput(inputName));
           // The first input should have the block text. If we removed the
           // first input, add the block text to the new first input.
-          if (this.inputList[1].fieldRow.length == 0) {
-            this.inputList[1]
-                .appendField(name);
+
+          for(let i=0 ; i <this.inputList.length; i++){
+            if(this.inputList[i].name.indexOf("ADD")==0){
+              if (this.inputList[i].fieldRow.length == 0) {
+                    this.inputList[i].appendField(name);}
+              break;
+            }
           }
-        }
-        
+        }               
+
         let last_element = this.inputList[this.inputList.length-1];
         const last_element_conection = last_element.connection.targetConnection;
         if (last_element_conection) {
@@ -775,11 +840,11 @@ function create_casual_function_blocks(name){
             }
             i++;
         });
-        
+        create_image_field(this);
       }
     };
 
-  Blockly.Python[name] = function(block) {
+    Blockly.Python[name] = function(block) {
     var value_ret = Blockly.Python.valueToCode(block, 'ret', Blockly.Python.ORDER_NONE);
     var code = 'robot.'+name+'(';
 
@@ -800,156 +865,7 @@ function create_casual_function_blocks(name){
   };
 
 }
-/*
-function create_dict_block(){
 
-    Blockly.Blocks['dict'] = {
-      inputCounter: 1,
-      minInputs: 1,
-      init: function() {
-        this.jsonInit({
-          "type": "dict",
-          "message0": "%1 ",
-          "args0": [
-            {
-              "type": "input_value",
-              "name": "ADD0"
-            }
-          ],
-           "inputsInline": true,
-          "output": null,
-          "colour": 60,
-          "tooltip": "",
-          "helpUrl": ""
-        });
-
-      },
-
-      mutationToDom: function() {
-        const container = Blockly.utils.xml.createElement('mutation');
-        const inputNames = this.inputList.map((input) => input.name).join(',');
-        container.setAttribute('inputs', inputNames);
-        container.setAttribute('next', this.inputCounter);
-        return container;
-      },
-
-      domToMutation: function(xmlElement) {
-        if (xmlElement.getAttribute('inputs')) {
-          this.deserializeInputs_(xmlElement);
-        } else {
-          this.deserializeCounts_(xmlElement);
-        }
-      },
-
-      deserializeInputs_: function(xmlElement) {
-        const items = xmlElement.getAttribute('inputs');
-        if (items) {
-          const inputNames = items.split(',');
-          this.inputList = [];
-          inputNames.forEach((name) => this.appendValueInput(name));
-        }
-        const next = parseInt(xmlElement.getAttribute('next'));
-        this.inputCounter = next;
-      },
-
-      deserializeCounts_: function(xmlElement) {
-        const itemCount = Math.max(
-            parseInt(xmlElement.getAttribute('items'), 10), this.minInputs);
-        for (let i = this.minInputs; i < itemCount ; i++) {
-          this.appendValueInput('ADD' + i);
-        }
-        this.inputCounter = itemCount;
-      },
-
-      getIndexForNewInput: function(connection) {
-        if (!connection.targetConnection) {
-          // this connection is available
-          return null;
-        }
-
-        let connectionIndex;
-        for (let i = 0; i < this.inputList.length; i++) {
-          if (this.inputList[i].connection == connection) {
-            connectionIndex = i;
-          }
-        }
-
-        if (connectionIndex == this.inputList.length - 1) {
-          // this connection is the last one and already has a block in it, so
-          // we should add a new connection at the end.
-          return this.inputList.length + 1;
-        }
-
-        const nextInput = this.inputList[connectionIndex + 1];
-        const nextConnection = nextInput && nextInput.connection.targetConnection;
-        if (nextConnection && !nextConnection.sourceBlock_.isInsertionMarker()) {
-          return connectionIndex + 1;
-        }
-
-        // Don't add new connection
-        return null;
-      },
-
-      onPendingConnection: function(connection) {
-        const insertIndex = this.getIndexForNewInput(connection);
-        if (insertIndex == null) {
-          return;
-        }
-        this.appendValueInput('ADD' + (this.inputCounter++));
-        this.moveNumberedInputBefore(this.inputList.length - 1, insertIndex);
-      },
-
-
-      finalizeConnections: function() {
-        if (this.inputList.length > this.minInputs) {
-          let toRemove = [];
-          this.inputList.forEach((input) => {
-            const targetConnection = input.connection.targetConnection;
-            if (!targetConnection) {
-              toRemove.push(input.name);
-            }
-          });
-
-          if (this.inputList.length - toRemove.length < this.minInputs) {
-            // Always show at least two inputs
-            toRemove = toRemove.slice(this.minInputs);
-          }
-          this.inputCounter = this.inputCounter - toRemove.length;
-          toRemove.forEach((inputName) => this.removeInput(inputName));
-        }
-        
-        let last_element = this.inputList[this.inputList.length-1];
-        const last_element_conection = last_element.connection.targetConnection;
-        if (last_element_conection) {
-            this.appendValueInput('ADD' + (this.inputCounter++));
-        }
-        let i = 0;
-          this.inputList.forEach((input) => {
-            input.name = 'ADD'+i;
-            i++;
-        });
-      }
-    };
-
-  Blockly.Python["dict"] = function(block) {
-    var code = '{';
-
-    let i = 0;//loop over all inputs (other than ret)
-    while(Blockly.Python.valueToCode(block, 'ADD'+i, Blockly.Python.ORDER_NONE)){
-      if(i!=0)code+=", "
-      code += Blockly.Python.valueToCode(block, 'ADD'+i, Blockly.Python.ORDER_NONE);
-      i += 1;
-    }
-
-    code = code + '}';
-
-    return [code,Blockly.Python.ORDER_NONE];
-  };
-
-}
-
-create_dict_block();
-*/
 Blockly.Blocks["function_call"] = {
       init: function() {
         this.jsonInit({
@@ -1076,10 +992,10 @@ create_number_drpdown_blocks("5_7",7,5);
 create_number_drpdown_blocks("0_1",2,0);
 
 create_casual_function_blocks('wait');
-create_casual_function_blocks('lmove');
-create_casual_function_blocks('jmove');
-create_casual_function_blocks('rmove');
-create_casual_function_blocks('cmove');
+create_casual_function_blocks('lmove',true,"xyz");
+create_casual_function_blocks('jmove',true,"joint");
+create_casual_function_blocks('rmove',true,"xyz");
+create_casual_function_blocks('cmove',true,"xyz");
 
 create_casual_function_blocks('connect');
 create_casual_function_blocks_no_inputs('close');
