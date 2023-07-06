@@ -127,7 +127,7 @@ $(".jog_b").on("mousedown touchstart", function(e) {
 	let limit = info[s]
 
 	if($(this).attr("data-cmd")==="jmove"){
-		limit = limit - 5 * Math.sign(info[s]);
+		limit = limit - 2 * Math.sign(info[s]);
 	}
 	if($(this).attr("data-cmd")==="lmove"){
 		limit = limit;

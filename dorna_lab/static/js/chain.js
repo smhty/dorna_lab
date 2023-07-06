@@ -6,7 +6,7 @@ function range(x){
 	return y;
 }
 function tripleDigit(x){
-	return x.toFixed(3);
+	return Number(x.toFixed(3));
 }
 function tripleDigit_vector(v){
 	v.x = tripleDigit(v.x);
@@ -156,7 +156,6 @@ class move_cmd{
 
 	update_arrow(){
 		if(this.arrow && this.arrow_ready){
-			console.log(this.curve_save_needs_update)
 			if(this.curve_save_needs_update)
 				this.curve.mesh.material = this.parent_chain.line_basic_material;
 			else
@@ -258,7 +257,7 @@ class move_cmd{
 				}
 			}
 			return Object.assign( Object.assign({"cmd":"lmove", "rel":0 , "x":tripleDigit(p.x), "y":tripleDigit(p.y), "z":tripleDigit(p.z), 
-				"a":tripleDigit(this.abc_save[0]), "b":tripleDigit(this.abc_save[1]), "c":tripleDigit(this.abc_save[2])}
+				"a":tripleDigit(this.abc_save[0]), "b":tripleDigit(this.abc_save[1])/*, "c":tripleDigit(this.abc_save[2])*/}
 				,this.prm),cde);
 		}
 		
@@ -359,7 +358,7 @@ class move_cmd{
 				...{
 					"a": outabc[0].toFixed(to_fixed_val),//(cc.joint[1]+cc.joint[2]+cc.joint[3]).toFixed(3),
 					"b": outabc[1].toFixed(to_fixed_val),//cc.joint[4].toFixed(3),
-					"c": outabc[2].toFixed(to_fixed_val),//cc.joint[5].toFixed(3),
+					"c": cc.joint[5].toFixed(to_fixed_val),//cc.joint[5].toFixed(3),
 					"d": cc.joint[6].toFixed(to_fixed_val),
 					"e": cc.joint[7].toFixed(to_fixed_val)
 				},	
