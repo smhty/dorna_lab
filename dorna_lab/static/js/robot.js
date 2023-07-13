@@ -23,7 +23,8 @@ Useful Robot methodes:
 
 class Robot{
 
-	control_head; control_head_rotate; mesh_ball; axis_helper;
+	control_head; control_head_rotate_1; control_head_rotate_2;control_head_rotate_3; rotate_object_1; rotate_object_2; rotate_object_3;
+	mesh_ball; axis_helper;rail_line_cylinder;
 	control_j = new Array();
 	initialized = false;
 
@@ -37,8 +38,8 @@ class Robot{
 		this.abc = [0,90,90];
 		this.euler = new THREE.Euler( 0, 0, 0, 'ZYX' );
 		this.being_controlled = need_control;
-
-
+		this.rail_vec = new THREE.Vector3(1.0,0.0,0.0);
+		this.rail_limit = [-1000,1000];
 		
 		this.joints = [0,0,0,0,0,0,0];
 		this.scale_factor = 1;
@@ -113,8 +114,8 @@ class Robot{
 			side:THREE.DoubleSide
 		});
 
-		if(this.being_controlled)
-			this.new_mat()
+		//if(this.being_controlled) //look here if you want ghost
+		//	this.new_mat()
 		
 		this.callback = $.Callbacks();
 		
@@ -132,7 +133,16 @@ class Robot{
 	Load(need_control){
 
 		let robot = this;
+		this.robot_scene= new THREE.Group();
+		this.world_g 	= new THREE.Group();
+		this.rail_g 	= new THREE.Group();
 
+		this.rotate_object_1 = new THREE.Object3D();
+		this.rotate_object_2 = new THREE.Object3D();
+		this.rotate_object_3 = new THREE.Object3D();
+		this.world_g.add(this.rotate_object_1);
+		this.world_g.add(this.rotate_object_2);
+		this.world_g.add(this.rotate_object_3);
 
 		this.loader = [new THREE.ColladaLoader(),new THREE.ColladaLoader(),
 						new THREE.ColladaLoader(),new THREE.ColladaLoader(),
@@ -151,7 +161,8 @@ class Robot{
 		    robot.mesh_ball.visible = false;
 
 
-		    robot.mesh_ball.position.set(0,0,0);
+		    robot.set_head_controls_positions(new THREE.Vector3(0,0,0));
+
     		if(robot.being_controlled)	robot.create_head_control();
     		if(robot.load_index++>6)robot.load_level2();
 		});
@@ -167,17 +178,21 @@ class Robot{
 		this.axis_helper.matrixAutoUpdate = false
 		this.axis_helper.renderOrder = 999;
 		this.axis_helper.matrix.set(  0.04,	0,	0,		0,
-								      0,	0,	0.04,	0,
-								      0,	0.04,		0,		0,
+								      0,	0.04,	0,	0,
+								      0,	0,		0.04,		0,
 								      0,	0,		0,		1);
 
 		this.axis_helper.matrixWorldNeedsUpdate = true;
 
-		this.a_info 	= config_version["a"]
-		this.d_info 	= config_version["d"]
-		this.alpha_info = config_version["alpha"]
-		this.delta_info = config_version["delta"]
-		this.p0 = new THREE.Vector3(0,config_version["d"][1]/1000,config_version["a"][2]/1000)//new THREE.Vector3(0.0,2.404464*this.scale_factor,9.475806*this.scale_factor);
+
+
+		this.a_info 	= config_version["a"];
+		this.d_info 	= config_version["d"];
+		this.alpha_info = config_version["alpha"];
+		this.delta_info = config_version["delta"];
+		this.rail_vec.set(config_version["rail_vec"][0], config_version["rail_vec"][1], config_version["rail_vec"][2]);
+		this.rail_limit = config_version["rail_limit"];
+		this.p0 = new THREE.Vector3(0,config_version["d"][1]/1000,config_version["a"][2]/1000);//new THREE.Vector3(0.0,2.404464*this.scale_factor,9.475806*this.scale_factor);
 		this.l2 = config_version["a"][3]/1000;
 		this.l3 = config_version["a"][4]/1000;
 		this.l4 = config_version["d"][5]/1000;
@@ -186,7 +201,7 @@ class Robot{
 			this.sum_delta += this.delta_info[i];
 		}
 
-		this.robot_scene= new THREE.Group();
+
 		this.a0_g 		= new THREE.Group();
 		this.a1_g 		= new THREE.Group();
 		this.a2_g 		= new THREE.Group();
@@ -194,14 +209,33 @@ class Robot{
 		this.a4_g 		= new THREE.Group();
 		this.a5_g 		= new THREE.Group();
 		this.a6_g 		= new THREE.Group();
-		this.focus_point = new THREE.Object3D();	
+		this.tcp 		= new THREE.Object3D();	
 
-		//this.a_help = new THREE.AxesHelper(this.scale_to_real/4);
-		
+		let base_ah = new THREE.AxesHelper(1);
+		base_ah.matrixAutoUpdate = false
+
+		base_ah.renderOrder = 999;
+		base_ah.onBeforeRender = function( renderer ) { renderer.clearDepth(); };//draw Axis helper on top of other meshes
+		this.a0_g .add( base_ah );
+		base_ah.matrix.set(0.04  , 0.0   , 0     , 0 ,
+		              0     , 0.04  , 0     , 0 ,
+		              0     , 0     , 0.04  , 0 ,
+		              0     , 0     , 0     , 1 );
+
+		base_ah.matrixWorldNeedsUpdate = true;
+
+
+
+
 		for(let i=0;i<7;i++){
-			this.dae[i].scale.set(1,-1,1);
+			//this.dae[i].scale.set(1,-1,1);
+			this.dae[i].rotateX(Math.PI/2.0);
 		}
-		this.robot_scene.add(this.a0_g);
+		this.robot_scene.add(this.world_g);
+		this.world_g.add(this.rail_g);
+
+		this.rail_g.add(this.a0_g);
+
 		this.a0_g.add(this.dae[0]);
 		this.a0_g.add(this.a1_g);
 		this.a1_g.add(this.dae[1]);
@@ -215,8 +249,8 @@ class Robot{
 		this.a5_g.add(this.dae[5]);
 		this.a5_g.add(this.a6_g);
 		this.a6_g.add(this.dae[6])
-		this.a6_g.add(this.axis_helper);
-		this.a4_g.add(this.focus_point);
+		this.a6_g.add(this.tcp);
+		this.tcp.add(this.axis_helper)
 		//this.a5_g.add(this.a_help);
 
 		let i=0;
@@ -230,19 +264,22 @@ class Robot{
 			        	//child.material.transparent = 0;
 			        	//child.material.opacity = robot.opacity;
 		    	}
-			    	if(robot.being_controlled){
-			    		child.material = robot.ditherMat;
-			    		robot.dither = true;
-			    	}
+			    	//if(robot.being_controlled){ // look here if want to ghost
+			    	//	child.material = robot.ditherMat;
+			    	//	robot.dither = true;
+			    	//}
 		    	}
 		    });
 		}
 
 		this.robot_scene.scale.set(this.scale_factor , this.scale_factor , this.scale_factor);
-		this.kinematic([0,0,0,0,0,0]);
+		
 
-		this.scene.add(this.mesh_ball);
-		this.scene.add(this.robot_scene);//last thing to do
+		this.world_g.add(this.mesh_ball);
+
+		if(this.being_controlled)//remove to show original robot
+			this.scene.add(this.robot_scene);//last thing to do
+
 		if(this.being_controlled)
 		    for(let i=0;i<6;i++){
 				var control_c = new THREE.TransformControls( camera, renderer.domElement );
@@ -253,7 +290,7 @@ class Robot{
 				control_c.setSpace("local" );
 				control_c.setMode( "rotate" );
 
-				this.scene.add( control_c );
+				this.world_g.add( control_c );
 
 
 		        control_c.addEventListener( 'dragging-changed', function ( event) {robot.control_camera.enabled = ! event.value; robot.hider(! event.value,i);  });
@@ -276,11 +313,65 @@ class Robot{
 		this.a4_g.add( this.tool_head_line );
 
 
+		this.update_kinematic_params()
+		this.kinematic([0,0,0,0,0,0]);
+
 		//finalize
-		this.robot_scene.rotateY(-Math.PI/2.0);
+		
 		robot.initialized = true;	
 		if(this.being_controlled){	this.set_control_mode(0); this.set_visible(false);}
 		this.set_joints([0,0,0,0,0,0])
+
+		i
+	}
+
+	update_kinematic_params(){
+		this.a_info 	= config_version["a"];
+		this.d_info 	= config_version["d"];
+		this.alpha_info = config_version["alpha"];
+		this.delta_info = config_version["delta"];
+		this.rail_vec.set(config_version["rail_vec"][0], config_version["rail_vec"][1], config_version["rail_vec"][2]);
+		this.rail_limit = config_version["rail_limit"];
+		this.p0 = new THREE.Vector3(0,config_version["d"][1]/1000,config_version["a"][2]/1000);//new THREE.Vector3(0.0,2.404464*this.scale_factor,9.475806*this.scale_factor);
+		this.l2 = config_version["a"][3]/1000;
+		this.l3 = config_version["a"][4]/1000;
+		this.l4 = config_version["d"][5]/1000;
+		this.sum_delta = 0;
+		for (let i=0;i<this.delta_info.length;i++){
+			this.sum_delta += this.delta_info[i];
+		}
+
+
+		if(this.rail_line_cylinder)
+			this.rail_g.remove(this.rail_line_cylinder)
+
+		let rail_line_geometry = new THREE.CylinderGeometry( 0.003, 0.003, (this.rail_limit[1]-this.rail_limit[0])/1000*this.rail_vec.length(), 32 ); 
+		let rail_line_material = new THREE.MeshBasicMaterial( {color: 0x51b844} ); 
+		this.rail_line_cylinder = new THREE.Mesh( rail_line_geometry, rail_line_material );
+		this.rail_line_cylinder.setRotationFromEuler (new THREE.Euler( 0, 0, 0, 'XYZ' ));
+		this.rail_g.add(this.rail_line_cylinder );
+
+
+		this.rail_line_cylinder.rotateZ(-Math.atan2(this.rail_vec.x,this.rail_vec.y));
+		let l_1_position = this.rail_vec.clone().multiplyScalar((this.rail_limit[1]+this.rail_limit[0])/2.0/1000.0);
+		this.rail_line_cylinder.position.set(l_1_position.x,l_1_position.y,l_1_position.z);
+
+		
+		this.tcp.matrixAutoUpdate  = false;
+		this.tcp.updateMatrix();
+		this.tcp.matrix.set(config_version["tcp_mat"][0] ,config_version["tcp_mat"][1] ,config_version["tcp_mat"][2] ,config_version["tcp_mat"][3]/1000 ,
+							config_version["tcp_mat"][4] ,config_version["tcp_mat"][5] ,config_version["tcp_mat"][6] ,config_version["tcp_mat"][7]/1000 ,
+							config_version["tcp_mat"][8] ,config_version["tcp_mat"][9] ,config_version["tcp_mat"][10],config_version["tcp_mat"][11]/1000,
+							config_version["tcp_mat"][12],config_version["tcp_mat"][13],config_version["tcp_mat"][14],config_version["tcp_mat"][15]);
+		
+		this.rail_g.matrixAutoUpdate  = false;
+		this.rail_g.updateMatrix();
+		this.rail_g.matrix.set(	config_version["rail_mat"][0] ,config_version["rail_mat"][1] ,config_version["rail_mat"][2] ,config_version["rail_mat"][3]/1000 ,
+								config_version["rail_mat"][4] ,config_version["rail_mat"][5] ,config_version["rail_mat"][6] ,config_version["rail_mat"][7]/1000 ,
+								config_version["rail_mat"][8] ,config_version["rail_mat"][9] ,config_version["rail_mat"][10],config_version["rail_mat"][11]/1000,
+								config_version["rail_mat"][12],config_version["rail_mat"][13],config_version["rail_mat"][14],config_version["rail_mat"][15]);
+		
+		this.kinematic(this.joints);
 	}
 
 	kinematic(js){
@@ -288,15 +379,19 @@ class Robot{
 
 		let clist = [this.a0_g, this.a1_g, this.a2_g,this.a3_g,this.a4_g,this.a5_g,this.a6_g];
 
+		let rail_displacement = new THREE.Vector3(this.rail_vec.x*js[5],this.rail_vec.y*js[5],this.rail_vec.z*js[5]);
+		rail_displacement.multiplyScalar(1/1000);
+
+
 		clist[0].matrixAutoUpdate  = false;
 		clist[0].updateMatrix();
-		clist[0].matrix.set(1	,	0	,	0	,	0,
-							0	,	1	,	0	,	0,
-							0	,	0	,	-1	,	0,
+		clist[0].matrix.set(1	,	0	,	0	,	rail_displacement.x,
+							0	,	1	,	0	,	rail_displacement.y,
+							0	,	0	,	1	,	rail_displacement.z,
 							0	,	0	,	0	,	1);
 
 
-		for(let i=1;i<7;i++){
+		for(let i=1;i<config_version["n_dof"]+1;i++){
 			let ct = Math.cos(js[i-1]*Math.PI/180)
 			let st = Math.sin(js[i-1]*Math.PI/180)
 			//if(i==1) st *= -1;
@@ -306,19 +401,15 @@ class Robot{
 			let sd = Math.sin(this.delta_info[i])
 			clist[i].matrixAutoUpdate  = false;
 			clist[i].updateMatrix();
-			clist[i].matrix.set(cd*ct		,	sd	,	-cd*st,	this.a_info[i]*cd/1000 + this.d_info[i]*sd/1000,
-								 -ca*ct*sd + sa*st		,	cd*ca	,	ct*sa+ca*sd*st,	this.a_info[i]*(-ca*sd )/1000 + this.d_info[i]*(cd*ca)/1000,
-								 ct*sa*sd+ca*st		,	-cd*sa	,	ca*ct-sa*sd*st,	this.a_info[i]*(sa*sd)/1000 + this.d_info[i]*(-cd*sa)/1000,
+			clist[i].matrix.set( cd*ct		,	-cd*st,	sd	,	this.a_info[i]*cd/1000 + this.d_info[i]*sd/1000,
+								 ct*sa*sd+ca*st			,	ca*ct-sa*sd*st,	-cd*sa ,	this.a_info[i]*(sa*sd)/1000 + this.d_info[i]*(-cd*sa)/1000,
+								 -ca*ct*sd + sa*st			,	ct*sa+ca*sd*st,	cd*ca,	this.a_info[i]*(-ca*sd )/1000 + this.d_info[i]*(cd*ca)/1000,
 								 0	,	0	,	0	,	1);
 
-		}
+		}		
 
-		this.focus_point.matrixAutoUpdate  = false;
-		this.focus_point.updateMatrix();
-		this.focus_point.matrix.set(1	,	0	,	0	,	(this.l4 + this.offset.z)/this.scale_factor,
-									0	,	1	,	0	,	0,
-									0	,	0	,	1	,	0,
-									0	,	0	,	0	,	1);
+
+
 
 		if(this.being_controlled){
 			this.a1_g.quaternion.setFromRotationMatrix(this.a1_g.matrix);
@@ -337,64 +428,103 @@ class Robot{
 		let robot = this;
 		
 	    this.control_head = new THREE.TransformControls( this.camera, this.renderer.domElement );
-	    this.control_head_rotate = new THREE.TransformControls( this.camera, this.renderer.domElement );
-	    this.control_head_rotate.setMode("rotate");
-	    
-	    this.control_head_rotate.setSpace("local");
-	    
 	    this.control_head.attach( this.mesh_ball );
-	    this.control_head_rotate.attach( this.mesh_ball );
+	    this.world_g.add( this.control_head );
 
-	    //this.mesh_ball.rotateOnAxis ( new THREE.Vector3(Math.sqrt(1/3),Math.sqrt(1/3),Math.sqrt(1/3)), -Math.PI*2/3 )
+	    this.control_head_rotate_1 = new THREE.TransformControls( this.camera, this.renderer.domElement );
+	    this.control_head_rotate_1.setMode("rotate");
+	    this.control_head_rotate_1.setSpace("local");
+	    this.control_head_rotate_1.attach( this.rotate_object_1 );
+	    this.world_g.add( this.control_head_rotate_1 );
 
-	    this.scene.add( this.control_head );
-	    this.scene.add( this.control_head_rotate );
+	    this.control_head_rotate_2 = new THREE.TransformControls( this.camera, this.renderer.domElement );
+	    this.control_head_rotate_2.setMode("rotate");
+	    this.control_head_rotate_2.setSpace("local");
+	    this.control_head_rotate_2.attach( this.rotate_object_2 );
+	    this.world_g.add( this.control_head_rotate_2 );
+
+	    this.control_head_rotate_3 = new THREE.TransformControls( this.camera, this.renderer.domElement );
+	    this.control_head_rotate_3.setMode("rotate");
+	    this.control_head_rotate_3.setSpace("local");
+	    this.control_head_rotate_3.attach( this.rotate_object_3 );
+	    this.world_g.add( this.control_head_rotate_3 );
 
 	    this.control_head.addEventListener( 'dragging-changed', function ( event ) {
 	    	robot.control_camera.enabled = ! event.value;
 	    	robot.hider(! event.value, 6);
 	    } );
-	    this.control_head_rotate.addEventListener( 'dragging-changed', function ( event ) {
-	    	//console.log("drag changed",event.value)
+
+	    this.control_head_rotate_1.addEventListener( 'dragging-changed', function ( event ) {
 	    	robot.control_camera.enabled = ! event.value;
 	    	robot.hider(! event.value, 7);
 	    } );
 
+	    this.control_head_rotate_2.addEventListener( 'dragging-changed', function ( event ) {
+	    	robot.control_camera.enabled = ! event.value;
+	    	robot.hider(!  event.value, 8);
+	    } );
+	    this.control_head_rotate_3.addEventListener( 'dragging-changed', function ( event ) {
+	    	//console.log("drag changed",event.value)
+	    	robot.control_camera.enabled = ! event.value;
+	    	robot.hider(!  event.value, 9);
+	    } );
+
 	    this.control_head.addEventListener( 'objectChange', function ( event ) {
 	    	robot.head_pos.set(robot.mesh_ball.position.x,robot.mesh_ball.position.y,robot.mesh_ball.position.z);
-	    	robot.mesh_ball.position.set(robot.position.x,robot.position.y,robot.position.z)
+	    	robot.set_head_controls_positions(robot.position)
 	    	//robot.set_euler();
 	    	robot.set_xyza(robot.head_pos,robot.abc);
     	} );
-	   	this.control_head_rotate.addEventListener( 'objectChange', function ( event ) {
-	    	robot.head_pos.set(robot.mesh_ball.position.x,robot.mesh_ball.position.y,robot.mesh_ball.position.z);
-	    	robot.set_euler();
-	    	robot.set_xyza(robot.head_pos,robot.abc);
-    	
+	   	this.control_head_rotate_1.addEventListener( 'objectChange', function ( event ) {
+	    	if(robot.control_head_rotate_1.enabled){
+		    	robot.head_pos.set(robot.mesh_ball.position.x,robot.mesh_ball.position.y,robot.mesh_ball.position.z);
+		    	robot.set_euler();
+		    	robot.set_xyza(robot.head_pos,robot.abc);
+    		}
     	} );
+    	
+    	this.control_head_rotate_2.addEventListener( 'objectChange', function ( event ) {
+	    	if(robot.control_head_rotate_2.enabled){
+		    	robot.head_pos.set(robot.mesh_ball.position.x,robot.mesh_ball.position.y,robot.mesh_ball.position.z);
+		    	robot.set_euler();
+		    	robot.set_xyza(robot.head_pos,robot.abc);
+    		}
+    	} );
+    	this.control_head_rotate_3.addEventListener( 'objectChange', function ( event ) {
+	    	if(robot.control_head_rotate_3.enabled){
+		    	robot.head_pos.set(robot.mesh_ball.position.x,robot.mesh_ball.position.y,robot.mesh_ball.position.z);
+		    	robot.set_euler();
+		    	robot.set_xyza(robot.head_pos,robot.abc);
+    		}
+    	} );
+	
 	}
 
+	set_head_controls_positions(v){
+    	this.mesh_ball.position.set(v.x,v.y,v.z);
+    	this.rotate_object_1.position.set(v.x,v.y,v.z);
+    	this.rotate_object_2.position.set(v.x,v.y,v.z);
+    	this.rotate_object_3.position.set(v.x,v.y,v.z);
 
-	set_euler(){
-		//this.euler.setFromQuaternion (this.mesh_ball.quaternion,'YXZ') //transforms to 	ZYX
-		this.mesh_ball.updateMatrix ()
+	}
+	get_abc_from_mat(mat){
+		let m22 = mat[5];
+		let m32 = mat[6];
+		let m23 = mat[9];
 
-		let m22 = this.mesh_ball.matrix.elements[0]
-		let m32 = this.mesh_ball.matrix.elements[1]
-		let m23 = this.mesh_ball.matrix.elements[4]
-		let m33 = this.mesh_ball.matrix.elements[5]
-		let m13 = this.mesh_ball.matrix.elements[6]
-		let m21 = this.mesh_ball.matrix.elements[8]
-		let m31 = this.mesh_ball.matrix.elements[9]
+		let m33 = mat[10];
+		let m13 = mat[8];
+		let m21 = mat[1];
+		let m31 = mat[2];
 
 		/* This is the form of the matrix: first index is column second is row
-		  | y | z | x |
+		* | x | y | z |
 		--|---|---|---|----|
-		y | 0 | 1 | 2 | 3  |
+		x | 0 | 1 | 2 | 3  |
 		--|---|---|---|----|
-		z | 4 | 5 | 6 | 7  |
+		y | 4 | 5 | 6 | 7  |
 		--|---|---|---|----|
-		x | 8 | 9 | 10| 11 |
+		z | 8 | 9 | 10| 11 |
 		-------------------
 		*/
 
@@ -406,45 +536,37 @@ class Robot{
 		let sa = m33*ssa;
 		let ca = Math.sqrt(1-sa*sa);
 
-		this.abc[0] = Math.atan2(sa,ca) * 180 / Math.PI;
+		let abc_result = [0,0,0];
+
+		abc_result[0] = Math.atan2(sa,ca) * 180 / Math.PI;
 
 		if(Math.abs(ca)>0.0001){
 			let sb = m31/ca*ssa;
 			let cb = m32/ca*ssa;
-			this.abc[1] = Math.atan2(sb,cb) * 180 / Math.PI;
+			abc_result[1] = Math.atan2(sb,cb) * 180 / Math.PI;
 
 			let sg = (m13*cd*ssa+m23*sd)/ca;
 			let cg = (sd*m13-m23*cd*ssa)/ca;
-
-			this.abc[2] = Math.atan2(sg,cg)* 180 / Math.PI;
+			abc_result[2] = Math.atan2(sg,cg)* 180 / Math.PI;
 		}
 		else{
-			this.abc[2] = 0;
+			abc_result[2] = 0;
 
 			let sb = -ssa*(m21*cd*sa+m22*sd);
 			let cb = ssa*(-m22*cd*sa+m21*sd);
-
-			this.abc[1] = Math.atan2(sb,cb) * 180 / Math.PI; 
+			abc_result[1] = Math.atan2(sb,cb) * 180 / Math.PI; 
 		}
-		/*
-		this.abc[1] = this.euler.x * 180 / Math.PI; //1,2,0 //201 //
-		this.abc[0] = this.euler.y * 180 / Math.PI;
-		this.abc[2] = this.euler.z * 180 / Math.PI;
-		*/
-
-
+		return abc_result;
 	}
-	set_head_ball(){
- 	 	this.mesh_ball.position.set(this.position.x,this.position.y,this.position.z);
+	get_mat_from_abc(abc){
+		let ca = Math.cos(abc[0]/ 180 * Math.PI);
+		let sa = Math.sin(abc[0]/ 180 * Math.PI);
 
-		let ca = Math.cos(this.abc[0]/ 180 * Math.PI);
-		let sa = Math.sin(this.abc[0]/ 180 * Math.PI);
+		let cb = Math.cos(abc[1]/ 180 * Math.PI);
+		let sb = Math.sin(abc[1]/ 180 * Math.PI);
 
-		let cb = Math.cos(this.abc[1]/ 180 * Math.PI);
-		let sb = Math.sin(this.abc[1]/ 180 * Math.PI);
-
-		let cg = Math.cos(this.abc[2]/ 180 * Math.PI);
-		let sg = Math.sin(this.abc[2]/ 180 * Math.PI);
+		let cg = Math.cos(abc[2]/ 180 * Math.PI);
+		let sg = Math.sin(abc[2]/ 180 * Math.PI);
 
 		let ssa = 1.0;
 
@@ -453,20 +575,56 @@ class Robot{
 
 		let mat =  new THREE.Matrix4();
 
-		mat.set(      
-		         -sb*(cd*sg+cg*ssa*sd)-cb*sa*(-cg*cd*ssa+sg*sd),     ca*(-cg*cd*ssa+sg*sd),     cg*ssa*(cd*sa*sb+cb*sd)+sg*(cb*cd-sa*sb*sd),     0,
-		          ca*cb*ssa,                                         ssa*sa,                   ca*ssa*sb,                                        0,
-		          -cg*(cd*sb+cb*sa*sd)+ssa*sg*(-cb*cd*sa+sb*sd),      ca*(cd*ssa*sg+cg*sd),      -sa*sb*(cd*ssa*sg+cg*sd)+cb*(cg*cd-ssa*sg*sd),     0,
+		mat.set(   
+		 		-sa*sb*(cd*ssa*sg+cg*sd)+cb*(cg*cd-ssa*sg*sd), -cg*(cd*sb+cb*sa*sd)+ssa*sg*(-cb*cd*sa+sb*sd),      ca*(cd*ssa*sg+cg*sd),           0,   
+		         cg*ssa*(cd*sa*sb+cb*sd)+sg*(cb*cd-sa*sb*sd),   -sb*(cd*sg+cg*ssa*sd)-cb*sa*(-cg*cd*ssa+sg*sd),     ca*(-cg*cd*ssa+sg*sd),         0,
+		         ca*ssa*sb,   ca*cb*ssa,                                         ssa*sa,                                                          0,
+		         
 		          0 ,                                                0 ,                        0 ,                                               1
 		       );
-  		this.mesh_ball.setRotationFromMatrix(mat);
 
+		/*
+						[-sa*sb*(cd*ssa*sg+cg*sd)+cb*(cg*cd-ssa*sg*sd),
+				cg*(-cd*sb-cb*sa*sd)+ssa*sg*(-cb*cd*sa+sb*sd),
+				ca*(cd*ssa*sg+cg*sd), self.local_matrix[0,3]],
+				[cg*ssa*(cd*sa*sb+cb*sd)+sg*(-cb*cd+sa*sb*sd),
+				-sb*(cd*sg+cg*ssa*sd)-cb*sa*(-cg*cd*ssa+sg*sd),
+				ca*(-cg*cd*ssa+sg*sd), self.local_matrix[1,3]],
+				[ca*ssa*sb,
+				ca*cb*ssa,
+				ssa*sa,self.local_matrix[2,3]],
+				[0,0,0,1]])
+				*/
+
+		return mat;	
+	}
+	set_euler(){
+		//this.euler.setFromQuaternion (this.mesh_ball.quaternion,'YXZ') //transforms to 	ZYX
+		this.mesh_ball.updateMatrix ()
+		let abc_result_1 = this.get_abc_from_mat(this.rotate_object_1.matrix.elements);
+		let abc_result_2 = this.get_abc_from_mat(this.rotate_object_2.matrix.elements);
+		let abc_result_3 = this.get_abc_from_mat(this.rotate_object_3.matrix.elements);
+
+		this.abc[0] = abc_result_1[0];
+		this.abc[1] = abc_result_2[1];
+		this.abc[2] = abc_result_3[2];
+	}
+	set_head_ball(){
+ 	 	this.set_head_controls_positions(this.position);
+ 	 	let mat_1 = this.get_mat_from_abc([this.abc[0],0,this.abc[2]]);
+ 	 	let mat_2 = this.get_mat_from_abc([this.abc[0],this.abc[1],this.abc[2]]);
+ 	 	let mat_3 = this.get_mat_from_abc([0,0,this.abc[2]]);
+		
+  		//this.mesh_ball.setRotationFromMatrix(mat);
+  		this.rotate_object_1.setRotationFromMatrix(mat_1);
+  		this.rotate_object_2.setRotationFromMatrix(mat_2);
+  		this.rotate_object_3.setRotationFromMatrix(mat_3);
 	}
 
 
 	hider(show , i){
   		var j;
-  		for(j = 0; j<8; j++){
+  		for(j = 0; j<10; j++){
     		this.hide_this_control(show,j);
   		}
   		this.hide_this_control(true,i);
@@ -492,10 +650,26 @@ class Robot{
 	  if(i==7){
 	    if(this.control_mode!=3)show = false;
 
-	    this.control_head_rotate.showX = show;
-	    this.control_head_rotate.showY = show;
-	    this.control_head_rotate.showZ = show;
-	    this.control_head_rotate.enabled = show;
+	    this.control_head_rotate_1.showX = show;
+	    this.control_head_rotate_1.showY = false;
+	    this.control_head_rotate_1.showZ = false;
+	    this.control_head_rotate_1.enabled = show;
+	  }
+	  if(i==8){
+	    if(this.control_mode!=3)show = false;
+
+	    this.control_head_rotate_2.showX = false;
+	    this.control_head_rotate_2.showY = false;
+	    this.control_head_rotate_2.showZ = show;
+	    this.control_head_rotate_2.enabled = show;
+	  }
+	  if(i==9){
+	    if(this.control_mode!=3)show = false;
+
+	    this.control_head_rotate_3.showX = false;
+	    this.control_head_rotate_3.showY = show;
+	    this.control_head_rotate_3.showZ = false;
+	    this.control_head_rotate_3.enabled = show;
 	  }
 	}
 
@@ -511,6 +685,8 @@ class Robot{
 	    this.hide_this_control(false,5);
 	    this.hide_this_control(false,6);
 	    this.hide_this_control(false,7);
+	    this.hide_this_control(false,8);
+	    this.hide_this_control(false,9);
 	  }
 	
 	  if(mode==1){
@@ -522,6 +698,8 @@ class Robot{
 	    this.hide_this_control(true,5);
 	    this.hide_this_control(false,6);
 	    this.hide_this_control(false,7);
+	    this.hide_this_control(false,8);
+	    this.hide_this_control(false,9);
 	  }
 
 	  if(mode==2){
@@ -533,6 +711,8 @@ class Robot{
 	    this.hide_this_control(false,5);
 	    this.hide_this_control(true,6);
 	    this.hide_this_control(false,7);
+	    this.hide_this_control(false,8);
+	    this.hide_this_control(false,9);
 
 	  }
 	  	if(mode==3){
@@ -544,6 +724,8 @@ class Robot{
 	    this.hide_this_control(false,5);
 	    this.hide_this_control(false,6);
 	    this.hide_this_control(true,7);
+	    this.hide_this_control(true,8);
+	    this.hide_this_control(true,9);
 
 	  }
 	
@@ -651,7 +833,6 @@ class Robot{
 
 	set_xyza(pos,abc,ret = null){
 		//inverse here 
-
 		var p = this.xyz_to_real(pos);
 		 send_message({
 	        "_server":"knmtc",
@@ -756,12 +937,12 @@ class Robot{
 	}
 
 	xyz_to_real(v){
-		let result = new THREE.Vector3(v.z,v.x,v.y);
+		let result = v.clone();//new THREE.Vector3(v.z,v.x,v.y);
 		result.multiplyScalar(1000);
 		return result;
 	}
 	real_to_xyz(v){
-		let result = new THREE.Vector3(v.y,v.z,v.x);
+		let result =  v.clone();// new THREE.Vector3(v.y,v.z,v.x);
 		result.multiplyScalar(1/1000);
 		return result;
 	}
@@ -1012,7 +1193,7 @@ class Robot{
 		if(name=="j4"){
 			return this.joints[4];
 		}
-		if(name=="j5" || name=="c"){
+		if(name=="j5" /*|| name=="c"*/){
 			return this.joints[5];
 		}
 		if(name=="j6"|| name=="d"){
@@ -1317,4 +1498,11 @@ class Robot{
 		this.tool_head_line.geometry.computeBoundingSphere();
 	}
 
+}
+
+function set_kinematic_params(cmd){
+	send_message({
+    "_server":"knmtc_params",
+    "prm": [JSON.stringify(cmd)] 
+    });
 }

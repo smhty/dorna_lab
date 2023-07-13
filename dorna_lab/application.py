@@ -2,6 +2,7 @@ import os
 import time
 import json
 import asyncio
+import numpy as np
 
 import tornado.ioloop
 import tornado.web
@@ -117,8 +118,12 @@ class WebSocket(tornado.websocket.WebSocketHandler):
                     "alpha":kin.knmtc.dof.alpha,
                     "delta":kin.knmtc.dof.delta,
                     "a":kin.knmtc.dof.a,
-                    "d":kin.knmtc.dof.d
-                    }))
+                    "d":kin.knmtc.dof.d,
+                    "rail_vec":kin.knmtc.dof.rail_vec_r_base,
+                    "rail_limit":kin.knmtc.dof.rail_limit,
+                    "rail_mat": np.array(kin.knmtc.dof.T_f_rail_r_world).ravel().tolist(),
+                    "tcp_mat":np.array(kin.knmtc.dof.T_f_tcp_r_last).ravel().tolist()
+                }))
 
                 if("startup" in config_data):
                     loop.add_callback(self.emit_message, json.dumps({"to":"startup" ,
@@ -188,6 +193,35 @@ class WebSocket(tornado.websocket.WebSocketHandler):
                 except:
                     DORNA.robot.log("error1: running message error.")
                     #print("error1")
+
+            elif msg["_server"] == "knmtc_params":
+                prms = json.loads(msg["prm"][0])
+                if("rail_limit" in prms):
+                    kin.knmtc.dof.rail_limit[0] = prms["rail_limit"][0]
+                    kin.knmtc.dof.rail_limit[1] = prms["rail_limit"][1]
+                if("rail_vec" in prms):    
+                    kin.knmtc.dof.rail_vec_r_base[0]  = prms["rail_vec"][0]
+                    kin.knmtc.dof.rail_vec_r_base[1]  = prms["rail_vec"][1]
+                    kin.knmtc.dof.rail_vec_r_base[2]  = prms["rail_vec"][2]
+                if("rail_mat" in prms):  
+                    kin.knmtc.dof.T_f_rail_r_world = np.array(prms["rail_mat"]).reshape((4, 4))
+                if("tcp_mat" in prms):  
+                    kin.knmtc.dof.T_f_tcp_r_last = np.array(prms["tcp_mat"]).reshape((4, 4))
+
+                loop.add_callback(self.emit_message, json.dumps({"to":"knmtc_params" ,
+                    "model":config_data["model"],
+                    "n_dof":kin.knmtc.dof.n_dof,
+                    "alpha":kin.knmtc.dof.alpha,
+                    "delta":kin.knmtc.dof.delta,
+                    "a":kin.knmtc.dof.a,
+                    "d":kin.knmtc.dof.d,
+                    "rail_vec":kin.knmtc.dof.rail_vec_r_base,
+                    "rail_limit":kin.knmtc.dof.rail_limit,
+                    "rail_mat": np.array(kin.knmtc.dof.T_f_rail_r_world).ravel().tolist(),
+                    "tcp_mat":np.array(kin.knmtc.dof.T_f_tcp_r_last).ravel().tolist()
+                }))
+
+
         else:
             DORNA.send_message_to_robot(json.dumps(msg))
 

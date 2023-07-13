@@ -42,7 +42,7 @@ function init_collada(){
 
   $('.path_design_visible_c').trigger("click");
 
-  let track = new Trail(0xab2800,original_robot,100,0.05,scene);
+  //let track = new Trail(0xab2800,original_robot,100,0.05,scene);
 
   f_dsp = setInterval(frame_display, 1000/frame["fps"])
 
@@ -54,15 +54,21 @@ function graphic_on() {
     /*********************/
     // camera
     camera = new THREE.PerspectiveCamera( 65, $(view_container).width() / $(view_container).height(), 0.1, 2000 );
-    camera.position.set( 0.7, 0.35, 0.7 );
-
+    camera.position.set( 0.7, 0.7 , 0.35  );
+    camera.up.set(0,0,1);
     // Grid
     var grid = new THREE.GridHelper( 10, 10, 0x444444, 0x888888 );
-    grid.scale.set(0.1,0.1,0.1);
     scene.add( grid );
+    grid.matrixAutoUpdate = false
+    grid.matrix.set(0.1   , 0     , 0     , 0 ,
+                    0     , 0     , 0.1   , 0 ,
+                    0     , 0.1   , 0     , 0 ,
+                    0     , 0     , 0     , 1 );
+ 
+    grid.matrixWorldNeedsUpdate = true;
+
     
-
-
+    
     particleLight = new THREE.PointLight( 0x88abba, 0.2 );
     particleLight.position.set(0,10,0);
 
@@ -70,26 +76,7 @@ function graphic_on() {
 
     var light = new THREE.AmbientLight( 0xb8b7ae ); // soft white light
      scene.add(light)
-     /*
-    var directionalLight = new THREE.DirectionalLight( 0xffffff, 1.0 );
-    directionalLight.position.set(2,-1,1);
-    scene.add( directionalLight );
-   
-    // Lights
-    
-    var directionalLight = new THREE.DirectionalLight( 0xffffff, 3.0 );
-    directionalLight.target.position.set(0,0,0);
-    directionalLight.position.set(5,5,5);
-    directionalLight.radius = 4;
-    scene.add(directionalLight);
 
-
-    var directionalLight2 = new THREE.DirectionalLight( 0xedb985, 2.0 );
-    directionalLight2.target.position.set(0,0,0);
-    directionalLight2.position.set(5,-5,-5);
-     directionalLight2.radius = 4;
-    scene.add(directionalLight2);
-  */
 
     renderer = new THREE.WebGLRenderer( { antialias : true } );
     renderer.setPixelRatio( window.devicePixelRatio );
@@ -97,35 +84,44 @@ function graphic_on() {
     renderer.setClearColor(0xffffff, 1);
     container.appendChild( renderer.domElement );
     var cam =  camera;
-    // stats
-    //stats = new Stats();
-    //container.appendChild( stats.dom );
 
     // control camera
     control_camera = new THREE.OrbitControls( camera, renderer.domElement );
-    //control_camera.enableDamping = true; // an animation loop is required when either damping or auto-rotation are enabled
-    //control_camera.dampingFactor = 0.1;
+
     control_camera.enableZoom    = true;
     control_camera.enableKeys = false;
-    //control_camera.addEventListener( 'change', function(){
-      //render();
-      //particleLight.position.set(cam.position.x,cam.position.y,cam.position.z);
-    //});
+
 
 
     // Axis
     ah = new THREE.AxesHelper(1);
-     ah.matrixAutoUpdate = false
+    ah.matrixAutoUpdate = false
 
     ah.renderOrder = 999;
     ah.onBeforeRender = function( renderer ) { renderer.clearDepth(); };//draw Axis helper on top of other meshes
     scene.add( ah );
-    ah.matrix.set(0,0.04,0,0,
-          0,0,0.04,0,
-          0.04,0,0,0,
-          0,0,0,1);
+    ah.matrix.set(0.04  , 0.0   , 0     , 0 ,
+                  0     , 0.04  , 0     , 0 ,
+                  0     , 0     , 0.04  , 0 ,
+                  0     , 0     , 0     , 1 );
  
     ah.matrixWorldNeedsUpdate = true;
+
+
+    let sphere_geometry = new THREE.SphereGeometry( 0.025, 32, 16 ); 
+    let sphere_material = new THREE.MeshStandardMaterial( { color: 0x3289bf } ); 
+    let sphere = new THREE.Mesh( sphere_geometry, sphere_material ); 
+    sphere.position.set(0.5,0,0)
+    scene.add( sphere );
+    control_sphere = new THREE.TransformControls( camera, renderer.domElement );
+    control_sphere.attach( sphere );
+    scene.add(control_sphere);
+
+    control_sphere.addEventListener( 'dragging-changed', function ( event ) {
+        control_camera.enabled = ! event.value;
+      
+    } );
+
 
     window.addEventListener( 'resize', onWindowResize );
 }

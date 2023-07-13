@@ -56,7 +56,10 @@ function on_message(event){
           break
         case "emergency":
           emergency_setting(msg)
-          break                 
+          break     
+        case "knmtc_params":
+          config_version = msg;
+          chain.controller.update_kinematic_params();
       }   
 
     }else{
@@ -84,7 +87,6 @@ function configure_version(msg){
     graphic_on()
     init_collada()
     hide_versionable()
-
 }
 function hide_versionable(){
     $(".versionable" ).each(function( index){

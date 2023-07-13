@@ -15,7 +15,7 @@ function tripleDigit_vector(v){
 	return 1;
 }
 function set_5(a,b){
-	for(i=0;i<5;i++){
+	for(i=0;i<6;i++){
 		a[i]=b[i];
 	}
 }
@@ -294,13 +294,12 @@ class move_cmd{
 			let v = this.parent_chain.robot.real_to_xyz(new THREE.Vector3(cmd["x"],cmd["y"],cmd["z"]));
 
 			this.position.set(v.x,v.y,v.z);
-			console.log(this.position)
 			if(this.parent_chain.control_cmd == this){
-				this.parent_chain.controller.set_xyza(this.position,[cmd["a"],cmd["b"],0],this.joint);
+				this.parent_chain.controller.set_xyza(this.position,[cmd["a"],cmd["b"],cmd["c"]],this.joint);
 			}
 			else{
 				//set_5(this.joint , this.parent_chain.robot.xyza_to_joints(this.position,[cmd["a"],cmd["b"],0],this.joint));
-				this.parent_chain.robot.IK(this.position,[cmd["a"],cmd["b"],0],this.joint);
+				this.parent_chain.robot.IK(this.position,[cmd["a"],cmd["b"],cmd["c"]],this.joint);
 			}
 		}
 	
@@ -358,7 +357,7 @@ class move_cmd{
 				...{
 					"a": outabc[0].toFixed(to_fixed_val),//(cc.joint[1]+cc.joint[2]+cc.joint[3]).toFixed(3),
 					"b": outabc[1].toFixed(to_fixed_val),//cc.joint[4].toFixed(3),
-					"c": cc.joint[5].toFixed(to_fixed_val),//cc.joint[5].toFixed(3),
+					"c": outabc[2].toFixed(to_fixed_val),//cc.joint[5].toFixed(3),
 					"d": cc.joint[6].toFixed(to_fixed_val),
 					"e": cc.joint[7].toFixed(to_fixed_val)
 				},	
@@ -418,11 +417,13 @@ class move_chain{
 	constructor(scene,camera , renderer, control_camera,robot,controller){
 		
 		this.list_of_sprites = [];
-		this.scene = new THREE.Group();
+		this.chain_root_scene = new THREE.Group();
 		this.main_scene = scene;
-		this.main_scene.add(this.scene);
+		this.main_scene.add(this.chain_root_scene);
 		this.camera = camera;
-		this.controller = new Robot( renderer , camera , this.scene , control_camera , 0.35 , true );
+		this.controller = new Robot( renderer , camera , this.chain_root_scene , control_camera , 0.35 , true );
+		this.scene = this.controller.world_g;
+
 		this.robot = this.controller
 		let spriteMap = new THREE.TextureLoader().load( "./static/assets/texture/dot.png" );
 
