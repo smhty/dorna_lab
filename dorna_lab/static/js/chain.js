@@ -242,7 +242,7 @@ class move_cmd{
 			let js = {};
 			for(i=0;i < 5+ND_count ;i++){
 				if(i<5||ND[i]){
-					js["j"+i]  = tripleDigit(this.joint_save[i]);
+					js["j"+i]  = tripleDigit(this.joint[i]/*_save[i]*/);//saving feature turn ooff
 				}
 			}
 			return Object.assign(Object.assign({"cmd":"jmove", "rel":0},this.prm),js);
@@ -253,7 +253,7 @@ class move_cmd{
 			let cde = {};
 			for(i=5;i<5+ND_count;i++){
 				if(i<5||ND[i]){
-					cde[xyz_names[i]] = tripleDigit(this.joint_save[i]);
+					cde[xyz_names[i]] = tripleDigit(this.joint[i]);//aslo hear
 				}
 			}
 			return Object.assign( Object.assign({"cmd":"lmove", "rel":0 , "x":tripleDigit(p.x), "y":tripleDigit(p.y), "z":tripleDigit(p.z), 
