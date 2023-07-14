@@ -79,7 +79,6 @@ class Robot{
 		
 		this.dither = false;
 		this.visible = false;
-
 		//headball
 		this.loader_axis = new THREE.ColladaLoader()
 
@@ -179,7 +178,7 @@ class Robot{
 		this.axis_helper.renderOrder = 999;
 		this.axis_helper.matrix.set(  0.04,	0,	0,		0,
 								      0,	0.04,	0,	0,
-								      0,	0,		0.04,		0,
+								      0,	0,		0.1,		0,
 								      0,	0,		0,		1);
 
 		this.axis_helper.matrixWorldNeedsUpdate = true;
@@ -323,6 +322,16 @@ class Robot{
 		this.set_joints([0,0,0,0,0,0])
 
 		i
+	}
+
+	set_axis_z_length(ell){
+		this.axis_helper.matrixAutoUpdate = false
+		this.axis_helper.matrix.set(  0.04,	0,	0,		0,
+								      0,	0.04,	0,	0,
+								      0,	0,		ell/1000,		0,
+								      0,	0,		0,		1);
+
+		this.axis_helper.matrixWorldNeedsUpdate = true;
 	}
 
 	update_kinematic_params(){
@@ -582,25 +591,26 @@ class Robot{
 		         
 		          0 ,                                                0 ,                        0 ,                                               1
 		       );
-
-		/*
-						[-sa*sb*(cd*ssa*sg+cg*sd)+cb*(cg*cd-ssa*sg*sd),
+/*
+				[-sa*sb*(cd*ssa*sg+cg*sd)+cb*(cg*cd-ssa*sg*sd),
 				cg*(-cd*sb-cb*sa*sd)+ssa*sg*(-cb*cd*sa+sb*sd),
 				ca*(cd*ssa*sg+cg*sd), self.local_matrix[0,3]],
-				[cg*ssa*(cd*sa*sb+cb*sd)+sg*(-cb*cd+sa*sb*sd),
+				[cg*ssa*(cd*sa*sb+cb*sd)+sg*(cb*cd-sa*sb*sd),
 				-sb*(cd*sg+cg*ssa*sd)-cb*sa*(-cg*cd*ssa+sg*sd),
 				ca*(-cg*cd*ssa+sg*sd), self.local_matrix[1,3]],
 				[ca*ssa*sb,
 				ca*cb*ssa,
 				ssa*sa,self.local_matrix[2,3]],
 				[0,0,0,1]])
-				*/
-
+*/
 		return mat;	
 	}
 	set_euler(){
 		//this.euler.setFromQuaternion (this.mesh_ball.quaternion,'YXZ') //transforms to 	ZYX
 		this.mesh_ball.updateMatrix ()
+		this.rotate_object_1.updateMatrix ()
+		this.rotate_object_2.updateMatrix ()
+		this.rotate_object_3.updateMatrix ()
 		let abc_result_1 = this.get_abc_from_mat(this.rotate_object_1.matrix.elements);
 		let abc_result_2 = this.get_abc_from_mat(this.rotate_object_2.matrix.elements);
 		let abc_result_3 = this.get_abc_from_mat(this.rotate_object_3.matrix.elements);
@@ -635,8 +645,8 @@ class Robot{
 	    if(this.control_mode!=1)show = false;
 
     	this.control_j[i].showX = false;
-	    this.control_j[i].showY = show;
-	    this.control_j[i].showZ = false;
+	    this.control_j[i].showY = false;
+	    this.control_j[i].showZ = show;
 	    this.control_j[i].enabled = show;
 	  }
 	  if(i==6){
@@ -732,6 +742,7 @@ class Robot{
 	}
 	set_joints(js){
 		let joint = js;
+		this.set_lock = false;
 		send_message({
 	        "_server":"knmtc",
 	        "func": "frw","joint":js
@@ -759,7 +770,6 @@ class Robot{
 		this.abc[0] = abc[0];
 		this.abc[1] = abc[1];
 		this.abc[2] = abc[2];
-
 		this.set_head_ball();
 		this.callback.fire(this.joints, new_pos, this.abc); 
 
@@ -804,12 +814,12 @@ class Robot{
 
 		var old_joints = [this.joints[0],this.joints[1],this.joints[2],this.joints[3],this.joints[4],this.joints[5],this.joints[6]];
 
-		if( i==0 ) this.joints[0] = - 2 * Math.atan2( ctrl.object.quaternion.y , ctrl.object.quaternion.w ) * 180 / Math.PI; 
-		if( i==1 ) this.joints[1] = - 2 * Math.atan2( ctrl.object.quaternion.y , ctrl.object.quaternion.w ) * 180 / Math.PI;
-		if( i==2 ) this.joints[2] = - 2 * Math.atan2( ctrl.object.quaternion.y , ctrl.object.quaternion.w ) * 180 / Math.PI;
-		if( i==3 ) this.joints[3] = - 2 * Math.atan2( ctrl.object.quaternion.y , ctrl.object.quaternion.w ) * 180 / Math.PI;
-		if( i==4 ) this.joints[4] = - 2 * Math.atan2( ctrl.object.quaternion.y , ctrl.object.quaternion.w ) * 180 / Math.PI;
-		if( i==5 ) this.joints[5] = - 2 * Math.atan2( ctrl.object.quaternion.y , ctrl.object.quaternion.w ) * 180 / Math.PI;
+		if( i==0 ) this.joints[0] =  2 * Math.atan2( ctrl.object.quaternion.z , ctrl.object.quaternion.w ) * 180 / Math.PI; 
+		if( i==1 ) this.joints[1] =  2 * Math.atan2( ctrl.object.quaternion.z , ctrl.object.quaternion.w ) * 180 / Math.PI;
+		if( i==2 ) this.joints[2] =  2 * Math.atan2( ctrl.object.quaternion.z , ctrl.object.quaternion.w ) * 180 / Math.PI;
+		if( i==3 ) this.joints[3] =  2 * Math.atan2( ctrl.object.quaternion.z , ctrl.object.quaternion.w ) * 180 / Math.PI;
+		if( i==4 ) this.joints[4] =  2 * Math.atan2( ctrl.object.quaternion.z , ctrl.object.quaternion.w ) * 180 / Math.PI;
+		if( i==5 ) this.joints[5] =  2 * Math.atan2( ctrl.object.quaternion.z , ctrl.object.quaternion.w ) * 180 / Math.PI;
 		/*
 		var cancel = false;
 
@@ -833,6 +843,7 @@ class Robot{
 
 	set_xyza(pos,abc,ret = null){
 		//inverse here 
+
 		var p = this.xyz_to_real(pos);
 		 send_message({
 	        "_server":"knmtc",

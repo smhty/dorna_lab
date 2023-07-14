@@ -207,6 +207,8 @@ class WebSocket(tornado.websocket.WebSocketHandler):
                     kin.knmtc.dof.T_f_rail_r_world = np.array(prms["rail_mat"]).reshape((4, 4))
                 if("tcp_mat" in prms):  
                     kin.knmtc.dof.T_f_tcp_r_last = np.array(prms["tcp_mat"]).reshape((4, 4))
+                if("rail_on" in prms):  
+                    kin.knmtc.dof.rail_on = prms["rail_on"]
 
                 loop.add_callback(self.emit_message, json.dumps({"to":"knmtc_params" ,
                     "model":config_data["model"],
@@ -218,7 +220,8 @@ class WebSocket(tornado.websocket.WebSocketHandler):
                     "rail_vec":kin.knmtc.dof.rail_vec_r_base,
                     "rail_limit":kin.knmtc.dof.rail_limit,
                     "rail_mat": np.array(kin.knmtc.dof.T_f_rail_r_world).ravel().tolist(),
-                    "tcp_mat":np.array(kin.knmtc.dof.T_f_tcp_r_last).ravel().tolist()
+                    "tcp_mat":np.array(kin.knmtc.dof.T_f_tcp_r_last).ravel().tolist(),
+                    "rail_on":prms["rail_on"]
                 }))
 
 
