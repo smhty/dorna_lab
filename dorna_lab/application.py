@@ -114,15 +114,15 @@ class WebSocket(tornado.websocket.WebSocketHandler):
             elif msg["_server"] == "config":
                 loop.add_callback(self.emit_message, json.dumps({"to":"config" ,
                     "model":config_data["model"],
-                    "n_dof":kin.knmtc.dof.n_dof,
-                    "alpha":kin.knmtc.dof.alpha,
-                    "delta":kin.knmtc.dof.delta,
-                    "a":kin.knmtc.dof.a,
-                    "d":kin.knmtc.dof.d,
-                    "rail_vec":kin.knmtc.dof.rail_vec_r_base,
-                    "rail_limit":kin.knmtc.dof.rail_limit,
-                    "rail_mat": np.array(kin.knmtc.dof.T_f_rail_r_world).ravel().tolist(),
-                    "tcp_mat":np.array(kin.knmtc.dof.T_f_tcp_r_last).ravel().tolist()
+                    "n_dof":kin.knmtc.n_dof,
+                    "alpha":kin.knmtc.alpha,
+                    "delta":kin.knmtc.delta,
+                    "a":kin.knmtc.a,
+                    "d":kin.knmtc.d,
+                    "rail_vec":kin.knmtc.rail_vec_r_base,
+                    "rail_limit":kin.knmtc.rail_limit,
+                    "rail_mat": np.array(kin.knmtc.T_f_rail_r_world).ravel().tolist(),
+                    "tcp_mat":np.array(kin.knmtc.T_f_tcp_r_flange).ravel().tolist()
                 }))
 
                 if("startup" in config_data):
@@ -197,31 +197,31 @@ class WebSocket(tornado.websocket.WebSocketHandler):
             elif msg["_server"] == "knmtc_params":
                 prms = json.loads(msg["prm"][0])
                 if("rail_limit" in prms):
-                    kin.knmtc.dof.rail_limit[0] = prms["rail_limit"][0]
-                    kin.knmtc.dof.rail_limit[1] = prms["rail_limit"][1]
+                    kin.knmtc.rail_limit[0] = prms["rail_limit"][0]
+                    kin.knmtc.rail_limit[1] = prms["rail_limit"][1]
                 if("rail_vec" in prms):    
-                    kin.knmtc.dof.rail_vec_r_base[0]  = prms["rail_vec"][0]
-                    kin.knmtc.dof.rail_vec_r_base[1]  = prms["rail_vec"][1]
-                    kin.knmtc.dof.rail_vec_r_base[2]  = prms["rail_vec"][2]
+                    kin.knmtc.rail_vec_r_base[0]  = prms["rail_vec"][0]
+                    kin.knmtc.rail_vec_r_base[1]  = prms["rail_vec"][1]
+                    kin.knmtc.rail_vec_r_base[2]  = prms["rail_vec"][2]
                 if("rail_mat" in prms):  
-                    kin.knmtc.dof.T_f_rail_r_world = np.array(prms["rail_mat"]).reshape((4, 4))
+                    kin.knmtc.T_f_rail_r_world = np.array(prms["rail_mat"]).reshape((4, 4))
                 if("tcp_mat" in prms):  
-                    kin.knmtc.dof.T_f_tcp_r_last = np.array(prms["tcp_mat"]).reshape((4, 4))
+                    kin.knmtc.T_f_tcp_r_flange = np.array(prms["tcp_mat"]).reshape((4, 4))
                 if("rail_on" in prms):  
-                    kin.knmtc.dof.rail_on = prms["rail_on"]
+                    kin.knmtc.rail_on = prms["rail_on"]
 
                 loop.add_callback(self.emit_message, json.dumps({"to":"knmtc_params" ,
                     "model":config_data["model"],
-                    "n_dof":kin.knmtc.dof.n_dof,
-                    "alpha":kin.knmtc.dof.alpha,
-                    "delta":kin.knmtc.dof.delta,
-                    "a":kin.knmtc.dof.a,
-                    "d":kin.knmtc.dof.d,
-                    "rail_vec":kin.knmtc.dof.rail_vec_r_base,
-                    "rail_limit":kin.knmtc.dof.rail_limit,
-                    "rail_mat": np.array(kin.knmtc.dof.T_f_rail_r_world).ravel().tolist(),
-                    "tcp_mat":np.array(kin.knmtc.dof.T_f_tcp_r_last).ravel().tolist(),
-                    "rail_on":prms["rail_on"]
+                    "n_dof":kin.knmtc.n_dof,
+                    "alpha":kin.knmtc.alpha,
+                    "delta":kin.knmtc.delta,
+                    "a":kin.knmtc.a,
+                    "d":kin.knmtc.d,
+                    "rail_vec":kin.knmtc.rail_vec_r_base,
+                    "rail_limit":kin.knmtc.rail_limit,
+                    "rail_mat": np.array(kin.knmtc.T_f_rail_r_world).ravel().tolist(),
+                    "tcp_mat":np.array(kin.knmtc.T_f_tcp_r_flange).ravel().tolist(),
+                    "rail_on":kin.knmtc.rail_on
                 }))
 
 
