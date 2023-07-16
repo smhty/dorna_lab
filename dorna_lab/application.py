@@ -121,8 +121,8 @@ class WebSocket(tornado.websocket.WebSocketHandler):
                     "d":kin.knmtc.d,
                     "rail_vec":kin.knmtc.rail_vec_r_base,
                     "rail_limit":kin.knmtc.rail_limit,
-                    "rail_mat": np.array(kin.knmtc.T_f_rail_r_world).ravel().tolist(),
-                    "tcp_mat":np.array(kin.knmtc.T_f_tcp_r_flange).ravel().tolist()
+                    "rail_mat": np.array(kin.knmtc.T_rail_r_world).ravel().tolist(),
+                    "tcp_mat":np.array(kin.knmtc.T_tcp_r_flange).ravel().tolist()
                 }))
 
                 if("startup" in config_data):
@@ -204,9 +204,9 @@ class WebSocket(tornado.websocket.WebSocketHandler):
                     kin.knmtc.rail_vec_r_base[1]  = prms["rail_vec"][1]
                     kin.knmtc.rail_vec_r_base[2]  = prms["rail_vec"][2]
                 if("rail_mat" in prms):  
-                    kin.knmtc.T_f_rail_r_world = np.array(prms["rail_mat"]).reshape((4, 4))
+                    kin.knmtc.T_rail_r_world = np.array(prms["rail_mat"]).reshape((4, 4))
                 if("tcp_mat" in prms):  
-                    kin.knmtc.T_f_tcp_r_flange = np.array(prms["tcp_mat"]).reshape((4, 4))
+                    kin.knmtc.T_tcp_r_flange = np.array(prms["tcp_mat"]).reshape((4, 4))
                 if("rail_on" in prms):  
                     kin.knmtc.rail_on = prms["rail_on"]
 
@@ -219,8 +219,8 @@ class WebSocket(tornado.websocket.WebSocketHandler):
                     "d":kin.knmtc.d,
                     "rail_vec":kin.knmtc.rail_vec_r_base,
                     "rail_limit":kin.knmtc.rail_limit,
-                    "rail_mat": np.array(kin.knmtc.T_f_rail_r_world).ravel().tolist(),
-                    "tcp_mat":np.array(kin.knmtc.T_f_tcp_r_flange).ravel().tolist(),
+                    "rail_mat": np.array(kin.knmtc.T_rail_r_world).ravel().tolist(),
+                    "tcp_mat":np.array(kin.knmtc.T_tcp_r_flange).ravel().tolist(),
                     "rail_on":kin.knmtc.rail_on
                 }))
 
