@@ -295,11 +295,11 @@ class move_cmd{
 
 			this.position.set(v.x,v.y,v.z);
 			if(this.parent_chain.control_cmd == this){
-				this.parent_chain.controller.set_xyza(this.position,[cmd["a"],cmd["b"],cmd["c"]],this.joint);
+				this.parent_chain.controller.set_xyza(this.position,[cmd["a"],cmd["b"],0/*cmd["c"]*/],this.joint);
 			}
 			else{
 				//set_5(this.joint , this.parent_chain.robot.xyza_to_joints(this.position,[cmd["a"],cmd["b"],0],this.joint));
-				this.parent_chain.robot.IK(this.position,[cmd["a"],cmd["b"],cmd["c"]],this.joint);
+				this.parent_chain.robot.IK(this.position,[cmd["a"],cmd["b"],0/*cmd["c"]*/],this.joint);
 			}
 		}
 	
@@ -357,7 +357,7 @@ class move_cmd{
 				...{
 					"a": outabc[0].toFixed(to_fixed_val),//(cc.joint[1]+cc.joint[2]+cc.joint[3]).toFixed(3),
 					"b": outabc[1].toFixed(to_fixed_val),//cc.joint[4].toFixed(3),
-					"c": outabc[2].toFixed(to_fixed_val),//cc.joint[5].toFixed(3),
+					"c": cc.joint[5].toFixed(to_fixed_val), //outabc[2].toFixed(to_fixed_val)
 					"d": cc.joint[6].toFixed(to_fixed_val),
 					"e": cc.joint[7].toFixed(to_fixed_val)
 				},	

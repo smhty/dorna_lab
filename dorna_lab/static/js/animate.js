@@ -107,7 +107,7 @@ function graphic_on() {
  
     ah.matrixWorldNeedsUpdate = true;
 
-
+    /*control sphere
     let sphere_geometry = new THREE.SphereGeometry( 0.025, 32, 16 ); 
     let sphere_material = new THREE.MeshStandardMaterial( { color: 0x3289bf } ); 
     let sphere = new THREE.Mesh( sphere_geometry, sphere_material ); 
@@ -121,7 +121,7 @@ function graphic_on() {
         control_camera.enabled = ! event.value;
       
     } );
-
+    */
 
     window.addEventListener( 'resize', onWindowResize );
 }

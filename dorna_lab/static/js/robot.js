@@ -113,8 +113,8 @@ class Robot{
 			side:THREE.DoubleSide
 		});
 
-		//if(this.being_controlled) //look here if you want ghost
-		//	this.new_mat()
+		if(this.being_controlled) //look here if you want ghost
+			this.new_mat()
 		
 		this.callback = $.Callbacks();
 		
@@ -262,11 +262,11 @@ class Robot{
 					if(robot.opacity<1){
 			        	//child.material.transparent = 0;
 			        	//child.material.opacity = robot.opacity;
-		    	}
-			    	//if(robot.being_controlled){ // look here if want to ghost
-			    	//	child.material = robot.ditherMat;
-			    	//	robot.dither = true;
-			    	//}
+		    		}
+			    	if(robot.being_controlled){ // look here if want to ghost
+			    		child.material = robot.ditherMat;
+			    		robot.dither = true;
+			    	}
 		    	}
 		    });
 		}
@@ -276,8 +276,8 @@ class Robot{
 
 		this.world_g.add(this.mesh_ball);
 
-		if(this.being_controlled)//remove to show original robot
-			this.scene.add(this.robot_scene);//last thing to do
+		//if(this.being_controlled)//remove to show original robot
+		this.scene.add(this.robot_scene);//last thing to do
 
 		if(this.being_controlled)
 		    for(let i=0;i<6;i++){
@@ -354,7 +354,8 @@ class Robot{
 		if(this.rail_line_cylinder)
 			this.rail_g.remove(this.rail_line_cylinder)
 
-		let rail_line_geometry = new THREE.CylinderGeometry( 0.003, 0.003, (this.rail_limit[1]-this.rail_limit[0])/1000*this.rail_vec.length(), 32 ); 
+		let rail_line_geometry = new THREE.CylinderGeometry( 0.003, 0.003, (this.rail_limit[1]-this.rail_limit[0])/1000*this.rail_vec.length()+0.01, 32 ); 
+
 		let rail_line_material = new THREE.MeshBasicMaterial( {color: 0x51b844} ); 
 		this.rail_line_cylinder = new THREE.Mesh( rail_line_geometry, rail_line_material );
 		this.rail_line_cylinder.setRotationFromEuler (new THREE.Euler( 0, 0, 0, 'XYZ' ));
@@ -1204,7 +1205,7 @@ class Robot{
 		if(name=="j4"){
 			return this.joints[4];
 		}
-		if(name=="j5" /*|| name=="c"*/){
+		if(name=="j5" || name=="c"){
 			return this.joints[5];
 		}
 		if(name=="j6"|| name=="d"){
