@@ -78,7 +78,7 @@ class Robot{
 		this.opacity = opac;
 		
 		this.dither = false;
-		this.visible = false;
+		this.visible = true;
 		//headball
 		this.loader_axis = new THREE.ColladaLoader()
 
