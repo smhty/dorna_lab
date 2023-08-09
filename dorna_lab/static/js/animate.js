@@ -42,7 +42,7 @@ function init_collada(){
 
   $('.path_design_visible_c').trigger("click");
 
-  //let track = new Trail(0xab2800,original_robot,100,0.05,scene);
+  let track = new Trail(0xab2800,original_robot,100,0.05,scene);
 
   f_dsp = setInterval(frame_display, 1000/frame["fps"])
 
