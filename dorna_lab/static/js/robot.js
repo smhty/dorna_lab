@@ -178,7 +178,7 @@ class Robot{
 		this.axis_helper.renderOrder = 999;
 		this.axis_helper.matrix.set(  0.04,	0,	0,		0,
 								      0,	0.04,	0,	0,
-								      0,	0,		0.1,		0,
+								      0,	0,		0.04,		0,
 								      0,	0,		0,		1);
 
 		this.axis_helper.matrixWorldNeedsUpdate = true;
@@ -995,7 +995,7 @@ class Robot{
 			a += l;
 			last_l = l;
 		}
-		info["py"] = this.xyz_to_real(v).y;//a*this.scale_to_real;
+		info["px"] = this.xyz_to_real(v).x;//a*this.scale_to_real;
 
 
 		//-x  
@@ -1016,7 +1016,7 @@ class Robot{
 			a += l;
 			last_l = l;
 		}
-		info["ny"] = this.xyz_to_real(v).y;//a*this.scale_to_real;
+		info["nx"] = this.xyz_to_real(v).x;//a*this.scale_to_real;
 		
 		//+y
 		v.set(this.position.x , this.position.y , this.position.z);
@@ -1037,7 +1037,7 @@ class Robot{
 			last_l = l;
 		}
 		
-		info["pz"] = this.xyz_to_real(v).z;
+		info["py"] = this.xyz_to_real(v).y;
 
 
 		//-y
@@ -1058,7 +1058,7 @@ class Robot{
 			a += l;
 			last_l = l;
 		}
-		info["nz"] = this.xyz_to_real(v).z;
+		info["ny"] = this.xyz_to_real(v).y;
 
 		//+z
 		v.set(this.position.x , this.position.y , this.position.z);
@@ -1078,7 +1078,7 @@ class Robot{
 			a += l;
 			last_l = l;
 		}
-		info["px"] = this.xyz_to_real(v).x;
+		info["pz"] = this.xyz_to_real(v).z;
 
 		//-z
 		v.set(this.position.x , this.position.y , this.position.z);
@@ -1098,7 +1098,7 @@ class Robot{
 			a += l;
 			last_l = l;
 		}
-		info["nx"] = this.xyz_to_real(v).x;
+		info["nz"] = this.xyz_to_real(v).z;
 
 		let info_a = this.allowed_a();
 		info["na"] = info_a["na"];
@@ -1178,13 +1178,13 @@ class Robot{
 
 	sdf_to_torus(pos , f){
 		
-		let xx = Math.sqrt(pos.x*pos.x + pos.z*pos.z);
+		let xx = Math.sqrt(pos.x*pos.x + pos.y*pos.y);
 
 		if(f){
-			xx =  pos.x * Math.sin(this.joints[0]*Math.PI/180) + pos.z * Math.cos(this.joints[0]*Math.PI/180)
+			xx =  pos.x * Math.sin(this.joints[0]*Math.PI/180) + pos.y * Math.cos(this.joints[0]*Math.PI/180)
 		}
 
-		var pos2 = new THREE.Vector2(xx - this.p0.z , pos.y - this.p0.y);
+		var pos2 = new THREE.Vector2(xx - this.p0.z , pos.z - this.p0.y);
 		pos2.x = pos2.x - (this.l4 + this.offset.z)*Math.cos(this.a_get()*Math.PI/180);
 		pos2.y = pos2.y - (this.l4 + this.offset.z)*Math.sin(this.a_get()*Math.PI/180);
 		return this.l2 + this.l3 - pos2.length(); 
@@ -1503,9 +1503,12 @@ class Robot{
 
 	}
 	tool_head_length_set(x){
-		this.offset.z = x * this.scale_factor;
+		this.offset.z = x * this.scale_factor / 1000;
+		config_version["tcp_mat"][11] = x;
+		set_kinematic_params({"tcp_mat":config_version["tcp_mat"]});
+		//this.update_kinematic_params();
 		this.tool_head_line.geometry.attributes.position.array[0] = this.l4/this.scale_factor;
-		this.tool_head_line.geometry.attributes.position.array[3] = x + this.l4/this.scale_factor;
+		this.tool_head_line.geometry.attributes.position.array[3] = x/ 1000 + this.l4/this.scale_factor;
 		this.tool_head_line.geometry.attributes.position.needsUpdate = true; // required after the first render
 		this.tool_head_line.geometry.computeBoundingSphere();
 	}
