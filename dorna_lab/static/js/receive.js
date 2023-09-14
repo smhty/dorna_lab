@@ -211,8 +211,13 @@ function toollength_r(key, msg) {
   original_robot.tool_head_length_set(Number.parseFloat(msg[key]))
 }
 
-var position_value = {"j0":180,"j1":180,"j2":-142,"j3":135,"j4":0,"j5":0,"j6":0,"j7":0,
-                      "x":0,"y":0,"z":0,"a":0,"b":0,"c":0,"d":0,"e":0};
+$(".joint_v[data-key=j0]").text("96.152344");
+$(".joint_v[data-key=j1]").text("42.407227");
+$(".joint_v[data-key=j2]").text("-124.255371");
+$(".joint_v[data-key=j3]").text("60.930176");
+
+var position_value = {"j0":-2.35,"j1":103.4,"j2":-69.59,"j3":-23.55,"j4":-551.79,"j5":0,"j6":0,"j7":0,
+                      "x":222.95,"y":-9.15,"z":509.66,"a":10.26,"b":-511.79,"c":0,"d":0,"e":0};
 
 function motion_r(key, msg) {
   position_value[key] = Number.parseFloat(msg[key]);

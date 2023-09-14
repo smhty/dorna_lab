@@ -135,13 +135,14 @@ $(".jog_b").on("mousedown touchstart", function(e) {
 
 	let current_value = original_robot.value($(this).attr("data-key"));
 	
-	let l = limit - current_value;
+	let l = limit - current_value;//length that is going to be joged
 
-	let d = 1.0;
-	if(Math.abs(l)>d)
-		l = l - Math.sign(l)*d;
-
-	if($(`.jog_d_c[data-cmd=${msg["cmd"]}]`).prop("checked")){
+	if($(this).attr("data-cmd")==="lmove"){
+		let d = 5.0;
+		if(Math.abs(l)>d)
+			l = l - Math.sign(l)*d;
+	}
+	if($(`.jog_d_c[data-cmd=${msg["cmd"]}]`).prop("checked")){//descrete jog
 			l = Math.sign( l ) *  Math.abs( $(`.jog_d_v[data-cmd=${msg["cmd"]}]`).prop("value") ) ;
 	}
 	
@@ -232,10 +233,9 @@ function position(type = "joint"){
 				"e":position_value["e"]};
 }
 
-$(".joint_v[data-key=j0]").text("180.0");
-$(".joint_v[data-key=j1]").text("180.0");
-$(".joint_v[data-key=j2]").text("-142.0");
-$(".joint_v[data-key=j3]").text("135.0");
+
+
+
 
 /*
 $(".joint_v[data-key=j0]").text("161.016");
