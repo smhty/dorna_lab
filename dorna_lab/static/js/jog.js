@@ -138,7 +138,8 @@ $(".jog_b").on("mousedown touchstart", function(e) {
 	let l = limit - current_value;//length that is going to be joged
 
 	if($(this).attr("data-cmd")==="lmove"){
-		let d = 5.0;
+		let d = 0;//5.0;test
+		console.log("l",l,"d",d)
 		if(Math.abs(l)>d)
 			l = l - Math.sign(l)*d;
 	}
@@ -148,6 +149,15 @@ $(".jog_b").on("mousedown touchstart", function(e) {
 	
 	limit = Number((current_value + l).toFixed(to_fixed_val+2));
 	msg[$(this).attr("data-key")] = limit;
+	
+	/*Begin test*/if($(this).attr("data-cmd")==="lmove"){
+		let vv = new THREE.Vector3(0,0,0)
+		vv = original_robot.position;
+		vv[$(this).attr("data-key")]  = limit/1000;
+		console.log("checking: pos:",vv , "abc: ",original_robot.abc)
+		ret = [0,0,0,0,0,0,0]
+		original_robot.IK(vv,original_robot.abc,ret);
+	}/*End test*/
 
 	// vel, accel, jerk
 	$(`.vaj_s_v[data-value=${$(this).attr("data-type")}]`).each(function() {

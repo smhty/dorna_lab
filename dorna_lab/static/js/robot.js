@@ -844,7 +844,7 @@ class Robot{
 
 	set_xyza(pos,abc,ret = null){
 		//inverse here 
-
+		abc[2] = Math.atan2(pos.y,pos.x)/Math.PI*180
 		var p = this.xyz_to_real(pos);
 		 send_message({
 	        "_server":"knmtc",
@@ -866,6 +866,7 @@ class Robot{
 
 	IK(pos,abc,ret){
 		//inverse here 
+		abc[2] = Math.atan2(pos.y,pos.x)/Math.PI*180
 		var p = this.xyz_to_real(pos);
 		 send_message({
 	        "_server":"knmtc",
@@ -972,7 +973,7 @@ class Robot{
 		info["pb"] = other_limits;
 		info["nb"] = -other_limits;
 
-		var N = 50;
+		var N = 100;
 		var info = {};
 		
 		var i;
