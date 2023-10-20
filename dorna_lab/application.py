@@ -10,8 +10,9 @@ import tornado.websocket
 from flask_to_tornado import BaseHandler
 
 from dorna2 import Dorna, __version__ as V_API
-from tool import db,folder,shell, update, kinematic
+from tool import db,folder,shell, update, kinematic, camera
 import config
+import threading
 
 PATH = os.path.dirname(os.path.abspath(__file__))
 STATIC_PATH_DIR = os.path.join(PATH, 'static')
@@ -22,6 +23,7 @@ os.chdir(os.path.join(PATH))
 V_LAB = "2.1.0" 
 
 CONFIG = config.config               
+cam = camera.Camera()
 
 # initialize config.log
 with open('config.log') as infile: #importing config.log file
@@ -97,6 +99,10 @@ DORNA = DornaConnection()
 class WebSocket(tornado.websocket.WebSocketHandler):
     async def open(self):
         DORNA.register_ws(self)
+
+        #start camera thread
+        cam.camera_thread_stop = False
+        asyncio.create_task(cam.capture_webcam_data(self))
 
     def on_message(self, msg):
         msg = json.loads(msg)

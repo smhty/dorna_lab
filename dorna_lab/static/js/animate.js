@@ -82,6 +82,12 @@ function graphic_on() {
     renderer.setPixelRatio( window.devicePixelRatio );
     renderer.setSize( $(view_container).width(), $(view_container).height() );
     renderer.setClearColor(0xffffff, 1);
+    
+    //xr
+    renderer.xr.enabled = true;
+    const vrdiv = document.getElementById("vrbutton");
+    vrdiv.appendChild( VRButton.createButton( renderer ) );
+
     container.appendChild( renderer.domElement );
     var cam =  camera;
 
@@ -106,6 +112,18 @@ function graphic_on() {
                   0     , 0     , 0     , 1 );
  
     ah.matrixWorldNeedsUpdate = true;
+
+
+    //test
+    // Create a material that uses the webcam texture
+    const test_material = new THREE.MeshBasicMaterial({ map: webcamTexture });
+
+    // Create a geometry and mesh
+    const test_geometry = new THREE.PlaneGeometry(1, 1); // Adjust size as needed
+    const test_mesh = new THREE.Mesh(test_geometry, test_material);
+
+    // Add the mesh to the scene
+    scene.add(test_mesh);
 
     /*control sphere
     let sphere_geometry = new THREE.SphereGeometry( 0.025, 32, 16 ); 
