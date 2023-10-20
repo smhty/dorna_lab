@@ -40,3 +40,8 @@ function send_delayed_msgs(){
     //delayed_messages.pop();
   }
 }
+
+window.onerror = function(message, source, lineno, colno, error) {
+    // Create a WebSocket connection to the server
+    send_message({"_server":"client_error","error":(message+" \n \t source: " + source + " \n \t line: "+lineno)});
+};

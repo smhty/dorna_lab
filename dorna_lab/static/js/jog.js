@@ -98,7 +98,7 @@ Calls the send_simple_move_cmd function
 */
 $(".jog_b").on("mousedown touchstart", function(e) {
 	e.preventDefault();
-
+	zdaaa
 	
 	//console.log( $(this).attr("data-cmd") , $(this).attr("data-key") , $(this).attr("data-value"))
 	let msg = {	"cmd": $(this).attr("data-cmd"),

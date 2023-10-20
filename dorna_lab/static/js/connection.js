@@ -6,8 +6,8 @@ This file includes:
 
 var socket;
 // initialize url
-$(".robot_url").prop("value","ws://"+document.domain+"/ws")
-$(".robot_url").prop("placeholder","ws://"+document.domain+"/ws")
+$(".robot_url").prop("value","wss://"+document.domain+":80/ws")
+$(".robot_url").prop("placeholder","wss://"+document.domain+":80/ws")
 $(".url").text(document.domain)
 
 // button event to connect to WebSocket
@@ -28,7 +28,7 @@ $(".connect_b").on("click", function(e) {
     $(".connect_stat_connected").show()
     $(".connect_stat_disconnected").hide()
     $(".url").text(new URL(socket.url).hostname)
-    $(".url_notebook").attr("href", "http://"+new URL(socket.url).hostname+":8888")
+    $(".url_notebook").attr("href", "https://"+new URL(socket.url).hostname+":8888")
 
     send_message({"_server":"config"});
 

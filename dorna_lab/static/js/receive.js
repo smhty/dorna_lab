@@ -3,7 +3,8 @@
 // receive message functions
 // receive message functions
 var knmtc_response_list = {}; // in the form of "cmd_id" : function. 
-const webcamTexture = new THREE.Texture();
+const webcamTexture_r = new THREE.Texture();
+const webcamTexture_l = new THREE.Texture();
 
 function on_message(event){
   
@@ -62,22 +63,40 @@ function on_message(event){
         case "knmtc_params":
           config_version = msg;
           chain.controller.update_kinematic_params();
-        case "cam":
-          const imagePreview = document.getElementById("imagePreview");
+        case "cam_r":
+          //const imagePreview = document.getElementById("imagePreview");
 
           // Parse the received message as JSON
-          const data = JSON.parse(event.data);
+          const data_r = JSON.parse(event.data);
 
           // Create an image element to display the webcam data
-          const img = new Image();
-          img.src = "data:image/jpeg;base64," + data.image_data;
+          const img_r = new Image();
+          img_r.src = "data:image/jpeg;base64," + data_r.image_data;
 
           // Append the image to the imagePreview div
-          imagePreview.innerHTML = "";
-          imagePreview.appendChild(img);
+          //imagePreview.innerHTML = "";
+          //imagePreview.appendChild(img);
           //update texture
-          webcamTexture.image = img;
-          webcamTexture.needsUpdate = true;
+          webcamTexture_r.image = img_r;
+          webcamTexture_r.needsUpdate = true;
+          break 
+
+        case "cam_l":
+          //const imagePreview = document.getElementById("imagePreview");
+
+          // Parse the received message as JSON
+          const data_l = JSON.parse(event.data);
+
+          // Create an image element to display the webcam data
+          const img_l = new Image();
+          img_l.src = "data:image/jpeg;base64," + data_l.image_data;
+
+          // Append the image to the imagePreview div
+          //imagePreview.innerHTML = "";
+          //imagePreview.appendChild(img);
+          //update texture
+          webcamTexture_l.image = img_l;
+          webcamTexture_l.needsUpdate = true;
           break 
       }   
 

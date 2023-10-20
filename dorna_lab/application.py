@@ -14,6 +14,9 @@ from tool import db,folder,shell, update, kinematic, camera
 import config
 import threading
 
+import tornado.httpserver
+import ssl
+
 PATH = os.path.dirname(os.path.abspath(__file__))
 STATIC_PATH_DIR = os.path.join(PATH, 'static')
 
@@ -151,6 +154,9 @@ class WebSocket(tornado.websocket.WebSocketHandler):
 
             elif msg["_server"] == "func":
                 self.func_process(msg)
+
+            elif msg["_server"] == "client_error":
+                print("client error: ",msg["error"])
 
             elif msg["_server"] == "startup_set":
                 config_data["startup"] = msg["text"]
@@ -335,8 +341,14 @@ if __name__ == '__main__':
          {'path': STATIC_PATH_DIR}),
     ]
     app = tornado.web.Application(app, debug=CONFIG["server"]["debug"]) 
-    app.listen(CONFIG["server"]["port"]) 
+    #app.listen(CONFIG["server"]["port"]) 
     
+    http_server = tornado.httpserver.HTTPServer(app, ssl_options={
+        "certfile": "static/keys/cert.pem",
+        "keyfile": "static/keys/key.pem",
+    })
+    http_server.listen(CONFIG["server"]["port"])
+
     def startup_function():
         if "startup" in config_data:
             for line in config_data["startup"].splitlines():

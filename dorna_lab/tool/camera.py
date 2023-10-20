@@ -29,7 +29,8 @@ class Camera(object):
 			#Process and encode the frame (e.g., to JPEG)
 			_, encoded_image = cv2.imencode('.jpg', frame)
 			image_data = base64.b64encode(encoded_image.tobytes()).decode('utf-8')
-			ws_handler.write_message({'to':"cam",'image_data': image_data})
+			ws_handler.write_message({'to':"cam_r",'image_data': image_data})
+			ws_handler.write_message({'to':"cam_l",'image_data': image_data})
 
 			#key = cv2.waitKey(1)
 			#if key & 0xFF == ord('q'):
