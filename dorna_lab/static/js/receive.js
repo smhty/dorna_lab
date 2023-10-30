@@ -7,7 +7,7 @@ var knmtc_response_list = {}; // in the form of "cmd_id" : function.
 
 function on_message(event){
 
-  try {
+  //try {
     //console.log(event.data)
     let msg = JSON.parse(event.data);
 
@@ -72,6 +72,7 @@ function on_message(event){
       // print log
       print_log(msg)      
     }
+  try {
   }
   catch(err) {
     console.error(err)

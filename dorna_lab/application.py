@@ -51,6 +51,8 @@ class gui(BaseHandler):
     def get(self, **kwargs):
         data = {"host_ip": CONFIG['server']['host'],
                 "port": CONFIG['server']['port'], "dorna_lab": V_LAB, "api": V_API}
+        self.set_header("Cross-Origin-Opener-Policy", "same-origin")
+        self.set_header("Cross-Origin-Embedder-Policy", "require-corp")
         return self.render_jinja('index.html', data=data, cmd=CONFIG["cmd"], config=CONFIG)
 
 

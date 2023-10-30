@@ -18,7 +18,10 @@ var camera, scene, renderer, control_camera, ah ;
 var particleLight;
 var anime_id;
 var chain;
+var splat_handler;
 
+var viewer;
+var viewer_done = false;
 /**div**/
 container = document.createElement( 'div' );
 var parent = document.getElementsByClassName("view_3d")[0]
@@ -33,6 +36,7 @@ function init_scene(){
 }
 
 
+
 function init_collada(){
 
   original_robot =  new Robot( renderer , camera , scene , control_camera , 0.35 , false);
@@ -42,7 +46,7 @@ function init_collada(){
 
   $('.path_design_visible_c').trigger("click");
 
-  let track = new Trail(0xab2800,original_robot,100,0.05,scene);
+  //let track = new Trail(0xab2800,original_robot,100,0.05,scene);
 
   f_dsp = setInterval(frame_display, 1000/frame["fps"])
 
@@ -78,10 +82,11 @@ function graphic_on() {
      scene.add(light)
 
 
-    renderer = new THREE.WebGLRenderer( { antialias : true } );
-    renderer.setPixelRatio( window.devicePixelRatio );
+    renderer = new THREE.WebGLRenderer( { antialias : false ,
+                precision: 'highp'} );
+    //renderer.setPixelRatio( window.devicePixelRatio );
     renderer.setSize( $(view_container).width(), $(view_container).height() );
-    renderer.setClearColor(0xffffff, 1);
+    //renderer.setClearColor(0xffffff, 1);
     container.appendChild( renderer.domElement );
     var cam =  camera;
 
@@ -98,7 +103,7 @@ function graphic_on() {
     ah.matrixAutoUpdate = false
 
     ah.renderOrder = 999;
-    ah.onBeforeRender = function( renderer ) { renderer.clearDepth(); };//draw Axis helper on top of other meshes
+    ah.onBeforeRender = function( renderer ) { /*renderer.clearDepth(); */};//draw Axis helper on top of other meshes
     scene.add( ah );
     ah.matrix.set(0.04  , 0.0   , 0     , 0 ,
                   0     , 0.04  , 0     , 0 ,
@@ -107,37 +112,75 @@ function graphic_on() {
  
     ah.matrixWorldNeedsUpdate = true;
 
-    /*control sphere
-    let sphere_geometry = new THREE.SphereGeometry( 0.025, 32, 16 ); 
-    let sphere_material = new THREE.MeshStandardMaterial( { color: 0x3289bf } ); 
-    let sphere = new THREE.Mesh( sphere_geometry, sphere_material ); 
-    sphere.position.set(0.5,0,0)
-    scene.add( sphere );
-    control_sphere = new THREE.TransformControls( camera, renderer.domElement );
-    control_sphere.attach( sphere );
-    scene.add(control_sphere);
 
-    control_sphere.addEventListener( 'dragging-changed', function ( event ) {
-        control_camera.enabled = ! event.value;
-      
-    } );
-    */
-
-  const viewer = new Viewer({
+  viewer = new Viewer({
       'scene': scene,
       'selfDrivenMode': false,
       'renderer': renderer,
       'camera': camera,
+      'controls':control_camera,
       'useBuiltInControls': false
   });
   viewer.init();
-  viewer.loadFile("./static/gaussian/data/room.splat")
+  viewer.loadFile("./static/gaussian/data/room.splat", {
+        'halfPrecisionCovariancesOnGPU': true
+    })
   .then(() => {
-      viewer.start();
+      console.log("viewer done")
+      viewer_done = true;
+      viewer.splatMesh.matrixAutoUpdate  = true;
+      //viewer.start();
   });
+/*
+viewer = new Viewer({
+    'initialCameraPosition': [-1, -4, 6],
+    'initialCameraLookAt': [0, 4, 0],
+    'useBuiltInControls': false//,
+    //'renderer': renderer,
+    //'camera': camera
+});
+viewer.init();
+viewer.loadFile("./static/gaussian/data/room.splat", {
+    'splatAlphaRemovalThreshold': 5, // out of 255
+    'halfPrecisionCovariancesOnGPU': true
+})
+.then(() => {
+    viewer.start();
+});
+*/
+
+  /*
+    //control sphere
+    let splat_handler_geometry = new THREE.SphereGeometry( 0.025, 32, 16 ); 
+    let splat_handler_material = new THREE.MeshStandardMaterial( { color: 0x3289bf } ); 
+    splat_handler = new THREE.Mesh( splat_handler_geometry, splat_handler_material ); 
+    splat_handler.position.set(1,0,0)
+    scene.add( splat_handler );
+    control_splat_handler = new TransformControls( camera, renderer.domElement );
+    control_splat_handler.setMode("rotate")
+    control_splat_handler.attach( splat_handler );
+    scene.add(control_splat_handler);
+
+    splat_handler.matrixAutoUpdate = true;
+
+    control_splat_handler.addEventListener( 'dragging-changed', function ( event ) {
+        control_camera.enabled = ! event.value;
+      
+    } );
+    control_splat_handler.addEventListener( 'objectChange', function ( event ) {
+      viewer.splatMesh.updateMatrix () 
+      viewer.splatMesh.matrix.copy(splat_handler.matrix);
+    
+      console.log(splat_handler.matrix)
+      console.log( viewer.splatMesh.matrix)
+    } );
+*/
 
 
     window.addEventListener( 'resize', onWindowResize );
+
+
+
 }
 
 
@@ -254,12 +297,18 @@ function render() {
   let j = {"j0":time ,"vel":300};
   on_message({"data":JSON.stringify(j)});
   */
-  if(graphic){
+  if(graphic ){
     joints = Object.values(position());
     xyz = Object.values(position("xyz"));
     set_frame(joints.concat(xyz));
-    renderer.render( scene, camera );
+    //if(!viewer_done)
+    //  renderer.render( scene, camera );
     control_camera.update();
+
+  }
+  if(viewer_done){
+    viewer.update();
+    viewer.render();
   }
 
 }

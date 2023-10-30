@@ -243,8 +243,38 @@ function position(type = "joint"){
 				"e":position_value["e"]};
 }
 
+var gaussian_values = {"x":0 , "y":0 , "z":0 , "Rx": 0 , "Ry":0,"Rz":0,"scale":0};
 
 
+function set_gaussian_value(key, value){
+	gaussian_values[key] = value;
+	update_gaussian_value()
+}
+function update_gaussian_value(){
+		viewer.splatMesh.position.x = gaussian_values["x"];
+		viewer.splatMesh.position.y = gaussian_values["y"];
+		viewer.splatMesh.position.z = gaussian_values["z"];
+		viewer.splatMesh.rotation.x = gaussian_values["Rx"] * Math.PI/180;	
+		viewer.splatMesh.rotation.y = gaussian_values["Ry"]* Math.PI/180;
+		viewer.splatMesh.rotation.z = gaussian_values["Rz"]* Math.PI/180;
+		viewer.splatMesh.scale.set(Math.pow(10,gaussian_values["scale"]),
+			Math.pow(10,gaussian_values["scale"]),
+			Math.pow(10,gaussian_values["scale"]));
+	
+}
+
+//gaussian stuff
+$( ".gs_v" ).on("change", function(e) {
+	let s_id = "#gs_s"+$(this).prop("id").slice(4);
+	$(s_id).prop("value",$(this).prop("value"))
+	set_gaussian_value($(this).prop("id").slice(5), $(this).prop("value"))
+})
+$( ".gs_s" ).on("input", function(e) {
+	let v_id = "#gs_v"+$(this).prop("id").slice(4);
+	$(v_id).prop("value",$(this).prop("value"))
+	set_gaussian_value($(this).prop("id").slice(5), $(this).prop("value"))
+
+})
 
 
 /*

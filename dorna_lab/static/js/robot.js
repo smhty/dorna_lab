@@ -80,7 +80,7 @@ class Robot{
 		this.dither = false;
 		this.visible = true;
 		//headball
-		this.loader_axis = new THREE.ColladaLoader()
+		this.loader_axis = new ColladaLoader()
 
 
 		this.limits = {"nj0":-160 , "pj0":180, //nj0 got from -175 to -160
@@ -143,14 +143,22 @@ class Robot{
 		this.world_g.add(this.rotate_object_2);
 		this.world_g.add(this.rotate_object_3);
 
-		this.loader = [new THREE.ColladaLoader(),new THREE.ColladaLoader(),
-						new THREE.ColladaLoader(),new THREE.ColladaLoader(),
-						new THREE.ColladaLoader(),new THREE.ColladaLoader(),new THREE.ColladaLoader()];
+		const loadingManager = new THREE.LoadingManager( function () {
+			console.log("model load")
+		} );
+
+		this.loader = [new ColladaLoader(loadingManager),new ColladaLoader(loadingManager),
+						new ColladaLoader(loadingManager),new ColladaLoader(loadingManager),
+						new ColladaLoader(loadingManager),new ColladaLoader(loadingManager),new ColladaLoader(loadingManager)];
 		this.dae = new Array(8);
 		robot.load_index = 0;
 
+
+
+
 		for(let i=0;i<7;i++){
-			this.loader[i].load("./static/assets/robot/"+config_version["model"]+"-"+i+".dae" , function ( collada ) {robot.dae[i] = collada.scene; if(i==6)robot.dae[6].visible = false;if(robot.load_index++>6)robot.load_level2();});
+			this.loader[i].load("./static/assets/robot/"+config_version["model"]+"-"+i+".dae" , function ( collada ) {
+				robot.dae[i] = collada.scene; if(i==6)robot.dae[6].visible = false;if(robot.load_index++>6)robot.load_level2();});
 		}
 		
 		this.loader_axis.load("./static/assets/robot/dorna_2s-6.dae" , function ( collada ) {
@@ -214,7 +222,7 @@ class Robot{
 		base_ah.matrixAutoUpdate = false
 
 		base_ah.renderOrder = 999;
-		base_ah.onBeforeRender = function( renderer ) { renderer.clearDepth(); };//draw Axis helper on top of other meshes
+		base_ah.onBeforeRender = function( renderer ) {/* renderer.clearDepth();*/ };//draw Axis helper on top of other meshes
 		this.a0_g .add( base_ah );
 		base_ah.matrix.set(0.04  , 0.0   , 0     , 0 ,
 		              0     , 0.04  , 0     , 0 ,
@@ -281,7 +289,7 @@ class Robot{
 
 		if(this.being_controlled)
 		    for(let i=0;i<6;i++){
-				var control_c = new THREE.TransformControls( camera, renderer.domElement );
+				var control_c = new TransformControls( camera, renderer.domElement );
 				control_c.attach( this.dae[i+1].parent);
 				robot.control_j.push(control_c)
 
@@ -437,23 +445,23 @@ class Robot{
 	create_head_control(){
 		let robot = this;
 		
-	    this.control_head = new THREE.TransformControls( this.camera, this.renderer.domElement );
+	    this.control_head = new TransformControls( this.camera, this.renderer.domElement );
 	    this.control_head.attach( this.mesh_ball );
 	    this.world_g.add( this.control_head );
 
-	    this.control_head_rotate_1 = new THREE.TransformControls( this.camera, this.renderer.domElement );
+	    this.control_head_rotate_1 = new TransformControls( this.camera, this.renderer.domElement );
 	    this.control_head_rotate_1.setMode("rotate");
 	    this.control_head_rotate_1.setSpace("local");
 	    this.control_head_rotate_1.attach( this.rotate_object_1 );
 	    this.world_g.add( this.control_head_rotate_1 );
 
-	    this.control_head_rotate_2 = new THREE.TransformControls( this.camera, this.renderer.domElement );
+	    this.control_head_rotate_2 = new TransformControls( this.camera, this.renderer.domElement );
 	    this.control_head_rotate_2.setMode("rotate");
 	    this.control_head_rotate_2.setSpace("local");
 	    this.control_head_rotate_2.attach( this.rotate_object_2 );
 	    this.world_g.add( this.control_head_rotate_2 );
 
-	    this.control_head_rotate_3 = new THREE.TransformControls( this.camera, this.renderer.domElement );
+	    this.control_head_rotate_3 = new TransformControls( this.camera, this.renderer.domElement );
 	    this.control_head_rotate_3.setMode("rotate");
 	    this.control_head_rotate_3.setSpace("local");
 	    this.control_head_rotate_3.attach( this.rotate_object_3 );

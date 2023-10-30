@@ -8,10 +8,10 @@ const tempVector4B = new THREE.Vector4();
 const tempQuaternion4A = new THREE.Quaternion();
 const tempQuaternion4B = new THREE.Quaternion();
 
-self.crossOriginIsolated
 
 let fbf;
 let tbf;
+
 
 class SplatBuffer {
 
@@ -886,7 +886,7 @@ class SplatLoader {
 //    Zoom - middle mouse, or mousewheel / touch: two-finger spread or squish
 //    Pan - right mouse, or left mouse + ctrl/meta/shiftKey, or arrow keys / touch: two-finger move
 
-const _changeEvent = { type: 'change' };
+//const _changeEvent = { type: 'change' };
 const _startEvent = { type: 'start' };
 const _endEvent = { type: 'end' };
 const _ray = new THREE.Ray();
@@ -2664,6 +2664,7 @@ class Raycaster {
         return function(splatMesh, outHits = []) {
             fromLocal.copy(splatMesh.matrixWorld);
             toLocal.copy(fromLocal).invert();
+
             localRay.origin.copy(this.ray.origin).applyMatrix4(toLocal);
             localRay.direction.copy(this.ray.direction).transformDirection(toLocal);
 
@@ -3717,11 +3718,12 @@ class Viewer {
 
     updateSplatRenderTargetForRenderDimensions(width, height) {
         this.splatRenderTarget = new THREE.WebGLRenderTarget(width, height, {
-            format: THREE.RGBAFormat,
+            format: THREE.RGBFormat,
             stencilBuffer: false,
             depthBuffer: true,
 
         });
+
         this.splatRenderTarget.depthTexture = new THREE.DepthTexture(width, height);
         this.splatRenderTarget.depthTexture.format = THREE.DepthFormat;
         this.splatRenderTarget.depthTexture.type = THREE.UnsignedIntType;
@@ -3931,6 +3933,7 @@ class Viewer {
             const cosFovXOver2 = Math.cos(fovXOver2);
             const cosFovYOver2 = Math.cos(fovYOver2);
             tempMatrix4.copy(this.camera.matrixWorld).invert();
+
             tempMatrix4.multiply(this.splatMesh.matrixWorld);
 
             const splatTree = this.splatMesh.getSplatTree();

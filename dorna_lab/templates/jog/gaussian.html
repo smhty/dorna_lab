@@ -1,0 +1,22 @@
+<table style="margin: auto;width: 100% !important; ">
+  <tbody>
+    <!--scale-->
+    {% for i in [["x", 0 ,-10,10,0.01] ,["y", 0 ,-10,10,0.01], ["z", 0 ,-10,10,0.01],["Rx", 0 ,-180,180,0.5] ,["Ry", 0 ,-180,180,0.5], ["Rz",0,-180,180,0.5],
+    ["scale", 0 ,-2,2,0.001]]%}
+    <tr>
+      <td colspan="2">
+        <div class="d-flex flex-row">
+          <div class="align-self-center text-capitalize" style="width: 50px">{{i[0]}}</div>
+          <div class="align-self-center flex-grow-1">
+            <input type="range" class="custom-range bind gs_s " id="gs_s_{{i[0]}}" min={{i[2]}} max={{i[3]}} value= {{i[1]}}  step={{i[4]}} data-key="gs_{{i[0]}}">
+          </div>
+          <div class="align-self-center pl-2">
+            <input type="number" class="form-control bind gs_v  tiny text-center" id="gs_v_{{i[0]}}" step={{i[4]}} min={{i[2]}} max={{i[3]}} value= {{i[1]}} data-key="gs_{{i[0]}}" > 
+          </div>
+        </div>         
+      </td>
+    </tr>
+    {% endfor%}                
+    <!--/scale-->
+  </tbody>
+</table>
