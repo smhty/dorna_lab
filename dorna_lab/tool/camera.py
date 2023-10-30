@@ -34,4 +34,4 @@ class Camera(object):
 			ws_handler.write_message({'to':"cam_l",'image_data': image_data})
 
 
-			await asyncio.sleep(0.01)
+			await asyncio.sleep(0.04)

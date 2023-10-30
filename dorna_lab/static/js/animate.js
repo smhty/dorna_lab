@@ -118,7 +118,7 @@ function graphic_on() {
                 void main() {
                     vec2 uv = vUv;
                     uv.x = mod(uv.x , 1.0);
-                    float scale = 3.0;
+                    float scale = 5.0;
 
                     uv = uv*scale - vec2(0.5*(scale-1.0));
 
