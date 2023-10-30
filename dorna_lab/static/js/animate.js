@@ -123,6 +123,20 @@ function graphic_on() {
     } );
     */
 
+  const viewer = new Viewer({
+      'scene': scene,
+      'selfDrivenMode': false,
+      'renderer': renderer,
+      'camera': camera,
+      'useBuiltInControls': false
+  });
+  viewer.init();
+  viewer.loadFile("./static/gaussian/data/room.splat")
+  .then(() => {
+      viewer.start();
+  });
+
+
     window.addEventListener( 'resize', onWindowResize );
 }
 
