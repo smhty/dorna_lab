@@ -1,7 +1,7 @@
 var graphic = true
 // frame object
 var frame = {
-        "fps": 60,
+        "fps": 25,
         "delay": 0.5,
         "busy": false,
         "frames" : [],
