@@ -260,7 +260,7 @@ function update_gaussian_value(){
 		viewer.splatMesh.scale.set(Math.pow(10,gaussian_values["scale"]),
 			Math.pow(10,gaussian_values["scale"]),
 			Math.pow(10,gaussian_values["scale"]));
-	
+	viewer.update();
 }
 
 //gaussian stuff

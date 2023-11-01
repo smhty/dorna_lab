@@ -73,10 +73,10 @@ function graphic_on() {
 
     
     
-    particleLight = new THREE.PointLight( 0x88abba, 0.2 );
-    particleLight.position.set(0,10,0);
+    //particleLight = new THREE.PointLight( 0x88abba, 0.2 );
+   // particleLight.position.set(0,10,0);
 
-    scene.add( particleLight );
+    //scene.add( particleLight );
 
     var light = new THREE.AmbientLight( 0xb8b7ae ); // soft white light
      scene.add(light)
@@ -115,7 +115,7 @@ function graphic_on() {
 
   viewer = new Viewer({
       'scene': scene,
-      'selfDrivenMode': false,
+      //'selfDrivenMode': false,
       'renderer': renderer,
       'camera': camera,
       'controls':control_camera,
@@ -127,9 +127,9 @@ function graphic_on() {
     })
   .then(() => {
       console.log("viewer done")
-      viewer_done = true;
+      //viewer_done = true;
       viewer.splatMesh.matrixAutoUpdate  = true;
-      //viewer.start();
+      viewer.start();
   });
 /*
 viewer = new Viewer({
