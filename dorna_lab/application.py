@@ -10,7 +10,7 @@ import tornado.websocket
 from flask_to_tornado import BaseHandler
 
 from dorna2 import Dorna, __version__ as V_API
-from tool import db,folder,shell, update, kinematic
+from tool import db,folder,shell, update, kinematic , vision
 import config
 
 PATH = os.path.dirname(os.path.abspath(__file__))
@@ -224,7 +224,8 @@ class WebSocket(tornado.websocket.WebSocketHandler):
                     "rail_on":kin.knmtc.rail_on
                 }))
 
-
+            elif msg["_server"] == "vision_play":
+                vision.vision_play(self, msg)  
         else:
             DORNA.send_message_to_robot(json.dumps(msg))
 

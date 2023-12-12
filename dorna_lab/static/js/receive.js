@@ -60,6 +60,10 @@ function on_message(event){
         case "knmtc_params":
           config_version = msg;
           chain.controller.update_kinematic_params();
+          break
+        case "vision_preview":
+          update_vision_preview_images(msg["images"]);
+          break
       }   
 
     }else{
