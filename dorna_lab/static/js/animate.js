@@ -54,15 +54,15 @@ function graphic_on() {
     /*********************/
     // camera
     camera = new THREE.PerspectiveCamera( 65, $(view_container).width() / $(view_container).height(), 0.1, 2000 );
-    camera.position.set( 0.7, 0.7 , 0.35  );
+    camera.position.set( 7, 7 , 3.5  );
     camera.up.set(0,0,1);
     // Grid
     var grid = new THREE.GridHelper( 10, 10, 0x444444, 0x888888 );
     scene.add( grid );
     grid.matrixAutoUpdate = false
-    grid.matrix.set(0.1   , 0     , 0     , 0 ,
-                    0     , 0     , 0.1   , 0 ,
-                    0     , 0.1   , 0     , 0 ,
+    grid.matrix.set(1.0   , 0     , 0     , 0 ,
+                    0     , 0     , 1.0   , 0 ,
+                    0     , 1.0   , 0     , 0 ,
                     0     , 0     , 0     , 1 );
  
     grid.matrixWorldNeedsUpdate = true;
@@ -100,9 +100,9 @@ function graphic_on() {
     ah.renderOrder = 999;
     ah.onBeforeRender = function( renderer ) { renderer.clearDepth(); };//draw Axis helper on top of other meshes
     scene.add( ah );
-    ah.matrix.set(0.04  , 0.0   , 0     , 0 ,
-                  0     , 0.04  , 0     , 0 ,
-                  0     , 0     , 0.04  , 0 ,
+    ah.matrix.set(0.4  , 0.0   , 0     , 0 ,
+                  0     , 0.4  , 0     , 0 ,
+                  0     , 0     , 0.4  , 0 ,
                   0     , 0     , 0     , 1 );
  
     ah.matrixWorldNeedsUpdate = true;

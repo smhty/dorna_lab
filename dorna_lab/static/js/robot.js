@@ -150,7 +150,8 @@ class Robot{
 		robot.load_index = 0;
 
 		for(let i=0;i<7;i++){
-			this.loader[i].load("./static/assets/robot/"+config_version["model"]+"-"+i+".dae" , function ( collada ) {robot.dae[i] = collada.scene; if(i==6)robot.dae[6].visible = false;if(robot.load_index++>6)robot.load_level2();});
+			this.loader[i].load("./static/assets/robot/"+config_version["model"]+"-"+i+".dae" , function ( collada ) {
+				robot.dae[i] = collada.scene; robot.dae[i].scale.set(10,10,10); if(i==6)robot.dae[6].visible = false;if(robot.load_index++>6)robot.load_level2();});
 		}
 		
 		this.loader_axis.load("./static/assets/robot/dorna_2s-6.dae" , function ( collada ) {
@@ -176,9 +177,9 @@ class Robot{
 		this.axis_helper = new THREE.AxesHelper(1);
 		this.axis_helper.matrixAutoUpdate = false
 		this.axis_helper.renderOrder = 999;
-		this.axis_helper.matrix.set(  0.04,	0,	0,		0,
-								      0,	0.04,	0,	0,
-								      0,	0,		0.04,		0,
+		this.axis_helper.matrix.set(  0.4,	0,	0,		0,
+								      0,	0.4,	0,	0,
+								      0,	0,		0.4,		0,
 								      0,	0,		0,		1);
 
 		this.axis_helper.matrixWorldNeedsUpdate = true;
@@ -191,10 +192,10 @@ class Robot{
 		this.delta_info = config_version["delta"];
 		this.rail_vec.set(config_version["rail_vec"][0], config_version["rail_vec"][1], config_version["rail_vec"][2]);
 		this.rail_limit = config_version["rail_limit"];
-		this.p0 = new THREE.Vector3(0,config_version["d"][1]/1000,config_version["a"][2]/1000);//new THREE.Vector3(0.0,2.404464*this.scale_factor,9.475806*this.scale_factor);
-		this.l2 = config_version["a"][3]/1000;
-		this.l3 = config_version["a"][4]/1000;
-		this.l4 = config_version["d"][5]/1000;
+		this.p0 = new THREE.Vector3(0,config_version["d"][1],config_version["a"][2]);//new THREE.Vector3(0.0,2.404464*this.scale_factor,9.475806*this.scale_factor);
+		this.l2 = config_version["a"][3];
+		this.l3 = config_version["a"][4];
+		this.l4 = config_version["d"][5];
 		this.sum_delta = 0;
 		for (let i=0;i<this.delta_info.length;i++){
 			this.sum_delta += this.delta_info[i];
@@ -216,9 +217,9 @@ class Robot{
 		base_ah.renderOrder = 999;
 		base_ah.onBeforeRender = function( renderer ) { renderer.clearDepth(); };//draw Axis helper on top of other meshes
 		this.a0_g .add( base_ah );
-		base_ah.matrix.set(0.04  , 0.0   , 0     , 0 ,
-		              0     , 0.04  , 0     , 0 ,
-		              0     , 0     , 0.04  , 0 ,
+		base_ah.matrix.set(0.4  , 0.0   , 0     , 0 ,
+		              0     , 0.4  , 0     , 0 ,
+		              0     , 0     , 0.4  , 0 ,
 		              0     , 0     , 0     , 1 );
 
 		base_ah.matrixWorldNeedsUpdate = true;
@@ -280,7 +281,7 @@ class Robot{
 		this.scene.add(this.robot_scene);//last thing to do
 
 		if(this.being_controlled)
-		    for(let i=0;i<6;i++){
+		    for(let i=0;i<6 ;i++){
 				var control_c = new THREE.TransformControls( camera, renderer.domElement );
 				control_c.attach( this.dae[i+1].parent);
 				robot.control_j.push(control_c)
@@ -326,9 +327,9 @@ class Robot{
 
 	set_axis_z_length(ell){
 		this.axis_helper.matrixAutoUpdate = false
-		this.axis_helper.matrix.set(  0.04,	0,	0,		0,
-								      0,	0.04,	0,	0,
-								      0,	0,		ell/1000,		0,
+		this.axis_helper.matrix.set(  0.4,	0,	0,		0,
+								      0,	0.4,	0,	0,
+								      0,	0,		ell,		0,
 								      0,	0,		0,		1);
 
 		this.axis_helper.matrixWorldNeedsUpdate = true;
@@ -341,10 +342,10 @@ class Robot{
 		this.delta_info = config_version["delta"];
 		this.rail_vec.set(config_version["rail_vec"][0], config_version["rail_vec"][1], config_version["rail_vec"][2]);
 		this.rail_limit = config_version["rail_limit"];
-		this.p0 = new THREE.Vector3(0,config_version["d"][1]/1000,config_version["a"][2]/1000);//new THREE.Vector3(0.0,2.404464*this.scale_factor,9.475806*this.scale_factor);
-		this.l2 = config_version["a"][3]/1000;
-		this.l3 = config_version["a"][4]/1000;
-		this.l4 = config_version["d"][5]/1000;
+		this.p0 = new THREE.Vector3(0,config_version["d"][1],config_version["a"][2]);//new THREE.Vector3(0.0,2.404464*this.scale_factor,9.475806*this.scale_factor);
+		this.l2 = config_version["a"][3];
+		this.l3 = config_version["a"][4];
+		this.l4 = config_version["d"][5];
 		this.sum_delta = 0;
 		for (let i=0;i<this.delta_info.length;i++){
 			this.sum_delta += this.delta_info[i];
@@ -354,7 +355,7 @@ class Robot{
 		if(this.rail_line_cylinder)
 			this.rail_g.remove(this.rail_line_cylinder)
 
-		let rail_line_geometry = new THREE.CylinderGeometry( 0.003, 0.003, (this.rail_limit[1]-this.rail_limit[0])/1000*this.rail_vec.length()+0.01, 32 ); 
+		let rail_line_geometry = new THREE.CylinderGeometry( 0.003, 0.003, (this.rail_limit[1]-this.rail_limit[0])*this.rail_vec.length()+0.01, 32 ); 
 
 		let rail_line_material = new THREE.MeshBasicMaterial( {color: 0x51b844} ); 
 		this.rail_line_cylinder = new THREE.Mesh( rail_line_geometry, rail_line_material );
@@ -363,22 +364,22 @@ class Robot{
 
 
 		this.rail_line_cylinder.rotateZ(-Math.atan2(this.rail_vec.x,this.rail_vec.y));
-		let l_1_position = this.rail_vec.clone().multiplyScalar((this.rail_limit[1]+this.rail_limit[0])/2.0/1000.0);
+		let l_1_position = this.rail_vec.clone().multiplyScalar((this.rail_limit[1]+this.rail_limit[0])/2.0);
 		this.rail_line_cylinder.position.set(l_1_position.x,l_1_position.y,l_1_position.z);
 
 		
 		this.tcp.matrixAutoUpdate  = false;
 		this.tcp.updateMatrix();
-		this.tcp.matrix.set(config_version["tcp_mat"][0] ,config_version["tcp_mat"][1] ,config_version["tcp_mat"][2] ,config_version["tcp_mat"][3]/1000 ,
-							config_version["tcp_mat"][4] ,config_version["tcp_mat"][5] ,config_version["tcp_mat"][6] ,config_version["tcp_mat"][7]/1000 ,
-							config_version["tcp_mat"][8] ,config_version["tcp_mat"][9] ,config_version["tcp_mat"][10],config_version["tcp_mat"][11]/1000,
+		this.tcp.matrix.set(config_version["tcp_mat"][0] ,config_version["tcp_mat"][1] ,config_version["tcp_mat"][2] ,config_version["tcp_mat"][3] ,
+							config_version["tcp_mat"][4] ,config_version["tcp_mat"][5] ,config_version["tcp_mat"][6] ,config_version["tcp_mat"][7] ,
+							config_version["tcp_mat"][8] ,config_version["tcp_mat"][9] ,config_version["tcp_mat"][10],config_version["tcp_mat"][11],
 							config_version["tcp_mat"][12],config_version["tcp_mat"][13],config_version["tcp_mat"][14],config_version["tcp_mat"][15]);
 		
 		this.rail_g.matrixAutoUpdate  = false;
 		this.rail_g.updateMatrix();
-		this.rail_g.matrix.set(	config_version["rail_mat"][0] ,config_version["rail_mat"][1] ,config_version["rail_mat"][2] ,config_version["rail_mat"][3]/1000 ,
-								config_version["rail_mat"][4] ,config_version["rail_mat"][5] ,config_version["rail_mat"][6] ,config_version["rail_mat"][7]/1000 ,
-								config_version["rail_mat"][8] ,config_version["rail_mat"][9] ,config_version["rail_mat"][10],config_version["rail_mat"][11]/1000,
+		this.rail_g.matrix.set(	config_version["rail_mat"][0] ,config_version["rail_mat"][1] ,config_version["rail_mat"][2] ,config_version["rail_mat"][3] ,
+								config_version["rail_mat"][4] ,config_version["rail_mat"][5] ,config_version["rail_mat"][6] ,config_version["rail_mat"][7] ,
+								config_version["rail_mat"][8] ,config_version["rail_mat"][9] ,config_version["rail_mat"][10],config_version["rail_mat"][11],
 								config_version["rail_mat"][12],config_version["rail_mat"][13],config_version["rail_mat"][14],config_version["rail_mat"][15]);
 		
 		this.kinematic(this.joints);
@@ -390,7 +391,7 @@ class Robot{
 		let clist = [this.a0_g, this.a1_g, this.a2_g,this.a3_g,this.a4_g,this.a5_g,this.a6_g];
 
 		let rail_displacement = new THREE.Vector3(this.rail_vec.x*js[5],this.rail_vec.y*js[5],this.rail_vec.z*js[5]);
-		rail_displacement.multiplyScalar(1/1000);
+		//rail_displacement.multiplyScalar(1/1000);
 
 
 		clist[0].matrixAutoUpdate  = false;
@@ -402,19 +403,22 @@ class Robot{
 
 
 		for(let i=1;i<config_version["n_dof"]+1;i++){
-			let ct = Math.cos(js[i-1]*Math.PI/180)
-			let st = Math.sin(js[i-1]*Math.PI/180)
+			let frame_idx = i - 1;
+			let ct = Math.cos(js[frame_idx]*Math.PI/180 + this.delta_info[frame_idx])
+			let st = Math.sin(js[frame_idx]*Math.PI/180 + this.delta_info[frame_idx])
 			//if(i==1) st *= -1;
-			let ca = Math.cos(this.alpha_info[i])
-			let sa = Math.sin(this.alpha_info[i])
-			let cd = Math.cos(this.delta_info[i])
-			let sd = Math.sin(this.delta_info[i])
+			let ca = Math.cos(this.alpha_info[frame_idx])
+			let sa = Math.sin(this.alpha_info[frame_idx])
+
+			let ai = this.a_info[frame_idx]
+			let di = this.d_info[frame_idx] 
+
 			clist[i].matrixAutoUpdate  = false;
 			clist[i].updateMatrix();
-			clist[i].matrix.set( cd*ct		,	-cd*st,	sd	,	this.a_info[i]*cd/1000 + this.d_info[i]*sd/1000,
-								 ct*sa*sd+ca*st			,	ca*ct-sa*sd*st,	-cd*sa ,	this.a_info[i]*(sa*sd)/1000 + this.d_info[i]*(-cd*sa)/1000,
-								 -ca*ct*sd + sa*st			,	ct*sa+ca*sd*st,	cd*ca,	this.a_info[i]*(-ca*sd )/1000 + this.d_info[i]*(cd*ca)/1000,
-								 0	,	0	,	0	,	1);
+			clist[i].matrix.set(ct,-st*ca,st*sa,ai*ct,
+								st,ct*ca,-ct*sa,ai*st,
+								0,sa,ca,di,
+								0, 0, 0, 1);
 
 		}		
 
@@ -951,12 +955,12 @@ class Robot{
 
 	xyz_to_real(v){
 		let result = v.clone();//new THREE.Vector3(v.z,v.x,v.y);
-		result.multiplyScalar(1000);
+		//result.multiplyScalar(1000);
 		return result;
 	}
 	real_to_xyz(v){
 		let result =  v.clone();// new THREE.Vector3(v.y,v.z,v.x);
-		result.multiplyScalar(1/1000);
+		//result.multiplyScalar(1/1000);
 		return result;
 	}
 	allowed_xyza(){
