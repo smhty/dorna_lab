@@ -20,7 +20,7 @@ Useful Robot methodes:
 //d5 = 0.091502
 //d6 = x  ???
 ///
-
+var ik_busy = false;
 class Robot{
 
 	control_head; control_head_rotate_1; control_head_rotate_2;control_head_rotate_3; rotate_object_1; rotate_object_2; rotate_object_3;
@@ -137,11 +137,9 @@ class Robot{
 		this.rail_g 	= new THREE.Group();
 
 		this.rotate_object_1 = new THREE.Object3D();
-		this.rotate_object_2 = new THREE.Object3D();
-		this.rotate_object_3 = new THREE.Object3D();
+
 		this.world_g.add(this.rotate_object_1);
-		this.world_g.add(this.rotate_object_2);
-		this.world_g.add(this.rotate_object_3);
+
 
 		this.loader = [new THREE.ColladaLoader(),new THREE.ColladaLoader(),
 						new THREE.ColladaLoader(),new THREE.ColladaLoader(),
@@ -209,6 +207,7 @@ class Robot{
 		this.a4_g 		= new THREE.Group();
 		this.a5_g 		= new THREE.Group();
 		this.a6_g 		= new THREE.Group();
+		this.a7_g 		= new THREE.Group();
 		this.tcp 		= new THREE.Object3D();	
 
 		let base_ah = new THREE.AxesHelper(1);
@@ -229,7 +228,7 @@ class Robot{
 
 		for(let i=0;i<7;i++){
 			//this.dae[i].scale.set(1,-1,1);
-			this.dae[i].rotateX(Math.PI/2.0);
+			//this.dae[i].rotateX(Math.PI/2.0);
 		}
 		this.robot_scene.add(this.world_g);
 		this.world_g.add(this.rail_g);
@@ -248,8 +247,10 @@ class Robot{
 		this.a4_g.add(this.a5_g);
 		this.a5_g.add(this.dae[5]);
 		this.a5_g.add(this.a6_g);
-		this.a6_g.add(this.dae[6])
-		this.a6_g.add(this.tcp);
+		this.a6_g.add(this.dae[6]);
+		this.a6_g.add(this.a7_g);
+		this.a7_g.add(this.tcp);
+
 		this.tcp.add(this.axis_helper)
 		//this.a5_g.add(this.a_help);
 
@@ -283,7 +284,7 @@ class Robot{
 		if(this.being_controlled)
 		    for(let i=0;i<6 ;i++){
 				var control_c = new THREE.TransformControls( camera, renderer.domElement );
-				control_c.attach( this.dae[i+1].parent);
+				control_c.attach( this.dae[i+1]);
 				robot.control_j.push(control_c)
 
 				control_c.setSize(1.0);
@@ -291,7 +292,6 @@ class Robot{
 				control_c.setMode( "rotate" );
 
 				this.world_g.add( control_c );
-
 
 		        control_c.addEventListener( 'dragging-changed', function ( event) {robot.control_camera.enabled = ! event.value; robot.hider(! event.value,i);  });
 				control_c.addEventListener( 'objectChange', function ( event ) { robot.change(i,this,false);} );
@@ -388,7 +388,7 @@ class Robot{
 	kinematic(js){
 		
 
-		let clist = [this.a0_g, this.a1_g, this.a2_g,this.a3_g,this.a4_g,this.a5_g,this.a6_g];
+		let clist = [this.a0_g, this.a1_g, this.a2_g,this.a3_g,this.a4_g,this.a5_g,this.a6_g,this.a7_g];
 
 		let rail_displacement = new THREE.Vector3(this.rail_vec.x*js[5],this.rail_vec.y*js[5],this.rail_vec.z*js[5]);
 		//rail_displacement.multiplyScalar(1/1000);
@@ -401,11 +401,11 @@ class Robot{
 							0	,	0	,	1	,	rail_displacement.z,
 							0	,	0	,	0	,	1);
 
-
-		for(let i=1;i<config_version["n_dof"]+1;i++){
-			let frame_idx = i - 1;
-			let ct = Math.cos(js[frame_idx]*Math.PI/180 + this.delta_info[frame_idx])
-			let st = Math.sin(js[frame_idx]*Math.PI/180 + this.delta_info[frame_idx])
+		let joints = [0,js[0],js[1],js[2],js[3],js[4],js[5],js[6]]
+		for(let i=1;i<config_version["n_dof"]+2;i++){
+			let frame_idx = i - 1 ;
+			let ct = Math.cos(joints[frame_idx]*Math.PI/180 + this.delta_info[frame_idx])
+			let st = Math.sin(joints[frame_idx]*Math.PI/180 + this.delta_info[frame_idx])
 			//if(i==1) st *= -1;
 			let ca = Math.cos(this.alpha_info[frame_idx])
 			let sa = Math.sin(this.alpha_info[frame_idx])
@@ -417,21 +417,44 @@ class Robot{
 			clist[i].updateMatrix();
 			clist[i].matrix.set(ct,-st*ca,st*sa,ai*ct,
 								st,ct*ca,-ct*sa,ai*st,
-								0,sa,ca,di,
+								0,	sa,	ca,	di,
 								0, 0, 0, 1);
 
+			//this.dae[i].rotation.z = js[frame_idx]*Math.PI/180;
+			let rot_x_quat = new THREE.Quaternion();
+			let rot_z_quat = new THREE.Quaternion();
+			//rot_x_quat.setFromAxisAngle( new THREE.Vector3( 1, 0, 0 ),0*Math.PI / 2);
+			rot_z_quat.setFromAxisAngle( new THREE.Vector3( 0, 0, 1 ), Math.PI /180 * joints[i]);
+			//rot_x_quat.multiply(rot_z_quat)
+			this.dae[i].setRotationFromQuaternion(rot_z_quat)
+			//this.dae[i].updateMatrix();
+			this.dae[i].matrixWorldNeedsUpdate = true;
 		}		
 
 
 
 
 		if(this.being_controlled){
+			
 			this.a1_g.quaternion.setFromRotationMatrix(this.a1_g.matrix);
 			this.a2_g.quaternion.setFromRotationMatrix(this.a2_g.matrix);
 			this.a3_g.quaternion.setFromRotationMatrix(this.a3_g.matrix);
 			this.a4_g.quaternion.setFromRotationMatrix(this.a4_g.matrix);
 			this.a5_g.quaternion.setFromRotationMatrix(this.a5_g.matrix);
 			this.a6_g.quaternion.setFromRotationMatrix(this.a6_g.matrix);
+
+			//this.dae[0].quaternion.setFromRotationMatrix(this.dae[0].matrix);
+			//console.log(this.dae[0].quaternion)
+
+			/*
+			this.dae[1].quaternion.setFromRotationMatrix(this.dae[1].matrix);
+			this.dae[2].quaternion.setFromRotationMatrix(this.dae[2].matrix);
+			this.dae[3].quaternion.setFromRotationMatrix(this.dae[3].matrix);
+			this.dae[4].quaternion.setFromRotationMatrix(this.dae[4].matrix);
+			this.dae[5].quaternion.setFromRotationMatrix(this.dae[5].matrix);
+			this.dae[6].quaternion.setFromRotationMatrix(this.dae[6].matrix);
+			this.dae[7].quaternion.setFromRotationMatrix(this.dae[7].matrix);
+			*/
 			//this.a5_g.quaternion.y = this.a5_g.quaternion.y;
 
 		}
@@ -447,21 +470,9 @@ class Robot{
 
 	    this.control_head_rotate_1 = new THREE.TransformControls( this.camera, this.renderer.domElement );
 	    this.control_head_rotate_1.setMode("rotate");
-	    this.control_head_rotate_1.setSpace("local");
+	    this.control_head_rotate_1.setSpace("global");
 	    this.control_head_rotate_1.attach( this.rotate_object_1 );
 	    this.world_g.add( this.control_head_rotate_1 );
-
-	    this.control_head_rotate_2 = new THREE.TransformControls( this.camera, this.renderer.domElement );
-	    this.control_head_rotate_2.setMode("rotate");
-	    this.control_head_rotate_2.setSpace("local");
-	    this.control_head_rotate_2.attach( this.rotate_object_2 );
-	    this.world_g.add( this.control_head_rotate_2 );
-
-	    this.control_head_rotate_3 = new THREE.TransformControls( this.camera, this.renderer.domElement );
-	    this.control_head_rotate_3.setMode("rotate");
-	    this.control_head_rotate_3.setSpace("local");
-	    this.control_head_rotate_3.attach( this.rotate_object_3 );
-	    this.world_g.add( this.control_head_rotate_3 );
 
 	    this.control_head.addEventListener( 'dragging-changed', function ( event ) {
 	    	robot.control_camera.enabled = ! event.value;
@@ -471,16 +482,6 @@ class Robot{
 	    this.control_head_rotate_1.addEventListener( 'dragging-changed', function ( event ) {
 	    	robot.control_camera.enabled = ! event.value;
 	    	robot.hider(! event.value, 7);
-	    } );
-
-	    this.control_head_rotate_2.addEventListener( 'dragging-changed', function ( event ) {
-	    	robot.control_camera.enabled = ! event.value;
-	    	robot.hider(!  event.value, 8);
-	    } );
-	    this.control_head_rotate_3.addEventListener( 'dragging-changed', function ( event ) {
-	    	//console.log("drag changed",event.value)
-	    	robot.control_camera.enabled = ! event.value;
-	    	robot.hider(!  event.value, 9);
 	    } );
 
 	    this.control_head.addEventListener( 'objectChange', function ( event ) {
@@ -497,143 +498,90 @@ class Robot{
     		}
     	} );
     	
-    	this.control_head_rotate_2.addEventListener( 'objectChange', function ( event ) {
-	    	if(robot.control_head_rotate_2.enabled){
-		    	robot.head_pos.set(robot.mesh_ball.position.x,robot.mesh_ball.position.y,robot.mesh_ball.position.z);
-		    	robot.set_euler();
-		    	robot.set_xyza(robot.head_pos,robot.abc);
-    		}
-    	} );
-    	this.control_head_rotate_3.addEventListener( 'objectChange', function ( event ) {
-	    	if(robot.control_head_rotate_3.enabled){
-		    	robot.head_pos.set(robot.mesh_ball.position.x,robot.mesh_ball.position.y,robot.mesh_ball.position.z);
-		    	robot.set_euler();
-		    	robot.set_xyza(robot.head_pos,robot.abc);
-    		}
-    	} );
 	
 	}
 
 	set_head_controls_positions(v){
     	this.mesh_ball.position.set(v.x,v.y,v.z);
     	this.rotate_object_1.position.set(v.x,v.y,v.z);
-    	this.rotate_object_2.position.set(v.x,v.y,v.z);
-    	this.rotate_object_3.position.set(v.x,v.y,v.z);
+
 
 	}
 	get_abc_from_mat(mat){
-		let m22 = mat[5];
-		let m32 = mat[6];
-		let m23 = mat[9];
+		let m11 = mat.elements[0];
+		let m12 = mat.elements[1];
+		let m13 = mat.elements[2];
 
-		let m33 = mat[10];
-		let m13 = mat[8];
-		let m21 = mat[1];
-		let m31 = mat[2];
+		let m21 = mat.elements[4];
+		let m22 = mat.elements[5];
+		let m23 = mat.elements[6];
 
-		/* This is the form of the matrix: first index is column second is row
-		* | x | y | z |
-		--|---|---|---|----|
-		x | 0 | 1 | 2 | 3  |
-		--|---|---|---|----|
-		y | 4 | 5 | 6 | 7  |
-		--|---|---|---|----|
-		z | 8 | 9 | 10| 11 |
-		-------------------
-		*/
+		let m31 = mat.elements[8];
+		let m32 = mat.elements[9];
+		let m33 = mat.elements[10];
 
-		let ssa = 1.0
+		let a=0;
+		let b=0;
+		let c=0;
 
-		let sd = Math.sin(this.sum_delta); 
-		let cd = Math.cos(this.sum_delta);
+		if(1.-Math.abs(m31)>0.0001){
+			b = -Math.asin(m31);
+			//b2 = Math.PI - a1;
 
-		let sa = m33*ssa;
-		let ca = Math.sqrt(1-sa*sa);
+			c = Math.atan2(m32/Math.cos(b) , m33/Math.cos(b));
+			//c2 = Math.atan2(m32/Math.cos(b2) , m33/Math.cos(b2));
 
-		let abc_result = [0,0,0];
-
-		abc_result[0] = Math.atan2(sa,ca) * 180 / Math.PI;
-
-		if(Math.abs(ca)>0.0001){
-			let sb = m31/ca*ssa;
-			let cb = m32/ca*ssa;
-			abc_result[1] = Math.atan2(sb,cb) * 180 / Math.PI;
-
-			let sg = (m13*cd*ssa+m23*sd)/ca;
-			let cg = (sd*m13-m23*cd*ssa)/ca;
-			abc_result[2] = Math.atan2(sg,cg)* 180 / Math.PI;
+			a = Math.atan2(m21/Math.cos(b) , m11/Math.cos(b));
+			//a2 = Math.atan2(m21/Math.cos(b2) , m11/Math.cos(b2));
 		}
 		else{
-			abc_result[2] = 0;
-
-			let sb = -ssa*(m21*cd*sa+m22*sd);
-			let cb = ssa*(-m22*cd*sa+m21*sd);
-			abc_result[1] = Math.atan2(sb,cb) * 180 / Math.PI; 
+			a = 0;
+			if(m31<0){
+				b = Math.PI/2;
+				c = a + Math.atan2(m12,m13);
+			}
+			else{
+				b = -Math.PI/2;
+				c = -a + Math.atan2(-m12,-m13);				
+			}
 		}
-		return abc_result;
+		return [a*180/Math.PI,b*180/Math.PI,c*180/Math.PI];
 	}
 	get_mat_from_abc(abc){
-		let ca = Math.cos(abc[0]/ 180 * Math.PI);
-		let sa = Math.sin(abc[0]/ 180 * Math.PI);
+		let c1 = Math.cos(abc[0]/ 180 * Math.PI);
+		let s1 = Math.sin(abc[0]/ 180 * Math.PI);
 
-		let cb = Math.cos(abc[1]/ 180 * Math.PI);
-		let sb = Math.sin(abc[1]/ 180 * Math.PI);
+		let c2 = Math.cos(abc[1]/ 180 * Math.PI);
+		let s2 = Math.sin(abc[1]/ 180 * Math.PI);
 
-		let cg = Math.cos(abc[2]/ 180 * Math.PI);
-		let sg = Math.sin(abc[2]/ 180 * Math.PI);
-
-		let ssa = 1.0;
-
-		let sd = Math.sin(this.sum_delta); 
-		let cd = Math.cos(this.sum_delta);
+		let c3 = Math.cos(abc[2]/ 180 * Math.PI);
+		let s3 = Math.sin(abc[2]/ 180 * Math.PI);
 
 		let mat =  new THREE.Matrix4();
 
-		mat.set(   
-		 		-sa*sb*(cd*ssa*sg+cg*sd)+cb*(cg*cd-ssa*sg*sd), -cg*(cd*sb+cb*sa*sd)+ssa*sg*(-cb*cd*sa+sb*sd),      ca*(cd*ssa*sg+cg*sd),           0,   
-		         cg*ssa*(cd*sa*sb+cb*sd)+sg*(cb*cd-sa*sb*sd),   -sb*(cd*sg+cg*ssa*sd)-cb*sa*(-cg*cd*ssa+sg*sd),     ca*(-cg*cd*ssa+sg*sd),         0,
-		         ca*ssa*sb,   ca*cb*ssa,                                         ssa*sa,                                                          0,
-		         
-		          0 ,                                                0 ,                        0 ,                                               1
-		       );
-/*
-				[-sa*sb*(cd*ssa*sg+cg*sd)+cb*(cg*cd-ssa*sg*sd),
-				cg*(-cd*sb-cb*sa*sd)+ssa*sg*(-cb*cd*sa+sb*sd),
-				ca*(cd*ssa*sg+cg*sd), self.local_matrix[0,3]],
-				[cg*ssa*(cd*sa*sb+cb*sd)+sg*(cb*cd-sa*sb*sd),
-				-sb*(cd*sg+cg*ssa*sd)-cb*sa*(-cg*cd*ssa+sg*sd),
-				ca*(-cg*cd*ssa+sg*sd), self.local_matrix[1,3]],
-				[ca*ssa*sb,
-				ca*cb*ssa,
-				ssa*sa,self.local_matrix[2,3]],
-				[0,0,0,1]])
-*/
+		mat.set(c2*c1 , s3*s2*c1 - c3*s1 , c3*s2*c1 + s3*s1 , 0,
+                c2*s1 , s3*s2*s1 + c3*c1 , c3*s2*s1 - s3*c1 , 0,
+                -s2 , s3*c2 , c3*c2,0
+                ,0,0,0,1);
+		mat.transpose();
+
 		return mat;	
 	}
 	set_euler(){
 		//this.euler.setFromQuaternion (this.mesh_ball.quaternion,'YXZ') //transforms to 	ZYX
 		this.mesh_ball.updateMatrix ()
 		this.rotate_object_1.updateMatrix ()
-		this.rotate_object_2.updateMatrix ()
-		this.rotate_object_3.updateMatrix ()
-		let abc_result_1 = this.get_abc_from_mat(this.rotate_object_1.matrix.elements);
-		let abc_result_2 = this.get_abc_from_mat(this.rotate_object_2.matrix.elements);
-		let abc_result_3 = this.get_abc_from_mat(this.rotate_object_3.matrix.elements);
+		let abc_result_1 = this.get_abc_from_mat(this.rotate_object_1.matrix);
 
 		this.abc[0] = abc_result_1[0];
-		this.abc[1] = abc_result_2[1];
-		this.abc[2] = abc_result_3[2];
+		this.abc[1] = abc_result_1[1];
+		this.abc[2] = abc_result_1[2];
 	}
 	set_head_ball(){
  	 	this.set_head_controls_positions(this.position);
- 	 	let mat_1 = this.get_mat_from_abc([this.abc[0],0,this.abc[2]]);
- 	 	let mat_2 = this.get_mat_from_abc([this.abc[0],this.abc[1],this.abc[2]]);
- 	 	let mat_3 = this.get_mat_from_abc([0,0,this.abc[2]]);
-		
+ 	 	let mat_1 = this.get_mat_from_abc(this.abc);
   		//this.mesh_ball.setRotationFromMatrix(mat);
   		this.rotate_object_1.setRotationFromMatrix(mat_1);
-  		this.rotate_object_2.setRotationFromMatrix(mat_2);
-  		this.rotate_object_3.setRotationFromMatrix(mat_3);
 	}
 
 
@@ -666,26 +614,11 @@ class Robot{
 	    if(this.control_mode!=3)show = false;
 
 	    this.control_head_rotate_1.showX = show;
-	    this.control_head_rotate_1.showY = false;
-	    this.control_head_rotate_1.showZ = false;
+	    this.control_head_rotate_1.showY = show;
+	    this.control_head_rotate_1.showZ = show;
 	    this.control_head_rotate_1.enabled = show;
 	  }
-	  if(i==8){
-	    if(this.control_mode!=3)show = false;
 
-	    this.control_head_rotate_2.showX = false;
-	    this.control_head_rotate_2.showY = false;
-	    this.control_head_rotate_2.showZ = show;
-	    this.control_head_rotate_2.enabled = show;
-	  }
-	  if(i==9){
-	    if(this.control_mode!=3)show = false;
-
-	    this.control_head_rotate_3.showX = false;
-	    this.control_head_rotate_3.showY = show;
-	    this.control_head_rotate_3.showZ = false;
-	    this.control_head_rotate_3.enabled = show;
-	  }
 	}
 
 
@@ -700,8 +633,7 @@ class Robot{
 	    this.hide_this_control(false,5);
 	    this.hide_this_control(false,6);
 	    this.hide_this_control(false,7);
-	    this.hide_this_control(false,8);
-	    this.hide_this_control(false,9);
+
 	  }
 	
 	  if(mode==1){
@@ -713,8 +645,7 @@ class Robot{
 	    this.hide_this_control(true,5);
 	    this.hide_this_control(false,6);
 	    this.hide_this_control(false,7);
-	    this.hide_this_control(false,8);
-	    this.hide_this_control(false,9);
+
 	  }
 
 	  if(mode==2){
@@ -726,8 +657,7 @@ class Robot{
 	    this.hide_this_control(false,5);
 	    this.hide_this_control(true,6);
 	    this.hide_this_control(false,7);
-	    this.hide_this_control(false,8);
-	    this.hide_this_control(false,9);
+
 
 	  }
 	  	if(mode==3){
@@ -739,8 +669,7 @@ class Robot{
 	    this.hide_this_control(false,5);
 	    this.hide_this_control(false,6);
 	    this.hide_this_control(true,7);
-	    this.hide_this_control(true,8);
-	    this.hide_this_control(true,9);
+
 
 	  }
 	
@@ -825,6 +754,7 @@ class Robot{
 		if( i==3 ) this.joints[3] =  2 * Math.atan2( ctrl.object.quaternion.z , ctrl.object.quaternion.w ) * 180 / Math.PI;
 		if( i==4 ) this.joints[4] =  2 * Math.atan2( ctrl.object.quaternion.z , ctrl.object.quaternion.w ) * 180 / Math.PI;
 		if( i==5 ) this.joints[5] =  2 * Math.atan2( ctrl.object.quaternion.z , ctrl.object.quaternion.w ) * 180 / Math.PI;
+
 		/*
 		var cancel = false;
 
@@ -848,12 +778,18 @@ class Robot{
 
 	set_xyza(pos,abc,ret = null){
 		//inverse here 
-		abc[2] = Math.atan2(pos.y,pos.x)/Math.PI*180
+		//console.log(abc)
+		if(ik_busy)
+			return
+		ik_busy=true;
+		//abc[2] = Math.atan2(pos.y,pos.x)/Math.PI*180
 		var p = this.xyz_to_real(pos);
 		 send_message({
 	        "_server":"knmtc",
 	        "func": "inv","xyzabg":[p.x,p.y,p.z,abc[0],abc[1],abc[2]],"joint_current":this.joints,"all_sol":false
 	        },true, true,function(res,v){
+	        	ik_busy = false;
+
 	        	if(res["result"][0]){
 	        		v[0].set_joints(res["result"][0]);
 	        		if(v[1]){
@@ -870,7 +806,7 @@ class Robot{
 
 	IK(pos,abc,ret){
 		//inverse here 
-		abc[2] = Math.atan2(pos.y,pos.x)/Math.PI*180
+		//abc[2] = Math.atan2(pos.y,pos.x)/Math.PI*180
 		var p = this.xyz_to_real(pos);
 		 send_message({
 	        "_server":"knmtc",

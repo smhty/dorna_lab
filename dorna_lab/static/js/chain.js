@@ -257,7 +257,7 @@ class move_cmd{
 				}
 			}
 			return Object.assign( Object.assign({"cmd":"lmove", "rel":0 , "x":tripleDigit(p.x), "y":tripleDigit(p.y), "z":tripleDigit(p.z), 
-				"a":tripleDigit(this.abc_save[0]), "b":tripleDigit(this.abc_save[1])/*, "c":tripleDigit(this.abc_save[2])*/}
+				"a":tripleDigit(this.abc_save[0]), "b":tripleDigit(this.abc_save[1]), "c":tripleDigit(this.abc_save[2])/*, "c":tripleDigit(this.abc_save[2])*/}
 				,this.prm),cde);
 		}
 		
@@ -357,7 +357,7 @@ class move_cmd{
 				...{
 					"a": outabc[0].toFixed(to_fixed_val),//(cc.joint[1]+cc.joint[2]+cc.joint[3]).toFixed(3),
 					"b": outabc[1].toFixed(to_fixed_val),//cc.joint[4].toFixed(3),
-					"c": cc.joint[5].toFixed(to_fixed_val), //outabc[2].toFixed(to_fixed_val)
+					"c": outabc[2].toFixed(to_fixed_val), //outabc[2].toFixed(to_fixed_val)
 					"d": cc.joint[6].toFixed(to_fixed_val),
 					"e": cc.joint[7].toFixed(to_fixed_val)
 				},	
