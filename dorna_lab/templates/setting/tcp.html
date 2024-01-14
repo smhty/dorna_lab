@@ -1,0 +1,129 @@
+<h2>Robot TCP</h2>
+<p class="text-justify">
+Set the robot TCP here. 
+</p>
+
+<!--emergency form-->
+<table class="table table-hover table-sm pl-2 pr-2 mb-0">
+  <tbody class="table-group-divider">
+      <tr >
+        <td class="border-bottom" colspan="2">
+          Pick a unique name for the TCP
+        </td>
+        <td class="border-bottom" colspan="2">
+          <input class="form-control form-control-sm tcp_name_v" type="text"  placeholder="">
+        </td>
+      </tr>
+      <tr class="table-active">
+        <th scope="col" colspan="2"></th>
+        <th scope="col" colspan="2">Flange position in the base frame [x, y, z, a, b, c]</th>
+      </tr>
+      <tr >
+        <td class="border-top-0 border-bottom" colspan="2" style="">
+          Point 1
+        </td>
+        <td class="border-top-0 border-bottom">
+          <input class="form-control form-control-sm tcp_1_v" type="text" placeholder="">
+        </td>
+        <td class="border-top-0 border-bottom">
+          <button type="button" class="btn btn-light btn-sm btn-block tcp_rec_b" data-key="1">
+          Record
+          </button>              
+        </td>          
+      </tr>
+      <tr >
+        <td class="border-top-0 border-bottom" colspan="2" style="">
+          Point 2
+        </td>
+        <td class="border-top-0 border-bottom">
+          <input class="form-control form-control-sm tcp_2_v" type="text" placeholder="">
+        </td>
+        <td class="border-top-0 border-bottom">
+          <button type="button" class="btn btn-light btn-sm btn-block tcp_rec_2" data-key="2">
+          Record
+          </button>              
+        </td>          
+      </tr>
+      <tr >
+        <td class="border-top-0 border-bottom" colspan="2" style="">
+          Point 3
+        </td>
+        <td class="border-top-0 border-bottom">
+          <input class="form-control form-control-sm tcp_3_v" type="text" placeholder="">
+        </td>
+        <td class="border-top-0 border-bottom">
+          <button type="button" class="btn btn-light btn-sm btn-block tcp_rec_3" data-key="3">
+          Record
+          </button>              
+        </td>          
+      </tr>
+      <tr >
+        <td class="border-top-0 border-bottom" colspan="2" style="">
+          Point 4
+        </td>
+        <td class="border-top-0 border-bottom">
+          <input class="form-control form-control-sm tcp_4_v" type="text" placeholder="">
+        </td>
+        <td class="border-top-0 border-bottom">
+          <button type="button" class="btn btn-light btn-sm btn-block tcp_rec_4" data-key="4">
+          Record
+          </button>              
+        </td>          
+      </tr>
+      <tr >
+        <td class="border-top-0 border-bottom" style="">
+          TCP Z axis is aligned with the base
+        </td>
+        <td class="border-top-0 border-bottom" style="">
+          <div class="input-group input-group-sm">
+            <select class="form-control tcp-z-select-form">
+              <option value="0" selected="">X</option>
+              <option value="1">Y</option>
+              <option value="2">Z</option>
+              <option value="3">-X</option>
+              <option value="4">-Y</option>
+              <option value="5">-Z</option>
+            </select> 
+          </div>
+        </td>
+        <td class="border-top-0 border-bottom">
+          <input class="form-control form-control-sm tcp_4_v" type="text" placeholder="">
+        </td>
+        <td class="border-top-0 border-bottom">
+          <button type="button" class="btn btn-light btn-sm btn-block tcp_rec_4" data-key="4">
+          Record
+          </button>              
+        </td>          
+      </tr>
+      <tr >
+        <td class="border-top-0 border-bottom" style="">
+          TCP X axis is aligned with the base
+        </td>
+        <td class="border-top-0 border-bottom" style="">
+          <div class="input-group input-group-sm">
+            <select class="form-control tcp-x-select-form">
+              <option value="0" selected="">X</option>
+              <option value="1">Y</option>
+              <option value="2">Z</option>
+              <option value="3">-X</option>
+              <option value="4">-Y</option>
+              <option value="5">-Z</option>
+            </select> 
+          </div>
+        </td>
+        <td class="border-top-0 border-bottom">
+          <input class="form-control form-control-sm tcp_4_v" type="text" placeholder="">
+        </td>
+        <td class="border-top-0 border-bottom">
+          <button type="button" class="btn btn-light btn-sm btn-block tcp_rec_4" data-key="4">
+          Record
+          </button>              
+        </td>          
+      </tr>
+  </tbody>
+</table>
+
+<div class="mt-3">
+  <button type="submit" class="btn btn-primary tcp_b_set"><i class="fal fa-check"></i> Set</button>
+</div>
+
