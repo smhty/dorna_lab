@@ -478,18 +478,7 @@ $('.blockly_play_b').click(function(e){
   })
 
   setTimeout(function() { 
-    send_message({
-    "_server":"shell",
-    "prm": ["cd " + path +" && sudo python3 " + name],//["sudo python3 "+path+'/'+name],
-    "dir": path
-  })
-  /*  
-    send_message({
-    "_server":"shell",
-    "prm": ["sudo /home/dorna/Downloads/dorna_venv/bin/python3 "+path+'/'+name],
-    "dir": path
-  })
-  */    
+    send_shell_python(path,name)
   }, 200);
   
 })
@@ -602,3 +591,19 @@ setInterval(function () {call_for_sessions_list()}, 5000);
   send_message({"cmd": "db.db_class().db_call",
       "prm": ["INSERT INTO program VALUES (16,'hello' , 'bye' , 'done' )"]})
       */
+
+
+function send_shell_python(path, cmd){
+  if(os_info.os_info == "nt")
+      send_message({
+        "_server":"shell",
+        "prm": ["cd " + path +" && python "+cmd],
+        "dir": path
+    });
+  if(os_info.os_info == "posix")
+      send_message({
+        "_server":"shell",
+        "prm": ["cd " + path +" && sudo python3 " +cmd],
+        "dir": path
+    }); 
+}

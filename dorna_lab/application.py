@@ -24,7 +24,7 @@ V_LAB = "2.1.0"
 CONFIG = config.config               
 
 # initialize config.log
-with open('config.log') as infile: #importing config.log file
+with open('userData/config.log') as infile: #importing config.log file
     config_data = json.load(infile)
     """
     # make sure all the keys exists
@@ -112,18 +112,15 @@ class WebSocket(tornado.websocket.WebSocketHandler):
                 self.shell_kill(msg["prm"][0])
  
             elif msg["_server"] == "config":
-                loop.add_callback(self.emit_message, json.dumps({"to":"config" ,
-                    "model":config_data["model"],
-                    "n_dof":kin.knmtc.n_dof,
-                    "alpha":kin.knmtc.alpha,
-                    "delta":kin.knmtc.delta,
-                    "a":kin.knmtc.a,
-                    "d":kin.knmtc.d,
-                    "rail_vec":kin.knmtc.rail_vec_r_base,
-                    "rail_limit":kin.knmtc.rail_limit,
-                    "rail_mat": np.array(kin.knmtc.T_rail_r_world).ravel().tolist(),
-                    "tcp_mat":np.array(kin.knmtc.T_tcp_r_flange).ravel().tolist()
-                }))
+                dic = kin.get_info_dic()
+                dic["to"] = "config"
+                loop.add_callback(self.emit_message, json.dumps(dic))
+
+                loop.add_callback(self.emit_message, json.dumps({"to":"os" ,
+                        "application_dir":os.getcwd(),
+                        "tool_dir": os.path.join(os.getcwd(), "tool"),
+                        "os_info":os.name#gives posix for linux , nt for windows
+                        })) #os data
 
                 if("startup" in config_data):
                     loop.add_callback(self.emit_message, json.dumps({"to":"startup" ,
@@ -136,6 +133,8 @@ class WebSocket(tornado.websocket.WebSocketHandler):
                         "emergency_key":config_data["emergency_key"],
                         "emergency_value":config_data["emergency_value"]
                         }))
+                    
+                kin.update_tcp_frame_list(self, loop)
 
             elif msg["_server"] == "update":
                 self.update_process(msg["prm"][0])
@@ -149,7 +148,7 @@ class WebSocket(tornado.websocket.WebSocketHandler):
             elif msg["_server"] == "startup_set":
                 config_data["startup"] = msg["text"]
                 #?json_object = json.dumps(config_data)
-                with open("config.log", "w") as outfile:
+                with open("userData/config.log", "w") as outfile:
                     json.dump(config_data, outfile)
 
             elif msg["_server"] == "startup_get":
@@ -166,7 +165,7 @@ class WebSocket(tornado.websocket.WebSocketHandler):
                 if("value" in msg):
                     config_data["emergency_value"] = msg["value"]
                 #?json_object = json.dumps(config_data)
-                with open("config.log", "w") as outfile:
+                with open("userData/config.log", "w") as outfile:
                     json.dump(config_data, outfile)
 
                 DORNA.robot.set_emergency(enable =config_data["emergency_enable"], key = config_data["emergency_key"],
@@ -187,6 +186,13 @@ class WebSocket(tornado.websocket.WebSocketHandler):
             elif msg["_server"] == "knmtc":
                 self.knmtc(msg)   
 
+            elif msg["_server"] == "select_tcp" or msg["_server"] == "select_frame":
+                if msg["_server"] == "select_tcp":
+                    self.select_tcp(msg)
+                elif msg["_server"] == "select_frame":
+                    self.select_frame(msg)
+                loop.add_callback(self.emit_message, json.dumps(kin.get_info_dic()))
+
             elif msg["_server"] == "code":
                 try:
                     eval(msg["code"])
@@ -204,25 +210,13 @@ class WebSocket(tornado.websocket.WebSocketHandler):
                     kin.knmtc.rail_vec_r_base[1]  = prms["rail_vec"][1]
                     kin.knmtc.rail_vec_r_base[2]  = prms["rail_vec"][2]
                 if("rail_mat" in prms):  
-                    kin.knmtc.T_rail_r_world = np.array(prms["rail_mat"]).reshape((4, 4))
+                    kin.knmtc.T_rail_r_world = np.array(prms["rail_mat"]).reshape((4, 4)) #depreceated
                 if("tcp_mat" in prms):  
-                    kin.knmtc.T_tcp_r_flange = np.array(prms["tcp_mat"]).reshape((4, 4))
+                    kin.knmtc.T_tcp_r_flange = np.array(prms["tcp_mat"]).reshape((4, 4)) #depreceated
                 if("rail_on" in prms):  
                     kin.knmtc.rail_on = prms["rail_on"]
 
-                loop.add_callback(self.emit_message, json.dumps({"to":"knmtc_params" ,
-                    "model":config_data["model"],
-                    "n_dof":kin.knmtc.n_dof,
-                    "alpha":kin.knmtc.alpha,
-                    "delta":kin.knmtc.delta,
-                    "a":kin.knmtc.a,
-                    "d":kin.knmtc.d,
-                    "rail_vec":kin.knmtc.rail_vec_r_base,
-                    "rail_limit":kin.knmtc.rail_limit,
-                    "rail_mat": np.array(kin.knmtc.T_rail_r_world).ravel().tolist(),
-                    "tcp_mat":np.array(kin.knmtc.T_tcp_r_flange).ravel().tolist(),
-                    "rail_on":kin.knmtc.rail_on
-                }))
+                loop.add_callback(self.emit_message, json.dumps(kin.get_info_dic()))
 
 
         else:
@@ -312,6 +306,17 @@ class WebSocket(tornado.websocket.WebSocketHandler):
         except Exception as ex:
             DORNA.robot.log("error8: "+ str(ex))
             #print("error8: "+ str(ex))
+
+    def select_frame(self, msg):
+        try:
+            kin.select_frame( msg)  
+        except Exception as ex:   
+            pass   
+    def select_tcp(self, msg):
+        try:
+            kin.select_tcp( msg)
+        except Exception as ex:
+            pass
 
     def emit_message(self,msg):
         try:

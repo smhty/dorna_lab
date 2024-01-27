@@ -634,8 +634,8 @@ function create_casual_function_blocks(name, dbutton = false, dbutton_type = nul
             let comp_pos = dbutton_type;
             let i=0;
             let delete_list = [];
-            for(i=0;i<5+ND_count ;i++){
-              if(i<5||ND[i]){
+            for(i=0;i<NJ+ND_count ;i++){
+              if(i<NJ||ND[i]){
                 let name_joint = "j" + i;
                 let name_xyz = xyz_names[i];
                 let name_f = "";

@@ -15,7 +15,7 @@ function tripleDigit_vector(v){
 	return 1;
 }
 function set_5(a,b){
-	for(i=0;i<6;i++){
+	for(i=0;i<NJ;i++){
 		a[i]=b[i];
 	}
 }
@@ -146,11 +146,11 @@ class move_cmd{
 			this.abc_save[2] = abc[2];
 
 			let k=0;
-			for(k=0;k<5+ND_count;k++)if(k<5||ND[k]){this.joint_save[k] = this.joint[k];}
+			for(k=0;k<NJ+ND_count;k++)if(k<NJ||ND[k]){this.joint_save[k] = this.joint[k];}
 			this.position_save_needs_update = false;
 		}
 		let i=0;
-		if(this.move_type==1)for(i=0;i<5;i++)this.joint[i] = range(this.joint[i]);
+		if(this.move_type==1)for(i=0;i<NJ;i++)this.joint[i] = range(this.joint[i]);
 	}
 
 
@@ -240,8 +240,8 @@ class move_cmd{
 		if(this.move_type==0){
 			let i=0;
 			let js = {};
-			for(i=0;i < 5+ND_count ;i++){
-				if(i<5||ND[i]){
+			for(i=0;i < NJ+ND_count ;i++){
+				if(i<NJ||ND[i]){
 					js["j"+i]  = tripleDigit(this.joint[i]/*_save[i]*/);//saving feature turn ooff
 				}
 			}
@@ -251,8 +251,8 @@ class move_cmd{
 			let p = this.parent_chain.robot.xyz_to_real(this.position_save);
 			let i=0;
 			let cde = {};
-			for(i=5;i<5+ND_count;i++){
-				if(i<5||ND[i]){
+			for(i=NJ;i<NJ+ND_count;i++){
+				if(i<NJ||ND[i]){
 					cde[xyz_names[i]] = tripleDigit(this.joint[i]);//aslo hear
 				}
 			}
@@ -304,12 +304,12 @@ class move_cmd{
 		}
 	
 		let i = 0;
-		for (i=0;i<5+ND_count;i++){
-			if(i<5||ND[i]){
+		for (i=0;i<NJ+ND_count;i++){
+			if(i<NJ||ND[i]){
 				if(!(typeof cmd["j" + i] === 'undefined'))
 					this.joint[i] = cmd["j" + i ];
 
-				if(i>4)
+				if(i>=NJ)
 					if(!(typeof cmd[xyz_names[i]] === 'undefined'))
 						this.joint[i] = cmd[xyz_names[i] ];
 			}

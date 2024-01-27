@@ -60,6 +60,13 @@ function on_message(event){
         case "knmtc_params":
           config_version = msg;
           chain.controller.update_kinematic_params();
+          break
+        case "tcp_frame_list":
+          update_tcp_frame_list(msg)
+          break
+        case "os":
+          update_os_info(msg)
+          break
       }   
 
     }else{
@@ -283,4 +290,10 @@ function print_log(msg){
   }
   log_print(JSON.stringify(msg), "🟢")
 
+}
+
+var os_info = {};
+
+function update_os_info(msg){
+  os_info = msg;
 }

@@ -42,6 +42,30 @@
 	  	{% include "jog/setup.html" %}
 	  </div>	  
 	</div>
+
+	<div class="dropdown-container">
+		<button type="button" id="frame-tcp-update" class="btn btn-light rounded-0 border-right border-left">
+	      	<i class="fa-solid fa-repeat"></i>
+		</button>
+
+	  <div class="dropdown">
+	    <label for="tcp-list">TCP:</label>
+	    <select id="tcp-list">
+	      <!-- Initial placeholder option -->
+	      <option value="" disabled selected>Select a tcp</option>
+	    </select>
+	  </div>
+
+	  <div class="dropdown">
+	    <label for="frame-list">Frame:</label>
+	    <select id="frame-list">
+	      <!-- Initial placeholder option -->
+	      <option value="" disabled selected>Select a frame</option>
+	    </select>
+	  </div>
+	</div>
+
+
 </div>
 <!--modal-->
 {%include "jog/set_joint.html" %}

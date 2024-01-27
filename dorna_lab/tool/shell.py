@@ -42,7 +42,7 @@ class Shell(object):
             dir= 'none'
 
         asyncio.create_task(db.db_call(socket, server_loop, "INSERT INTO program VALUES (" + str(self.p.pid) + ",'" + date.today().strftime("%B %d,%Y") +
-                         " - " + datetime.now().strftime("%H:%M:%S") + "', '---' , 'running', '"+self.cmd+"' ,'"+dir+"')"))
+                         " - " + datetime.now().strftime("%H:%M:%S") + "', '---' , 'running', '"+self.cmd.replace("\"", "\`")+"' ,'"+dir+"')"))
 
         asyncio.create_task(db.db_call(socket, server_loop, "SELECT * FROM program"))
 

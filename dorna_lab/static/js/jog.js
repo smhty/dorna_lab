@@ -50,7 +50,7 @@ $(".set_joint_b").on("click", function(e) {
 	// check for all
 	if($(this).hasClass("all")){
 		$(".set_joint_v" ).each(function( index){
-			if(parseInt($(this).attr("index"))<5||ND[parseInt($(this).attr("index"))])
+			if(parseInt($(this).attr("index"))<NJ||ND[parseInt($(this).attr("index"))])
 				msg[$(this).attr("data-key")] = Number($(this).prop("value"))
 		})
 	}else{
@@ -74,7 +74,7 @@ $( ".go_b" ).on("click", function(e) {
 	// joints
 	$(`.go_v[data-type=${$(this).attr("data-type")}]`).each(function() {
 		let i = axis_names_to_numbers[$(this).attr("data-key")];
-		if(i<5||ND[i])
+		if(i<NJ||ND[i])
 			msg[$(this).attr("data-key")] = Number($(this).prop("value"))
 	});
  
@@ -200,8 +200,8 @@ $(".rec_p_b").on("click", function(e) {
 	
 	let comp_pos = position($(this).attr("data-item"));
 	let i=0;
-	for(i=0;i<5+ND_count ;i++){
-		if(i<5||ND[i]){
+	for(i=0;i<NJ+ND_count ;i++){
+		if(i<NJ||ND[i]){
 			name1 = "j" + i;
 			name2 = xyz_names[i];
 			if(!(typeof comp_pos[name1]==='undefined'))

@@ -383,6 +383,7 @@ class Robot{
 								config_version["rail_mat"][12],config_version["rail_mat"][13],config_version["rail_mat"][14],config_version["rail_mat"][15]);
 		
 		this.kinematic(this.joints);
+		this.set_joints(this.joints)
 	}
 
 	kinematic(js){
@@ -755,19 +756,6 @@ class Robot{
 		if( i==4 ) this.joints[4] =  2 * Math.atan2( ctrl.object.quaternion.z , ctrl.object.quaternion.w ) * 180 / Math.PI;
 		if( i==5 ) this.joints[5] =  2 * Math.atan2( ctrl.object.quaternion.z , ctrl.object.quaternion.w ) * 180 / Math.PI;
 
-		/*
-		var cancel = false;
-
-		if(cancel){
-			this.joints[0] = old_joints[0];
-			this.joints[1] = old_joints[1];
-			this.joints[2] = old_joints[2];
-			this.joints[3] = old_joints[3];
-			this.joints[4] = old_joints[4];
-			this.joints[5] = old_joints[5];
-			this.joints[6] = old_joints[6];
-		}
-		*/
 		this.set_joints(this.joints);
 
 	}
