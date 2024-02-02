@@ -34,8 +34,8 @@ function init_scene(){
 
 
 function init_collada(){
-  let bad_scene = new THREE.Scene();
-  original_robot =  new Robot( renderer , camera , bad_scene , control_camera , 0.35 , false);
+  //let bad_scene = new THREE.Scene();
+  original_robot =  new Robot( renderer , camera , scene , control_camera , 0.35 , false);
 
   chain = new move_chain(scene, camera, renderer,control_camera);
   chain.callback.add(change_ghost_value);

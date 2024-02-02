@@ -30,7 +30,7 @@ $('.emergency-c').on("change", function(e){
 
 //Setting up a frame
 function record_point(input){
-	let joints = chain.robot.joints; //change this
+	let joints = original_robot.joints; //change this for debug/release
 	input.val("["+String(joints)+"]")
 }
 

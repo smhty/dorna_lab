@@ -134,7 +134,7 @@ def tcp_set(knmtc, msg):
 
 
 def save_frame_tcp(name="empty", tcp=False, frame=True, matrix=None, xyzabc=None):
-	knmtc = kinematic_class('dorna_3')
+	knmtc = kinematic_class('dorna_ta')
 	
 	if xyzabc is not None:
 		matrix = knmtc.knmtc.cf_test.xyzabc_to_mat(xyzabc)
@@ -155,7 +155,7 @@ def save_frame_tcp(name="empty", tcp=False, frame=True, matrix=None, xyzabc=None
 if __name__ == "__main__":
 	function = sys.argv[1]
 	msg = json.loads(sys.argv[2])
-	knmtc = kinematic_class('dorna_3')
+	knmtc = kinematic_class('dorna_ta')
 
 	if function == "frame_set":
 		frame_set(knmtc, msg)

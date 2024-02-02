@@ -149,7 +149,7 @@ class Robot{
 
 		for(let i=0;i<7;i++){
 			this.loader[i].load("./static/assets/robot/"+config_version["model"]+"-"+i+".dae" , function ( collada ) {
-				robot.dae[i] = collada.scene; robot.dae[i].scale.set(10,10,10); if(i==6)robot.dae[6].visible = false;if(robot.load_index++>6)robot.load_level2();});
+				robot.dae[i] = collada.scene; robot.dae[i].scale.set(10,10,10); /*if(i==6)robot.dae[6].visible = false;*/if(robot.load_index++>6)robot.load_level2();});
 		}
 		
 		this.loader_axis.load("./static/assets/robot/dorna_2s-6.dae" , function ( collada ) {
