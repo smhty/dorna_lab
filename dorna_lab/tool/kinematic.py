@@ -4,7 +4,6 @@ import json
 import math
 import numpy as np
 import os
-from scipy.optimize import minimize
  
 
 class kinematic_class(object):
