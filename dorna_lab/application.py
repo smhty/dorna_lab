@@ -24,7 +24,7 @@ V_LAB = "2.1.0"
 CONFIG = config.config               
 
 # initialize config.log
-with open('userData/config.log') as infile: #importing config.log file
+with open('user_data/config.log') as infile: #importing config.log file
     config_data = json.load(infile)
     """
     # make sure all the keys exists
@@ -148,7 +148,7 @@ class WebSocket(tornado.websocket.WebSocketHandler):
             elif msg["_server"] == "startup_set":
                 config_data["startup"] = msg["text"]
                 #?json_object = json.dumps(config_data)
-                with open("userData/config.log", "w") as outfile:
+                with open("user_data/config.log", "w") as outfile:
                     json.dump(config_data, outfile)
 
             elif msg["_server"] == "startup_get":
@@ -165,7 +165,7 @@ class WebSocket(tornado.websocket.WebSocketHandler):
                 if("value" in msg):
                     config_data["emergency_value"] = msg["value"]
                 #?json_object = json.dumps(config_data)
-                with open("userData/config.log", "w") as outfile:
+                with open("user_data/config.log", "w") as outfile:
                     json.dump(config_data, outfile)
 
                 DORNA.robot.set_emergency(enable =config_data["emergency_enable"], key = config_data["emergency_key"],
