@@ -25,15 +25,22 @@ class kinematic_class(object):
 
 	
 	async def fw(self, ws, server_loop, cmd_id, joint):
-		rtn = {"to": "?", "result": "?", "broadcast": False, "cmd_id": cmd_id, "error": 0}		
-		rtn["result"] = await asyncio.get_running_loop().run_in_executor(None, self.knmtc.fw, joint)
-		server_loop.add_callback(ws.emit_message, json.dumps(rtn))
+		rtn = {"to": "?", "result": "?", "broadcast": False, "cmd_id": cmd_id, "error": 0}
+		try:		
+			rtn["result"] = await asyncio.get_running_loop().run_in_executor(None, self.knmtc.fw, joint)
+			server_loop.add_callback(ws.emit_message, json.dumps(rtn))
+		except:
+			pass
+
 		return rtn
 
 	async def inv(self, ws, server_loop, cmd_id, xyzabg, joint_current = None, all_sol=False):
-		rtn = {"to": "?", "result": "?", "broadcast": False,"cmd_id": cmd_id, "error": 0}		
-		rtn["result"] = await asyncio.get_running_loop().run_in_executor(None, self.knmtc.inv, xyzabg, joint_current, all_sol)
-		server_loop.add_callback(ws.emit_message, json.dumps(rtn))
+		rtn = {"to": "?", "result": "?", "broadcast": False,"cmd_id": cmd_id, "error": 0}
+		try:		
+			rtn["result"] = await asyncio.get_running_loop().run_in_executor(None, self.knmtc.inv, xyzabg, joint_current, all_sol)
+			server_loop.add_callback(ws.emit_message, json.dumps(rtn))
+		except:
+			pass
 		return rtn
 	
 	def update_tcp_frame_list(self, ws, server_loop):
