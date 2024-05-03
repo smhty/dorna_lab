@@ -1166,20 +1166,21 @@ class Robot{
 	}
 
 	allowed_j(){
-		var info = {};
+		var info = {
+			"nj0": -180,
+			"pj0": 160,
+			"nj1": -75,
+			"pj1": 200,
+			"nj2": -156,
+			"pj2": 156,
+			"nj3": -161,
+			"pj3": 180,
+			"nj4": -180,
+			"pj4": 160,
+			"nj5": -175,
+			"pj5": 175,
+		};
 		let other_limits = 1000;
-		info["nj0"] = -other_limits;
-		info["pj0"] = other_limits;
-		info["nj1"] = -other_limits;
-		info["pj1"] = other_limits;
-		info["nj2"] = -other_limits;
-		info["pj2"] = other_limits;
-		info["nj3"] = -other_limits;
-		info["pj3"] = other_limits;
-		info["nj4"] = -other_limits;
-		info["pj4"] = other_limits;
-		info["nj5"] = -other_limits;
-		info["pj5"] = other_limits;
 /*
 
 		var joint = {"j0":this.joints[0] , "j1":this.joints[1] , "j2":this.joints[2] , "j3":this.joints[3] , "j4":this.joints[4] , "j5":this.joints[5]};
