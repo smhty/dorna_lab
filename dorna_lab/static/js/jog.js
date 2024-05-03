@@ -105,12 +105,18 @@ $(".jog_b").on("mousedown touchstart", function(e) {
 				"rel":0};
 
 	let s = $(this).attr("data-key");
+
+	let sign = 1;
+	if($(this).attr("data-value")<0){
+		sign = -1;
+	}
+
 	if($(this).attr("data-value")>0) s = "p" + s;
 	else s = "n" + s; 
 
 	let info;
 
-
+	/*
 	if($(this).attr("data-cmd")==="lmove"){
 		info = original_robot.allowed_xyza();
 		if(info["na"]<-9000||info["pa"]>9000){
@@ -119,14 +125,15 @@ $(".jog_b").on("mousedown touchstart", function(e) {
 			info["pa"] = 180;
 			info["na"] = -180;
 		}
-	}
+	}*/
 	if($(this).attr("data-cmd")==="jmove"){
 		info = original_robot.allowed_j();
 	}
 
-	let limit = info[s]
+	let limit = 0.0;
 
 	if($(this).attr("data-cmd")==="jmove"){
+		limit = info[s];
 		limit = limit - 2 * Math.sign(info[s]);
 	}
 	if($(this).attr("data-cmd")==="lmove"){
@@ -137,27 +144,15 @@ $(".jog_b").on("mousedown touchstart", function(e) {
 	
 	let l = limit - current_value;//length that is going to be joged
 
-	if($(this).attr("data-cmd")==="lmove"){
-		let d = 0;//5.0;test
-		console.log("l",l,"d",d)
-		if(Math.abs(l)>d)
-			l = l - Math.sign(l)*d;
-	}
 	if($(`.jog_d_c[data-cmd=${msg["cmd"]}]`).prop("checked")){//descrete jog
-			l = Math.sign( l ) *  Math.abs( $(`.jog_d_v[data-cmd=${msg["cmd"]}]`).prop("value") ) ;
+			//l = Math.sign( l ) *  Math.abs( $(`.jog_d_v[data-cmd=${msg["cmd"]}]`).prop("value") ) ;
+		msg["rel"] = 1;
+		msg[$(this).attr("data-key")] = Math.abs( $(`.jog_d_v[data-cmd=${msg["cmd"]}]`).prop("value") ) * sign;
 	}
-	
-	limit = Number((current_value + l).toFixed(to_fixed_val+2));
-	msg[$(this).attr("data-key")] = limit;
-	
-	/*Begin test*/if($(this).attr("data-cmd")==="lmove"){
-		let vv = new THREE.Vector3(0,0,0)
-		vv = original_robot.position;
-		vv[$(this).attr("data-key")]  = limit/1000;
-		console.log("checking: pos:",vv , "abc: ",original_robot.abc)
-		ret = [0,0,0,0,0,0,0]
-		original_robot.IK(vv,original_robot.abc,ret);
-	}/*End test*/
+	else{
+		limit = Number((current_value + l).toFixed(to_fixed_val+2));
+		msg[$(this).attr("data-key")] = limit;
+	}
 
 	// vel, accel, jerk
 	$(`.vaj_s_v[data-value=${$(this).attr("data-type")}]`).each(function() {
