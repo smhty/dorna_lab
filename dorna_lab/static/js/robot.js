@@ -1178,7 +1178,8 @@ class Robot{
 		info["pj3"] = other_limits;
 		info["nj4"] = -other_limits;
 		info["pj4"] = other_limits;
-		
+		info["nj5"] = -other_limits;
+		info["pj5"] = other_limits;
 /*
 
 		var joint = {"j0":this.joints[0] , "j1":this.joints[1] , "j2":this.joints[2] , "j3":this.joints[3] , "j4":this.joints[4] , "j5":this.joints[5]};
