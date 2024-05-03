@@ -1,16 +1,16 @@
 <table style="margin: auto;width: 50% !important; ">
   <tbody>
     <!--scale-->
-    {% for i in [["vel", 250] ,["accel", 5000], ["jerk", 25000]]%}
+    {% for i in [["vel", 200, 50] ,["accel", 2000, 800], ["jerk", 10000, 1000]]%}
     <tr>
       <td colspan="2">
         <div class="d-flex flex-row">
           <div class="align-self-center text-capitalize" style="width: 50px">{{i[0]}}</div>
           <div class="align-self-center flex-grow-1">
-            <input type="range" class="custom-range bind {{i[0]}}_s_s" min="0" max={{i[1]}} value= {{i[1]*0.1}} data-key="{{i[0]}}" data-bind=".{{i[0]}}_s_v" data-value = "joint">
+            <input type="range" class="custom-range bind {{i[0]}}_s_s" min="0" max={{i[1]}} value= {{i[2]}} data-key="{{i[0]}}" data-bind=".{{i[0]}}_s_v" data-value = "joint">
           </div>
           <div class="align-self-center pl-2">
-            <input type="number" class="form-control bind {{i[0]}}_s_v tiny text-center vaj_s_v" step="0.01" min="0" max={{i[1]}} value= {{i[1]*0.1}} data-key="{{i[0]}}" data-bind=".{{i[0]}}_s_s" data-cmd={{cmd["jmove"]}} data-value = "joint"> 
+            <input type="number" class="form-control bind {{i[0]}}_s_v tiny text-center vaj_s_v" step="1" min="0" max={{i[1]}} value= {{i[2]}} data-key="{{i[0]}}" data-bind=".{{i[0]}}_s_s" data-cmd={{cmd["jmove"]}} data-value = "joint"> 
           </div>
         </div>         
       </td>
@@ -20,7 +20,7 @@
     <!--discrete jog-->
     <tr>
       <td>
-        <input type="number" class="form-control jog_d_v small text-center" step="0.001" min="0" max="" value="0" data-cmd={{cmd["jmove"]}}>        
+        <input type="number" class="form-control jog_d_v small text-center" step="0.001" min="0" max="" value="10" data-cmd={{cmd["jmove"]}}>        
       </td>      
       <td>
         <div class="input-group">

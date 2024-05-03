@@ -1,16 +1,16 @@
 <table style="margin: auto;width: 50% !important; ">
   <tbody>
     <!--scale-->
-    {% for i in [["vel", 500] ,["accel", 10000], ["jerk", 50000]]%}
+    {% for i in [["vel", 500, 100] ,["accel", 2000, 800], ["jerk", 10000, 1000]]%}
     <tr>
       <td colspan="2">
         <div class="d-flex flex-row">
           <div class="align-self-center text-capitalize" style="width: 50px">{{i[0]}}</div>
           <div class="align-self-center flex-grow-1">
-            <input type="range" class="custom-range bind {{i[0]}}_s_s" min="0" max={{i[1]}} value= {{i[1]*0.1}} data-key="{{i[0]}}" data-bind=".{{i[0]}}_s_v" data-value = "xyz">
+            <input type="range" class="custom-range bind {{i[0]}}_s_s" min="0" max={{i[1]}} value= {{i[2]}} data-key="{{i[0]}}" data-bind=".{{i[0]}}_s_v" data-value = "xyz">
           </div>
           <div class="align-self-center pl-2">
-            <input type="number" class="form-control bind {{i[0]}}_s_v tiny text-center vaj_s_v" step="0.01" min="0" max={{i[1]}} value= {{i[1]*0.1}} data-key="{{i[0]}}" data-bind=".{{i[0]}}_s_s" data-cmd={{cmd["jmove"]}} data-value = "xyz"> 
+            <input type="number" class="form-control bind {{i[0]}}_s_v tiny text-center vaj_s_v" step="1" min="0" max={{i[1]}} value= {{i[2]}} data-key="{{i[0]}}" data-bind=".{{i[0]}}_s_s" data-cmd={{cmd["jmove"]}} data-value = "xyz"> 
           </div>
         </div>         
       </td>
@@ -20,13 +20,13 @@
     <!--discrete jog-->
     <tr>
       <td>
-        <input type="number" class="form-control jog_d_v small text-center" step="0.001" min="0" max="" value="0" data-cmd={{cmd["lmove"]}}>        
+        <input type="number" class="form-control jog_d_v small text-center" step="0.001" min="0" max="" value="10" data-cmd={{cmd["lmove"]}}>        
       </td>      
       <td>
         <div class="input-group">
             <div class="input-group-text flex-grow-1">
               <div class="custom-control custom-checkbox">
-                <input type="checkbox" class="custom-control-input jog_d_c" id="check_jog_d_c_xyz" data-key="xyz" data-cmd={{cmd["lmove"]}}>
+                <input type="checkbox" class="custom-control-input jog_d_c" id="check_jog_d_c_xyz" data-key="xyz" data-cmd={{cmd["lmove"]}} checked disabled>
                 <label class="custom-control-label" for="check_jog_d_c_xyz">Discrete Jog Mode</label>
               </div>
             </div>
