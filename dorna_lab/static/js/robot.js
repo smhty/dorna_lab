@@ -149,7 +149,7 @@ class Robot{
 
 		for(let i=0;i<7;i++){
 			this.loader[i].load("./static/assets/robot/"+config_version["model"]+"-"+i+".dae" , function ( collada ) {
-				robot.dae[i] = collada.scene; robot.dae[i].scale.set(10,10,10); /*if(i==6)robot.dae[6].visible = false;*/if(robot.load_index++>6)robot.load_level2();});
+				robot.dae[i] = collada.scene; robot.dae[i].scale.set(1000,1000,1000); /*if(i==6)robot.dae[6].visible = false;*/if(robot.load_index++>6)robot.load_level2();});
 		}
 		
 		this.loader_axis.load("./static/assets/robot/dorna_2s-6.dae" , function ( collada ) {
@@ -175,9 +175,9 @@ class Robot{
 		this.axis_helper = new THREE.AxesHelper(1);
 		this.axis_helper.matrixAutoUpdate = false
 		this.axis_helper.renderOrder = 999;
-		this.axis_helper.matrix.set(  0.4,	0,	0,		0,
-								      0,	0.4,	0,	0,
-								      0,	0,		0.4,		0,
+		this.axis_helper.matrix.set(  40,	0,	0,		0,
+								      0,	40,	0,	0,
+								      0,	0,		40,		0,
 								      0,	0,		0,		1);
 
 		this.axis_helper.matrixWorldNeedsUpdate = true;
@@ -216,9 +216,9 @@ class Robot{
 		base_ah.renderOrder = 999;
 		base_ah.onBeforeRender = function( renderer ) { renderer.clearDepth(); };//draw Axis helper on top of other meshes
 		this.a0_g .add( base_ah );
-		base_ah.matrix.set(0.4  , 0.0   , 0     , 0 ,
-		              0     , 0.4  , 0     , 0 ,
-		              0     , 0     , 0.4  , 0 ,
+		base_ah.matrix.set(40  , 0.0   , 0     , 0 ,
+		              0     , 40  , 0     , 0 ,
+		              0     , 0     , 40  , 0 ,
 		              0     , 0     , 0     , 1 );
 
 		base_ah.matrixWorldNeedsUpdate = true;
@@ -327,8 +327,8 @@ class Robot{
 
 	set_axis_z_length(ell){
 		this.axis_helper.matrixAutoUpdate = false
-		this.axis_helper.matrix.set(  0.4,	0,	0,		0,
-								      0,	0.4,	0,	0,
+		this.axis_helper.matrix.set(  40,	0,	0,		0,
+								      0,	40,	0,	0,
 								      0,	0,		ell,		0,
 								      0,	0,		0,		1);
 

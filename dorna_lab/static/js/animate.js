@@ -54,15 +54,15 @@ function graphic_on() {
     /*********************/
     // camera
     camera = new THREE.PerspectiveCamera( 65, $(view_container).width() / $(view_container).height(), 0.1, 2000 );
-    camera.position.set( 7, 7 , 3.5  );
+    camera.position.set( 700, 700 , 350  );
     camera.up.set(0,0,1);
     // Grid
     var grid = new THREE.GridHelper( 10, 10, 0x444444, 0x888888 );
     scene.add( grid );
-    grid.matrixAutoUpdate = false
-    grid.matrix.set(1.0   , 0     , 0     , 0 ,
-                    0     , 0     , 1.0   , 0 ,
-                    0     , 1.0   , 0     , 0 ,
+    grid.matrixAutoUpdate = false;
+    grid.matrix.set(100   , 0     , 0     , 0 ,
+                    0     , 0     , 100   , 0 ,
+                    0     , 100   , 0     , 0 ,
                     0     , 0     , 0     , 1 );
  
     grid.matrixWorldNeedsUpdate = true;
@@ -70,7 +70,7 @@ function graphic_on() {
     
     
     particleLight = new THREE.PointLight( 0x88abba, 0.2 );
-    particleLight.position.set(0,10,0);
+    particleLight.position.set(0,1000,0);
 
     scene.add( particleLight );
 
@@ -100,28 +100,13 @@ function graphic_on() {
     ah.renderOrder = 999;
     ah.onBeforeRender = function( renderer ) { renderer.clearDepth(); };//draw Axis helper on top of other meshes
     scene.add( ah );
-    ah.matrix.set(0.4  , 0.0   , 0     , 0 ,
-                  0     , 0.4  , 0     , 0 ,
-                  0     , 0     , 0.4  , 0 ,
+    ah.matrix.set(40  , 0.0   , 0     , 0 ,
+                  0     , 40  , 0     , 0 ,
+                  0     , 0     , 40  , 0 ,
                   0     , 0     , 0     , 1 );
  
     ah.matrixWorldNeedsUpdate = true;
 
-    /*control sphere
-    let sphere_geometry = new THREE.SphereGeometry( 0.025, 32, 16 ); 
-    let sphere_material = new THREE.MeshStandardMaterial( { color: 0x3289bf } ); 
-    let sphere = new THREE.Mesh( sphere_geometry, sphere_material ); 
-    sphere.position.set(0.5,0,0)
-    scene.add( sphere );
-    control_sphere = new THREE.TransformControls( camera, renderer.domElement );
-    control_sphere.attach( sphere );
-    scene.add(control_sphere);
-
-    control_sphere.addEventListener( 'dragging-changed', function ( event ) {
-        control_camera.enabled = ! event.value;
-      
-    } );
-    */
 
     window.addEventListener( 'resize', onWindowResize );
 }
