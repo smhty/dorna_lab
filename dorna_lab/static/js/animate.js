@@ -53,7 +53,7 @@ function graphic_on() {
 
     /*********************/
     // camera
-    camera = new THREE.PerspectiveCamera( 65, $(view_container).width() / $(view_container).height(), 0.1, 2000 );
+    camera = new THREE.PerspectiveCamera( 65, $(view_container).width() / $(view_container).height(), 0.1, 20000);
     camera.position.set( 700, 700 , 350  );
     camera.up.set(0,0,1);
     // Grid
