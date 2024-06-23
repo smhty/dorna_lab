@@ -461,6 +461,52 @@ class Robot{
 		}
 
 	}
+   
+   xyzabc_to_matrix(xyzabc){
+   	 	const norm = Math.sqrt(xyzabc[3]*xyzabc[3] + xyzabc[4]*xyzabc[4] + xyzabc[5]*xyzabc[5]);
+	    const x = xyzabc[3] / norm;
+	    const y = xyzabc[4] / norm;
+	    const z = xyzabc[5] / norm;
+
+	    if(norm<0.0001){
+	    	return [1,0,0, xyzabc[0],
+				0,1,0, xyzabc[1],
+				0,0,1, xyzabc[2],
+				0 ,0 ,0 , 1];
+	    }
+
+	    // Compute half the angle
+	    const halfAngle = norm / 2 * Math.PI/180.0;
+
+	    // Compute the quaternion components
+	    const qw = Math.cos(halfAngle);
+	    const sinHalfAngle = Math.sin(halfAngle);
+	    const qx = x * sinHalfAngle;
+	    const qy = y * sinHalfAngle;
+	    const qz = z * sinHalfAngle;
+
+		const qy2 = qy*qy
+		const qz2 = qz*qz
+		const qx2 = qx*qx
+		return [1 - 2*qy2 - 2*qz2, 2*qx*qy - 2*qz*qw, 2*qx*qz + 2*qy*qw, xyzabc[0],
+				2*qx*qy + 2*qz*qw, 1 - 2*qx2 - 2*qz2, 2*qy*qz - 2*qx*qw, xyzabc[1],
+				2*qx*qz - 2*qy*qw, 2*qy*qz + 2*qx*qw, 1 - 2*qx2 - 2*qy2, xyzabc[2],
+				0 ,0 ,0 , 1];
+   }
+   
+   tcp_set(){
+   		const tx = $(`.tcp_v[data-key=tx]`).prop("value");
+   		const ty = $(`.tcp_v[data-key=ty]`).prop("value");
+   		const tz = $(`.tcp_v[data-key=tz]`).prop("value");
+   		const ta = $(`.tcp_v[data-key=ta]`).prop("value");
+   		const tb = $(`.tcp_v[data-key=tb]`).prop("value");
+   		const tc = $(`.tcp_v[data-key=tc]`).prop("value");
+
+	   	
+   		config_version["tcp_mat"] = this.xyzabc_to_matrix([tx,ty,tz,ta,tb,tc]);
+		this.update_kinematic_params();
+
+   }
 
 	create_head_control(){
 		let robot = this;

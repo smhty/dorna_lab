@@ -221,6 +221,8 @@ function toollength_r(key, msg) {
 
 function tcp_r(key, msg) {
   $(`.tcp_v[data-key=${key}]`).prop("value", msg[key]);
+  original_robot.tcp_set();
+  chain.robot.tcp_set();
 }
 
 $(".joint_v[data-key=j0]").text("96.152344");
