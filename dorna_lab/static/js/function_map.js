@@ -17,6 +17,11 @@ $(".motion_v").each(function(index) {
   function_map[key] = "motion_r";
 });
 
+$(".tcp_v").each(function(index) {
+  let key = $(this).attr("data-key");
+  function_map[key] = "tcp_r";
+});
+
 
 /*
 $(".encoder_v").each(function(index) {

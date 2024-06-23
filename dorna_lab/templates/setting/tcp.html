@@ -3,7 +3,7 @@
 Set the robot TCP here. 
 </p>
 
-<!--emergency form-->
+<!--emergency form
 <table class="table table-hover table-sm pl-2 pr-2 mb-0">
   <tbody class="table-group-divider">
       <tr >
@@ -127,3 +127,41 @@ Set the robot TCP here.
   <button type="submit" class="btn btn-primary tcp_b_set"><i class="fal fa-check"></i> Set</button>
 </div>
 
+-->
+
+<!--TCP-->
+<details open>
+  <summary class="bg-secondary border-bottom pl-2 pr-2 text-white">TCP respect to flange</summary>
+    <table class="table table-hover table-sm pl-2 pr-2 mb-0">
+      <tbody>
+
+        {% for i in [["x", "mm"] , ["y","mm"] ,["z","mm"] , ["a","deg"] , ["b","deg"] , ["c","deg"]  ] %}
+
+          <tr >
+            <td class="border-top-0 border-bottom" style="width:35%">
+              TCP '{{i[0]}}' value 
+            </td>
+            <td class="border-top-0 border-bottom">
+              <div class="input-group input-group-sm">
+                <div class="input-group-prepend">
+                  <input type="number" class="input-group-text tcp_v tcp_v_{{i[0]}} small text-left" value="0" data-key=t{{i[0]}} disabled>
+                </div>
+                <input class="form-control tcp_n tcp_n_{{i[0]}} small text-left" type="number" value="0" step="0.1" data-key=t{{i[0]}} placeholder= "0" step="0.1" >
+                <small class="pl-1 mt-auto mb-auto">{{i[1]}}</small>
+              </div>                    
+            </td>
+                                 
+          </tr>
+    {% endfor %}  
+
+
+          <td class="border-top-0 border-bottom">
+            <button type="button" class="btn btn-primary btn-sm btn-block set_tcp_b">
+            <i class="fal fa-check"></i>
+            Set
+            </button>              
+          </td> 
+
+      </tbody>
+    </table>  
+</details>

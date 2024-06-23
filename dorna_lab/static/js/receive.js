@@ -69,7 +69,8 @@ function on_message(event){
           break
       }   
 
-    }else{
+    }
+    else{
       for (let key in msg) {
         if(key in function_map) {
           let cmd_key = function_map[key];
@@ -216,6 +217,10 @@ function uid_r(key, msg) {
 function toollength_r(key, msg) {
   $(`.toollength_v[data-key=${key}]`).val(Number.parseFloat(msg[key]).toFixed(to_fixed_val));
   original_robot.tool_head_length_set(Number.parseFloat(msg[key]))
+}
+
+function tcp_r(key, msg) {
+  $(`.tcp_v[data-key=${key}]`).prop("value", msg[key]);
 }
 
 $(".joint_v[data-key=j0]").text("96.152344");

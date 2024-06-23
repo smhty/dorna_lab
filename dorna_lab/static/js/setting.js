@@ -82,7 +82,8 @@ $('.tcp_b_set').on("click",function(e){
 
 				});
 	*/
-	let msg = {		"name":$('.tcp_name_v').val(),
+	let msg = {		
+					"name":$('.tcp_name_v').val(),
 					"point_1":JSON.parse($('.tcp_v[data-key="' + 1 + '"]').val()),
 					"point_2":JSON.parse($('.tcp_v[data-key="' + 2 + '"]').val()),
 					"point_3":JSON.parse($('.tcp_v[data-key="' + 3 + '"]').val()),
@@ -103,6 +104,7 @@ var tcp_dic;
 var frame_dic;
 
 function update_tcp_frame_list(msg){
+	return;
 	tcp_dic = msg["result"]["tcp_list"];
 	frame_dic = msg["result"]["frame_list"];
 

@@ -74,3 +74,13 @@ $(".set_gravity_b").on("click", function(e) {
 
 	send_message(msg)
 });
+
+$(".set_tcp_b").on("click", function(e) {
+	e.preventDefault()
+
+	let msg = {"cmd": "tcp"};
+	for (let value of ["tx", "ty", "tz", "ta", "tb", "tc"]) {
+		msg[value] = Number($(`.tcp_n[data-key=${value}]`).prop("value"));
+	}
+	send_message(msg)
+});
