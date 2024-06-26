@@ -1,7 +1,15 @@
 #!/bin/bash
 
+# Source .bashrc to load environment variables
+source /home/dorna/.bashrc
+
+# Set any additional environment variables if needed
+export PYTHONPATH=$PYTHONPATH:/usr/local/lib
+export PYTHONPATH=$PYTHONPATH:/home/dorna/Downloads/librealsense/build/Release
+
+
 # sleep for 5 seconds
 sleep 5
 
 # run the program
-python3 /home/dorna/Downloads/dorna_lab/dorna_lab/application.py
+/usr/bin/python3  /home/dorna/Downloads/dorna_lab/dorna_lab/application.py
