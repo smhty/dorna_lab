@@ -2,14 +2,6 @@
 # a.out
 /home/dorna/app/a.out &
 
-# Source .bashrc to load environment variables
-source /home/dorna/.bashrc
-
-# Set any additional environment variables if needed
-export PYTHONPATH=$PYTHONPATH:/usr/local/lib
-export PYTHONPATH=$PYTHONPATH:/home/dorna/Downloads/librealsense/build/Release
-
-
 # sleep for 5 seconds
 sleep 5
 
