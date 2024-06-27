@@ -35,7 +35,7 @@ function send_delayed_msgs(){
   let l = delayed_messages.length;
   for(i=0;i<l;i++){
     let msg = delayed_messages[l-1-i];
-    console.log(msg);
+    //console.log(msg);
     send_message(msg[0],msg[1],msg[2],msg[3]);
     //delayed_messages.pop();
   }
