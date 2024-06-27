@@ -1,4 +1,6 @@
 #!/bin/bash
+# a.out
+/home/dorna/app/a.out &
 
 # Source .bashrc to load environment variables
 source /home/dorna/.bashrc
