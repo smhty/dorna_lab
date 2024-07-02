@@ -230,8 +230,11 @@ $(".joint_v[data-key=j1]").text("42.407227");
 $(".joint_v[data-key=j2]").text("-124.255371");
 $(".joint_v[data-key=j3]").text("60.930176");
 
-var position_value = {"j0":-2.35,"j1":103.4,"j2":-69.59,"j3":-23.55,"j4":-551.79,"j5":0,"j6":0,"j7":0,
+var in_j = [-170.436384, 128.478317, -43.090518, 84.182287, 117.696554, 157.045289];
+
+var position_value = {"j0":in_j[0],"j1":in_j[1],"j2":in_j[2],"j3":in_j[3],"j4":in_j[4],"j5":in_j[5],"j6":0,"j7":0,
                       "x":222.95,"y":-9.15,"z":509.66,"a":10.26,"b":-511.79,"c":0,"d":0,"e":0};
+
 
 function motion_r(key, msg) {
   position_value[key] = Number.parseFloat(msg[key]);

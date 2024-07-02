@@ -20,6 +20,11 @@ Useful Robot methodes:
 //d5 = 0.091502
 //d6 = x  ???
 ///
+
+function clamp(x,a,b){
+	return Math.max(Math.min(x,b),a);
+}
+
 var ik_busy = false;
 class Robot{
 
@@ -555,6 +560,7 @@ class Robot{
 
 	}
 	get_abc_from_mat(mat){
+		/*
 		let m11 = mat.elements[0];
 		let m12 = mat.elements[1];
 		let m13 = mat.elements[2];
@@ -593,8 +599,69 @@ class Robot{
 			}
 		}
 		return [a*180/Math.PI,b*180/Math.PI,c*180/Math.PI];
+		*/
+		let m00 = mat.elements[0];
+		let m01 = mat.elements[1];
+		let m02 = mat.elements[2];
+
+		let m10 = mat.elements[4];
+		let m11 = mat.elements[5];
+		let m12 = mat.elements[6];
+
+		let m20 = mat.elements[8];
+		let m21 = mat.elements[9];
+		let m22 = mat.elements[10];
+
+		let trace = m00 + 	m11 +	m22;
+
+		let theta = Math.acos(clamp((trace - 1.) / 2.,-1.,1.) );
+		let st = Math.sin(theta);
+		let ct = Math.cos(theta);
+		
+		theta *= 180/Math.PI;
+
+		let u = [0,0,0]
+
+		if (theta < 0.0000001)
+			return u;
+		
+		if (180 - theta > 0.0001){
+			u[2] = (m10 - m01) / st /2.
+			u[1] = (m02 - m20) / st / 2.
+			u[0] = (m21 - m12) / st / 2.
+		}
+		else{
+			theta = 180;
+			u[0] = Math.sqrt((m00+ 1.) / 2.);
+			u[1] = Math.sqrt((m11+ 1.) / 2.);
+			u[2] = Math.sqrt((m22+ 1.) / 2.);
+
+			let c1 = m10;
+			let c2 = m20;
+
+			if (c1 < 0.){
+				u[1] = -u[1]
+			}
+			
+			if (c2 < 0.){
+				u[2] = -u[2]
+			}
+		}
+
+
+		return [u[0] * theta, u[1] * theta, u[2] * theta];
 	}
 	get_mat_from_abc(abc){
+		let m = this.xyzabc_to_matrix([0,0,0,abc[0],abc[1],abc[2]]);
+		let mat =  new THREE.Matrix4();
+		mat.set(m[0],m[1],m[2],m[3],
+			m[4],m[5],m[6],m[7],
+			m[8],m[9],m[10],m[11]
+                ,0,0,0,1);
+		mat.transpose();
+
+		return mat;	
+		/*
 		let c1 = Math.cos(abc[0]/ 180 * Math.PI);
 		let s1 = Math.sin(abc[0]/ 180 * Math.PI);
 
@@ -613,6 +680,7 @@ class Robot{
 		mat.transpose();
 
 		return mat;	
+		*/
 	}
 	set_euler(){
 		//this.euler.setFromQuaternion (this.mesh_ball.quaternion,'YXZ') //transforms to 	ZYX

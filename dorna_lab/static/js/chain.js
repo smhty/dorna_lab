@@ -55,7 +55,7 @@ class move_cmd{
 		}
 		this.sprite.father = this;
 
-		this.sprite.scale.x = this.sprite.scale.y = this.sprite.scale.z = 0.02; 
+		this.sprite.scale.x = this.sprite.scale.y = this.sprite.scale.z = 20; 
 		this.sprite.name = "sprite";
 		this.parent_chain.scene.add( this.sprite );
 		this.update_sprite_pos();
@@ -598,6 +598,7 @@ class move_chain{
 	}
 
 	set_control_cmd(cmd){
+		clearInterval(this.play_interval);
 		this.controller.callback.empty();
 		if(cmd==null){this.control_cmd=null;this.hide_ghost(); return 0;}
 		//cmd.save();

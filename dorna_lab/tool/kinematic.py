@@ -29,8 +29,8 @@ class kinematic_class(object):
 		try:		
 			rtn["result"] = await asyncio.get_running_loop().run_in_executor(None, self.knmtc.fw, joint)
 			server_loop.add_callback(ws.emit_message, json.dumps(rtn))
-		except:
-			pass
+		except Exception as ex:
+			print('error9 '+ str(ex))
 
 		return rtn
 
