@@ -156,7 +156,7 @@ class move_cmd{
 
 	update_arrow(){
 		if(this.arrow && this.arrow_ready){
-			if(this.curve_save_needs_update)
+			if(this.curve_save_needs_update || true)
 				this.curve.mesh.material = this.parent_chain.line_basic_material;
 			else
 				this.curve.mesh.material = this.parent_chain.line_dash_material;	
@@ -248,7 +248,7 @@ class move_cmd{
 			return Object.assign(Object.assign({"cmd":"jmove", "rel":0},this.prm),js);
 		}
 		if(this.move_type==1){
-			let p = this.parent_chain.robot.xyz_to_real(this.position_save);
+			let p = this.parent_chain.robot.xyz_to_real(this.position);
 			let i=0;
 			let cde = {};
 			for(i=NJ;i<NJ+ND_count;i++){
@@ -257,7 +257,7 @@ class move_cmd{
 				}
 			}
 			return Object.assign( Object.assign({"cmd":"lmove", "rel":0 , "x":tripleDigit(p.x), "y":tripleDigit(p.y), "z":tripleDigit(p.z), 
-				"a":tripleDigit(this.abc_save[0]), "b":tripleDigit(this.abc_save[1]), "c":tripleDigit(this.abc_save[2])/*, "c":tripleDigit(this.abc_save[2])*/}
+				"a":tripleDigit(this.abc[0]), "b":tripleDigit(this.abc[1]), "c":tripleDigit(this.abc[2])/*, "c":tripleDigit(this.abc_save[2])*/}
 				,this.prm),cde);
 		}
 		
@@ -295,11 +295,11 @@ class move_cmd{
 
 			this.position.set(v.x,v.y,v.z);
 			if(this.parent_chain.control_cmd == this){
-				this.parent_chain.controller.set_xyza(this.position,[cmd["a"],cmd["b"],0/*cmd["c"]*/],this.joint);
+				this.parent_chain.controller.set_xyza(this.position,[cmd["a"],cmd["b"],cmd["c"]],this.joint);
 			}
 			else{
 				//set_5(this.joint , this.parent_chain.robot.xyza_to_joints(this.position,[cmd["a"],cmd["b"],0],this.joint));
-				this.parent_chain.robot.IK(this.position,[cmd["a"],cmd["b"],0/*cmd["c"]*/],this.joint);
+				this.parent_chain.robot.IK(this.position,[cmd["a"],cmd["b"],cmd["c"]],this.joint);
 			}
 		}
 	
@@ -673,6 +673,7 @@ class move_chain{
 	}
 
 	add(data){
+		console.log(data);
 		//find out parameters
 		let prms = {};
 
@@ -713,14 +714,30 @@ class move_chain{
 		}
 		
 		if(data["cmd"]=="cmove"){
+			var last = this.list[this.last_id];
+
+			if(last.type=="circle"){last= last.dummies[1];}
+
 			this.last_id++;
 			var n = this.add_circle(this.end);
+
 			if(!(typeof data["x"] === 'undefined')){
-				n.dummies[1].set_cmd({"x":data["x"] , "y":data["y"] , "z":data["z"] , "a":data["a"] , "b":data["b"]});
+				n.dummies[1].set_cmd({"x":data["x"] , "y":data["y"] , "z":data["z"] , "a":data["a"] , "b":data["b"] , "c":data["c"]});
+			}
+			else{
+				n.dummies[1].set_cmd({"j0":last.joint[0] + 20, "j1":last.joint[1] , "j2":last.joint[2] , "j3":last.joint[3],
+					"j4":last.joint[4] , "j5":last.joint[5]
+				});
 			}
 
+
 			if(!(typeof data["mx"] === 'undefined')){
-				n.dummies[0].set_cmd({"x":data["mx"] , "y":data["my"] , "z":data["mz"] , "a":data["a"] , "b":data["b"]});
+				n.dummies[0].set_cmd({"x":data["mx"] , "y":data["my"] , "z":data["mz"] , "a":data["ma"] , "b":data["mb"],"c":data["mc"]});
+			}
+			else{
+				n.dummies[0].set_cmd({"j0":last.joint[0] + 10, "j1":last.joint[1] , "j2":last.joint[2] , "j3":last.joint[3],
+					"j4":last.joint[4] , "j5":last.joint[5]
+				});
 			}
 			n.prm = prms;
 			n.save();
@@ -1054,8 +1071,8 @@ class master_cmd{
 			let p1 = this.parent_chain.robot.xyz_to_real(new THREE.Vector3(this.base.position.x + 0.5,this.base.position.y, this.base.position.z + 0.5));
 			let p2 = this.parent_chain.robot.xyz_to_real(new THREE.Vector3(this.base.position.x + 0.25,this.base.position.y + 0.5, this.base.position.z + 0.25));
 
-			dummy1.set_cmd({"x":p1.x,"y":p1.y,"z":p1.z,"a":0,"b":0});
-			dummy2.set_cmd({"x":p2.x,"y":p2.y,"z":p2.z,"a":0,"b":0});
+			dummy1.set_cmd({"x":p1.x,"y":p1.y,"z":p1.z,"a":0,"b":0,"c":0});
+			dummy2.set_cmd({"x":p2.x,"y":p2.y,"z":p2.z,"a":0,"b":0,"c":0});
 
 
 			this.parent_chain.add_after(this.base,dummy1);
@@ -1207,14 +1224,16 @@ class master_cmd{
 			
 	}
 	read(){
-		let p1 = this.base.parent_chain.robot.xyz_to_real(this.dummies[0].position_save);
-		let p2 = this.base.parent_chain.robot.xyz_to_real(this.dummies[1].position_save);
+		let p1 = this.base.parent_chain.robot.xyz_to_real(this.dummies[0].position);
+		let p2 = this.base.parent_chain.robot.xyz_to_real(this.dummies[1].position);
 
-		let a = this.dummies[1].joint[1] + this.dummies[1].joint[2] + this.dummies[1].joint[3];
-		let b = this.dummies[1].joint[4];
-
+		let a = this.dummies[1].abc[0];//this.dummies[1].joint[1] + this.dummies[1].joint[2] + this.dummies[1].joint[3];
+		let b = this.dummies[1].abc[1];//this.dummies[1].joint[4];
+		let c = this.dummies[1].abc[2];
 		let cmd = {"cmd":"cmove", "rel": 0 , "mx":tripleDigit(p1.x), "my":tripleDigit(p1.y), "mz":tripleDigit(p1.z)
-		, "x":tripleDigit(p2.x), "y":tripleDigit(p2.y), "z":tripleDigit(p2.z) , "a":tripleDigit(a) , "b":tripleDigit(b) };
+		, "x":tripleDigit(p2.x), "y":tripleDigit(p2.y), "z":tripleDigit(p2.z) , "a":tripleDigit(a) , "b":tripleDigit(b) , "c":tripleDigit(c) ,
+		"ma":tripleDigit(this.dummies[0].abc[0]),"mb":tripleDigit(this.dummies[0].abc[1]),"mc":tripleDigit(this.dummies[0].abc[2])
+	};
 
 		return Object.assign(cmd,this.prm);
 
