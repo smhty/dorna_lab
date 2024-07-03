@@ -332,7 +332,7 @@ function path_design_list_element(id,txt){
 		</button>
 		<div class="flex-grow-1"></div>
 
-		<!--action-->
+		<!--action
 		<button type="button" class="btn btn-sm path_design_move_preview_b border-left rounded-0" data-id=`+id+`>
 			<i class="fas fa-fast-forward"></i>
 		</button>
@@ -342,6 +342,9 @@ function path_design_list_element(id,txt){
 		<button type="button" class="btn btn-sm path_design_move_cancel_b border-left rounded-0" data-id=`+id+`>
 			<i class="fas fa-times"></i>
 		</button>
+
+		-->
+
 		<button type="button" class="btn btn-sm path_design_move_delete_b border-left rounded-0" data-id=`+id+`>
 			<i class="far fa-trash-alt"></i>
 		</button>

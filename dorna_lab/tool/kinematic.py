@@ -4,7 +4,8 @@ import json
 import math
 import numpy as np
 import os
- 
+#import traceback
+
 
 class kinematic_class(object):
 	"""docstring for kinematic_class"""
@@ -39,8 +40,10 @@ class kinematic_class(object):
 		try:		
 			rtn["result"] = await asyncio.get_running_loop().run_in_executor(None, self.knmtc.inv, xyzabg, joint_current, all_sol)
 			server_loop.add_callback(ws.emit_message, json.dumps(rtn))
-		except:
-			pass
+		except Exception as e:
+			print(f"An error occurred in IK: {e}")
+			#tb_str = ''.join(traceback.format_tb(e.__traceback__))
+			#print(f"Traceback details:\n{tb_str}")
 		return rtn
 	
 	def update_tcp_frame_list(self, ws, server_loop):

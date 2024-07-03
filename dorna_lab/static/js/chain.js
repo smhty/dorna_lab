@@ -834,10 +834,10 @@ class move_chain{
 
 							new_j = chain.controller.joints;//chain.robot.xyza_to_joints(nx,new_a,new_b);
 							
-							if(!chain.robot.check_interior(nx,new_a)) {
-								clearInterval(chain.play_interval);
-								show_dismiss_alert("danger","out of bound",5000);
-							}
+							//if(!chain.robot.check_interior(nx,new_a)) {
+							//	clearInterval(chain.play_interval);
+								//show_dismiss_alert("danger","out of bound",5000);
+							//}
 						}
 					}
 				}
@@ -857,10 +857,10 @@ class move_chain{
 
 					new_j = chain.robot.xyza_to_joints(nx ,new_a,new_b);
 
-					if(!chain.robot.check_interior(nx,new_a)) {
-								clearInterval(chain.play_interval);
-								show_dismiss_alert("danger","out of bound",5000);
-							}
+					//if(!chain.robot.check_interior(nx,new_a)) {
+					//			clearInterval(chain.play_interval);
+								//show_dismiss_alert("danger","out of bound",5000);
+					//		}
 				}
 
 				if(finish_cmd){
