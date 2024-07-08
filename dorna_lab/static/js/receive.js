@@ -54,6 +54,9 @@ function on_message(event){
         case "startup":
           $('.startup-v').val(msg["startup"]);
           break
+        case "host":
+          $('.host-v').val(msg["host"]);
+          break
         case "emergency":
           emergency_setting(msg)
           break     

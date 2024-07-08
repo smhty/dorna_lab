@@ -12,6 +12,16 @@ $('.startup-cancel-b').on("click",function(e){
 	send_message({"_server":"startup_get"});
 })
 
+$('.host-set-b').on("click",function(e){
+	e.preventDefault();
+	send_message({"_server":"host_set","text":$('.host-v').val()});
+})
+
+$('.host-cancel-b').on("click",function(e){
+	e.preventDefault();
+	send_message({"_server":"host_get"});
+})
+
 
 $('.emergency-b').on("click",function(e){
 	e.preventDefault();

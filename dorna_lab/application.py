@@ -56,10 +56,21 @@ class gui(BaseHandler):
 
 
 class DornaConnection(object):
+
+    
     def __init__(self):
         self.robot = Dorna()
         self.robot.log("connecting")
-        self.robot.connect(CONFIG['robot_server']['host'])
+
+        robot_address = CONFIG['robot_server']['host']
+        if('robot_host_server' in config_data):
+            robot_address = config_data['robot_host_server']
+        else:
+            config_data['robot_host_server'] = robot_address
+            with open("user_data/config.log", "w") as outfile:
+                json.dump(config_data, outfile)
+
+        self.connect_robot(robot_address)
         self.robot.log("connected")
 
         self.robot.register_callback(self.send_message_to_browser)
@@ -69,7 +80,8 @@ class DornaConnection(object):
         
         self.ws_list = []
 
-
+    def connect_robot(self,address):
+        self.robot.connect(address)
     
     def register_ws(self, ws):
         self.ws_list.append(ws)
@@ -92,7 +104,6 @@ class DornaConnection(object):
             ws.emit_message(msg)
 
 DORNA = DornaConnection()
-
 
 class WebSocket(tornado.websocket.WebSocketHandler):
     async def open(self):
@@ -127,6 +138,11 @@ class WebSocket(tornado.websocket.WebSocketHandler):
                         "startup":config_data["startup"]
                         }))
 
+                if("robot_host_server" in config_data):
+                    loop.add_callback(self.emit_message, json.dumps({"to":"host" ,
+                        "host":config_data["robot_host_server"]
+                        }))
+
                 if("emergency_enable" in config_data):
                     loop.add_callback(self.emit_message, json.dumps({"to":"emergency" ,
                         "emergency_enable":config_data["emergency_enable"],
@@ -155,6 +171,18 @@ class WebSocket(tornado.websocket.WebSocketHandler):
                 if("startup" in config_data):
                     loop.add_callback(self.emit_message, json.dumps({"to":"startup" ,
                         "startup":config_data["startup"]
+                        }))
+
+            elif msg["_server"] == "host_set":
+                DORNA.connect_robot(msg["text"])
+                config_data["robot_host_server"] = msg["text"]
+                with open("user_data/config.log", "w") as outfile:
+                    json.dump(config_data, outfile)
+
+            elif msg["_server"] == "host_get":
+                if("startup" in config_data):
+                    loop.add_callback(self.emit_message, json.dumps({"to":"host" ,
+                        "host":config_data["robot_host_server"]
                         }))
 
             elif msg["_server"] == "emergency":
