@@ -982,7 +982,7 @@ create_num_input_blocks('num_duty',0,100,0.001);
 create_number_drpdown_blocks("5",5);
 create_number_drpdown_blocks("8",8);
 create_number_drpdown_blocks("16",16);
-create_number_drpdown_blocks("5_8",8,5);
+create_number_drpdown_blocks("6_8",8,6);
 create_number_drpdown_blocks("5_7",7,5);
 create_number_drpdown_blocks("0_1",2,0);
 
@@ -1040,8 +1040,7 @@ create_casual_function_blocks('set_motor');
 
 create_casual_function_blocks('get_axis');
 create_casual_function_blocks('set_axis');
-create_casual_function_blocks('get_axis_ratio');
-create_casual_function_blocks('set_axis_ratio');
+
 create_casual_function_blocks('get_pid');
 create_casual_function_blocks('set_pid');
 
