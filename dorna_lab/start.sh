@@ -1,6 +1,4 @@
 #!/bin/bash
-# a.out
-/home/dorna/app/a.out &
 
 # sleep for 5 seconds
 sleep 5
