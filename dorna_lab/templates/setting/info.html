@@ -8,6 +8,21 @@
       <tbody>
           <tr>
             <td class="border-top-0 border-bottom">
+              Robot System IP
+            </td>            
+            <td class="border-top-0 border-bottom"">
+              <input class="host-v" rows="1", placeholder="localhost"></input>
+            </td>
+            <td class="border-top-0 border-bottom">
+              <button type="submit" class="btn btn-primary btn-sm host-set-b">
+              <i class="fal fa-check"></i>
+              Set
+              </button>
+              <button type="button" class="btn btn-secondary btn-sm host-cancel-b"><i class="fal fa-times"></i> Cancel</button>
+            </td>
+          </tr> 
+          <tr>
+            <td class="border-top-0 border-bottom">
               Device ID
             </td>            
             <td class="uid_v border-top-0 border-bottom" data-key="{{cmd["uid"]}}" colspan="2"></td>
@@ -88,24 +103,12 @@
         <!--no internet-->
         <div class="internet mb-3"  style="display: none;">
           <h5 class="card-title">No Internet Access on the Controller</h5>          
-          <p class="card-text">For more information check <a class="alert-link" href="https://doc.dorna.ai/docs/guides/update-robot/" target="_blank">here</a>.
+          <p class="card-text">For more information check <a class="alert-link" href="https://github.com/dorna-robotics/upgrade/" target="_blank">here</a>.
           </p>
         </div>                          
         <button type="button" class="update_b_check btn btn-primary">Check for Updates...</button>
       </div>
     </div> 
-
-
-<div class="mb-3">
-    <label>Robot host address</label>
-    <input class="host-v" rows="1"></input>
-  </div>
-  <div class="mb-3">
-    <button type="submit" class="btn btn-primary host-set-b"><i class="fal fa-check"></i> Set and Reconnect</button>
-    <button type="button" class="btn btn-secondary host-cancel-b"><i class="fal fa-times"></i> Cancel</button>
-  </div>
-
-
 </details>
 
 <!--power

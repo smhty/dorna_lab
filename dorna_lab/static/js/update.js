@@ -21,7 +21,6 @@ function update_print(data) {
 }
 
 function update_check(data) {
-	console.log(data)
 	let outdate = false
 	for (let key of Object.keys(data)) {
 		// make sure the current is visible
