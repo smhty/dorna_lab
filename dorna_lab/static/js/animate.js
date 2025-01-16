@@ -18,6 +18,7 @@ var camera, scene, renderer, control_camera, ah ;
 var particleLight;
 var anime_id;
 var chain;
+var  env_transformControls; 
 
 /**div**/
 container = document.createElement( 'div' );
@@ -68,14 +69,12 @@ function graphic_on() {
     grid.matrixWorldNeedsUpdate = true;
 
     
-    
-    particleLight = new THREE.PointLight( 0x88abba, 0.2 );
-    particleLight.position.set(0,1000,0);
+    const hlight = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
+    hlight.position.set(-0.2,0.1,1);
+    scene.add( hlight );
 
-    scene.add( particleLight );
-
-    var light = new THREE.AmbientLight( 0xb8b7ae ); // soft white light
-     scene.add(light)
+    //var light = new THREE.AmbientLight( 0xb8b7ae ); // soft white light
+     //scene.add(light)
 
 
     renderer = new THREE.WebGLRenderer( { antialias : true } );
@@ -107,7 +106,14 @@ function graphic_on() {
  
     ah.matrixWorldNeedsUpdate = true;
 
+    //env transformation control
+    env_transformControls = new THREE.TransformControls(camera, renderer.domElement);
+    scene.add(env_transformControls);
+    env_transformControls.addEventListener( 'dragging-changed', function ( event) {control_camera.enabled = ! event.value;});
 
+
+
+    //window resize
     window.addEventListener( 'resize', onWindowResize );
 }
 
