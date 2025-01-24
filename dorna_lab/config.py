@@ -1,12 +1,13 @@
 config = {
 	"folder": {
-		"path_home": "/home/dorna/Projects",
-		"path_example": "/home/dorna/Downloads/example",
-		"path_wizard": "/home/dorna/Downloads/wizard",
-		"path_blockly": "/home/dorna/Projects/blockly",
-		"path_python": "/home/dorna/Projects/python",
-		"path_path_design": "/home/dorna/Projects/path_design",
-		"path_script": "/home/dorna/Projects/script"
+		"path_home": "C:\\Users\\jvd\\Documents\\GitHub\\dorna_lab_hub\\dorna_lab\\dorna_lab", #"/home/dorna/Projects",
+		"path_example": "C:\\Users\\jvd\\Documents\\GitHub\\dorna_lab_hub\\dorna_lab\\dorna_lab", #"/home/dorna/Downloads/example",
+		"path_wizard": "C:\\Users\\jvd\\Documents\\GitHub\\dorna_lab_hub\\dorna_lab\\dorna_lab",#"/home/dorna/Downloads/wizard",
+		"path_blockly": "C:\\Users\\jvd\\Documents\\GitHub\\dorna_lab_hub\\dorna_lab\\dorna_lab",#"/home/dorna/Projects/blockly",
+		"path_python": "C:\\Users\\jvd\\Documents\\GitHub\\dorna_lab_hub\\dorna_lab\\dorna_lab",#"/home/dorna/Projects/python",
+		"path_path_design": "C:\\Users\\jvd\\Documents\\GitHub\\dorna_lab_hub\\dorna_lab\\dorna_lab",#"/home/dorna/Projects/path_design",
+		"path_script": "C:\\Users\\jvd\\Documents\\GitHub\\dorna_lab_hub\\dorna_lab\\dorna_lab",#"/home/dorna/Projects/script",
+		"path_env": "C:\\Users\\jvd\\Documents\\GitHub\\dorna_lab_hub\\dorna_lab\\dorna_lab" # /home/dorna/Projects/env"
 	},
 	"server":{
 		"host": "0.0.0.0",

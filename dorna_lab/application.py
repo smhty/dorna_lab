@@ -7,6 +7,10 @@ import numpy as np
 import tornado.ioloop
 import tornado.web
 import tornado.websocket
+
+from tornado.web import  RequestHandler
+
+
 from flask_to_tornado import BaseHandler
 
 from dorna2 import Dorna, __version__ as V_API
@@ -46,6 +50,11 @@ loop = tornado.ioloop.IOLoop.current()
 kin = kinematic.kinematic_class(config_data["model"])
 DATABASE = db.db_class(os.path.join(PATH, 'flaskr.sqlite'))
 PROCESSES = []
+ENV_UPLOAD_DIR = "env_model"  # Define your upload directory
+
+
+CU_SERVER_URL = "http://127.0.0.1:5000"
+
 
 class gui(BaseHandler):
     def get(self, **kwargs):
@@ -56,11 +65,11 @@ class gui(BaseHandler):
 
 
 class DornaConnection(object):
-
     
     def __init__(self):
         self.robot = Dorna()
         self.robot.log("connecting")
+
 
         robot_address = CONFIG['robot_server']['host']
         if('robot_host_server' in config_data):
@@ -79,6 +88,14 @@ class DornaConnection(object):
             self.robot.set_emergency(enable =config_data["emergency_enable"],   key = config_data["emergency_key"],   value = config_data["emergency_value"])
         
         self.ws_list = []
+
+        # Start a session
+        try:
+            self.robot.cu_client.connect(CU_SERVER_URL)
+        except Exception as ex:
+            print("Connection to cuda server was not possible: " + str(ex))
+        
+        #self.cu_client.send_command({"type":"fw","data":{"joints":[0.0,0.0,0.0,0.0,0.0,0.0]}})
 
     def connect_robot(self,address):
         self.robot.connect(address)
@@ -104,6 +121,26 @@ class DornaConnection(object):
             ws.emit_message(msg)
 
 DORNA = DornaConnection()
+
+"""
+class UploadHandler(RequestHandler):
+    def post(self):
+        # Access the uploaded file
+        file_info = self.request.files['file'][0]
+        file_name = file_info['filename']
+        file_body = file_info['body']
+
+        # Save the file to the server
+        if not os.path.exists(ENV_UPLOAD_DIR):
+            os.makedirs(ENV_UPLOAD_DIR)
+
+        file_path = os.path.join(ENV_UPLOAD_DIR, file_name)
+        with open(file_path, 'wb') as f:
+            f.write(file_body)
+
+        self.write({"status": "success", "path": file_path})
+        DORNA.robot.cu_client.upload_file(file_path)
+"""
 
 class WebSocket(tornado.websocket.WebSocketHandler):
     async def open(self):
@@ -213,6 +250,9 @@ class WebSocket(tornado.websocket.WebSocketHandler):
 
             elif msg["_server"] == "knmtc":
                 self.knmtc(msg)   
+
+            elif msg["_server"] == "set_cuda_env":
+                self.set_cuda_env(msg)
 
             elif msg["_server"] == "select_tcp" or msg["_server"] == "select_frame":
                 if msg["_server"] == "select_tcp":
@@ -352,6 +392,15 @@ class WebSocket(tornado.websocket.WebSocketHandler):
         except Exception as ex:
             DORNA.robot.log('error9'+ str(ex))
             #print('error9'+ str(ex))
+
+    def set_cuda_env(self,msg):
+        try:
+            if msg["path"]=="":
+                DORNA.robot.cu_client.clear_env()
+            else:
+                DORNA.robot.cu_client.upload_file(msg["path"])
+        except Exception as ex:
+            DORNA.robot.log('setting cuda env error: '+ str(ex))
 
 
 if __name__ == '__main__':

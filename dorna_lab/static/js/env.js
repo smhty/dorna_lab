@@ -2,33 +2,89 @@
 const env_scene = new THREE.Group();
 
 
-function env_text_parse(){
+function load_obj_to_scene(objUrl) {
+    // Use your Three.js OBJLoader to load the object
+    reset_env_scene()
+    const loader = new THREE.OBJLoader();
+    loader.load(objUrl, (object) => {
+      env_scene.add(object); // Assuming you have a scene variable
+    });
+   
+}
 
-	if (scene.children.includes(env_scene)) {
-		//nothing to do here
-	}
-	else{
-		scene.add(env_scene);
-	}
+function reset_env_scene(){
+    $('#env_file_input').val("");
+    if (scene.children.includes(env_scene)) {
+            //nothing to do here
+        }
+        else{
+            scene.add(env_scene);
+            env_scene.matrixAutoUpdate = false;
+            env_scene.matrix.set(1   , 0     , 0     , 0 ,
+                                0     , 0     , 1   , 0 ,
+                                0     , 1   , 0     , 0 ,
+                                0     , 0     , 0     , 1 );
+            env_scene.matrixWorldNeedsUpdate = true;
+        }
 
-	//clear meshes
-	env_scene.traverse((object) => {
-        if (object.isMesh) {
-            // Dispose of the object's geometry
-            if (object.geometry) {
-                object.geometry.dispose();
-            }
+        //clear meshes
+        env_scene.traverse((object) => {
+            if (object.isMesh) {
+                // Dispose of the object's geometry
+                if (object.geometry) {
+                    object.geometry.dispose();
+                }
 
-            // Dispose of the object's material
-            if (object.material) {
-                    object.material.dispose();
+                // Dispose of the object's material
+                if (object.material) {
+                        object.material.dispose();
+                    }
                 }
             }
+        );
+        while (env_scene.children.length > 0) {
+            env_scene.remove(env_scene.children[0]);
         }
-    );
-    while (env_scene.children.length > 0) {
-        env_scene.remove(env_scene.children[0]);
+}
+
+/*
+document.getElementById('env_upload_b').addEventListener('click', async () => {
+    const fileInput = document.getElementById('env_upload');
+    if (fileInput.files.length === 0) {
+      alert('Please select an OBJ file.');
+      return;
     }
+
+    const file = fileInput.files[0];
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const response = await fetch('/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (response.ok) {
+        const objUrl = URL.createObjectURL(file);
+        load_obj_to_scene(objUrl); // Call your Three.js loader
+        alert('File uploaded successfully!');
+      } else {
+        alert('Failed to upload file.');
+      }
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      alert('Error uploading file.');
+    }
+});
+*/
+
+
+
+
+function env_text_parse(){
+
+	reset_env_scene();
 
     //parsing the text
 	let text = document.getElementById("env-txtarea").value ;
@@ -185,3 +241,36 @@ window.addEventListener('keydown', (event) => {
             break;
     }
 });
+
+
+$('.env_open_b').click(function(e){
+  open_mode();
+  open_dst = "env"
+})
+
+$('.env_clear_b').click(function(e){
+  clear_env();
+  //send scene clearing signal to server.
+
+})
+
+
+function env_set(data, file_name){
+    reset_env_scene()
+    const loader = new THREE.OBJLoader();
+    const object = loader.parse(data);
+    env_scene.add(object);
+    $('#env_file_input').val(file_name);
+     send_message({
+        "_server":"set_cuda_env",
+        "path":last_file_full_path
+    });
+}
+
+function clear_env(){
+    reset_env_scene();
+     send_message({
+        "_server":"set_cuda_env",
+        "path":""
+    });
+}

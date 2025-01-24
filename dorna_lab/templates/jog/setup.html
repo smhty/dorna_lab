@@ -29,7 +29,18 @@
 					</select>	
 				</div>				
 		    </td>
-		</tr>	  
+		</tr>	
+		<tr><!--drop down for env file control -->
+			<td> Scene File: <input readonly id="env_file_input"></input> </td>
+			<td>
+				<button id="btnGroupDrop2" type="button" class="btn btn-light rounded-0" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-h"></i>
+				</button>
+				<div class="dropdown-menu" aria-labelledby="btnGroupDrop2" style="">
+					<button class="dropdown-item env_open_b"><i class="fal fa-file pr-2"></i>Open File...</button>	
+					<button class="dropdown-item env_clear_b "><i class="fal fa-trash-alt pr-2"></i>Clear</button>
+				</div>	
+			</td>
+		</tr>  
 	</tbody>
 </table>
 <!--/set_joint / motor-->	

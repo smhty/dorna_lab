@@ -531,6 +531,8 @@ $('.file_save_b').on("click",function(e) {
 
 });
 
+var last_file_full_path = "";
+
 $('.file_open_b').on("click", function(e) {
 
   if(open_file_name_2 != ""){
@@ -538,11 +540,11 @@ $('.file_open_b').on("click", function(e) {
   }
   if (open_file_name != ""){
     let path = $("#path_b").attr("data-key");
-
+    last_file_full_path = path+"/"+open_file_name;
     send_message({
       "_server":"folder",
       "func": "open_file",
-      "prm": [path+"/"+open_file_name] 
+      "prm": [last_file_full_path] 
     })
  
     $('#file_modal').modal('hide');
@@ -605,6 +607,10 @@ function file_open_result(data){
         }
         change_python_file(data,open_file_name,$("#path_b").attr("data-key"),open_file_name);
         import_python_data(data);
+  }
+
+  if(open_dst=="env"){
+    env_set(data, open_file_name);
   }
 }
 
