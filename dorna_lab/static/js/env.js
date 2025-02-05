@@ -274,3 +274,62 @@ function clear_env(){
         "path":""
     });
 }
+
+
+
+$('.cu_play_b').on("click", function(e){
+    e.preventDefault();
+
+    let input_str = editor.getValue();
+    let stack = [];
+
+    let valid_msg = false;
+
+    let command_list = [];
+
+    for(let i = 0; i < input_str.length; i++) {
+        let ch = input_str.charAt(i);
+
+        // Ignore the line if it starts with '#'
+        if (ch === '#') {
+            while (i < input_str.length && input_str.charAt(i) !== '\n') {
+                i++;
+            }
+            continue;
+        }
+
+        if(ch === '{') {
+            stack.push(i);
+        }
+        else if(ch === '}') {
+            try {
+                let start = stack.pop();
+
+                if(stack.length == 0) {
+                    let startPos = editor.posFromIndex(start);
+
+                    let end = i + 1;
+                    let endPos = editor.posFromIndex(end);
+                    let pair = [startPos, endPos];
+
+                    let msg = input_str.substring(start, end).replace(/[ \n\t\r]+/g,"");
+                    let json_str = JSON.parse(msg);
+
+                    valid_msg = true;
+                    command_list.push(json_str);
+                }
+            } catch(e) {
+                 console.log("Bad input format");
+            }
+        }
+    }
+
+     send_message({
+        "_server":"cuda",
+        "cmd" :"motion",
+        "points":command_list,
+        "init":original_robot.joints
+    });
+
+
+});

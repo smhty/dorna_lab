@@ -254,6 +254,14 @@ class WebSocket(tornado.websocket.WebSocketHandler):
             elif msg["_server"] == "set_cuda_env":
                 self.set_cuda_env(msg)
 
+            elif msg["_server"] == "cuda":
+
+                if msg["cmd"] == "motion":
+                    DORNA.robot.cu_client.cuda_run_motion(msg["points"],msg["init"])
+
+
+
+
             elif msg["_server"] == "select_tcp" or msg["_server"] == "select_frame":
                 if msg["_server"] == "select_tcp":
                     self.select_tcp(msg)
@@ -401,6 +409,7 @@ class WebSocket(tornado.websocket.WebSocketHandler):
                 DORNA.robot.cu_client.upload_file(msg["path"])
         except Exception as ex:
             DORNA.robot.log('setting cuda env error: '+ str(ex))
+
 
 
 if __name__ == '__main__':

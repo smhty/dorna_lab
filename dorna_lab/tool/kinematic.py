@@ -39,6 +39,7 @@ class kinematic_class(object):
 		rtn = {"to": "?", "result": "?", "broadcast": False,"cmd_id": cmd_id, "error": 0}
 		try:		
 			rtn["result"] = await asyncio.get_running_loop().run_in_executor(None, self.knmtc.inv, xyzabg, joint_current, all_sol)
+			rtn["result"] = rtn["result"].tolist()
 			server_loop.add_callback(ws.emit_message, json.dumps(rtn))
 		except Exception as e:
 			print(f"An error occurred in IK: {e}")
