@@ -53,8 +53,6 @@ PROCESSES = []
 ENV_UPLOAD_DIR = "env_model"  # Define your upload directory
 
 
-CU_SERVER_URL = "http://127.0.0.1:5000"
-
 
 class gui(BaseHandler):
     def get(self, **kwargs):
@@ -89,12 +87,7 @@ class DornaConnection(object):
         
         self.ws_list = []
 
-        # Start a session
-        try:
-            self.robot.cu_client.connect(CU_SERVER_URL)
-        except Exception as ex:
-            print("Connection to cuda server was not possible: " + str(ex))
-        
+
         #self.cu_client.send_command({"type":"fw","data":{"joints":[0.0,0.0,0.0,0.0,0.0,0.0]}})
 
     def connect_robot(self,address):
@@ -255,12 +248,13 @@ class WebSocket(tornado.websocket.WebSocketHandler):
                 self.set_cuda_env(msg)
 
             elif msg["_server"] == "cuda":
-
-                if msg["cmd"] == "motion":
-                    DORNA.robot.cu_client.cuda_run_motion(msg["points"],msg["init"])
-
-
-
+                try:
+                    if msg["cmd"] == "motion":
+                        DORNA.robot.cu_client.cuda_run_motion(msg["points"],msg["init"])
+                    if msg["cmd"] == "connect":
+                        DORNA.robot.cu_client.connect(msg["add"])
+                except Exception as ex:
+                    DORNA.robot.log("error running cuda command: "+ str(ex))
 
             elif msg["_server"] == "select_tcp" or msg["_server"] == "select_frame":
                 if msg["_server"] == "select_tcp":

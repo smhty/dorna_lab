@@ -333,3 +333,15 @@ $('.cu_play_b').on("click", function(e){
 
 
 });
+
+
+$('.cu_connect_b').on("click", function(e){
+    e.preventDefault();
+
+    let input_str = $('#cuda_add_input').val();
+     send_message({
+        "_server":"cuda",
+        "cmd" :"connect",
+        "add":input_str
+    });
+});
