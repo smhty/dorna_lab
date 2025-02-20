@@ -327,7 +327,10 @@ class Robot{
 		if(this.being_controlled){	this.set_control_mode(0); this.set_visible(false);}
 		this.set_joints([0,0,0,0,0,0])
 
-		i
+		if(!this.being_controlled){
+			  tcp_setup_init();
+		}
+		
 	}
 
 	set_axis_z_length(ell){

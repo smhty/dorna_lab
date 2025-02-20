@@ -47,6 +47,8 @@ function init_collada(){
 
   f_dsp = setInterval(frame_display, 1000/frame["fps"])
 
+
+
 }
 
 

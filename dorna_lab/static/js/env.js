@@ -345,3 +345,106 @@ $('.cu_connect_b').on("click", function(e){
         "add":input_str
     });
 });
+
+
+//tcp setup here:
+
+var tcp_json_data = {};//"tool":{"pos":[0,0,0], "rot":[0,0,0], "scale":[100,100,100]}}; 
+var  tcp_scene, tcp_transform_control ,  tcp_tool_mesh, tcp_object_mesh;
+
+function tcp_setup_init() {
+    tcp_scene = new THREE.Scene();
+
+    tcp_transform_control = new THREE.TransformControls(camera, renderer.domElement);
+    tcp_transform_control.addEventListener('objectChange', sync_Json_from_scene);
+    tcp_transform_control.addEventListener( 'dragging-changed', function ( event) {control_camera.enabled = ! event.value; });
+    scene.add(tcp_transform_control);
+    tcp_transform_control.setSpace("local")
+    original_robot.a7_g.add(tcp_scene);
+
+    update_tcp_scene();
+}
+
+function tcp_add_item(type) {
+    if (!(type in tcp_json_data)) {
+        tcp_json_data[type] = { pos: [0, 0, 0], rot: [0, 0, 0], scale: [100, 100, 100] };
+        update_tcp_scene();
+    }
+}
+        
+function tcp_delete_item(type) {
+    //tcp_transform_control.detach() ;
+    if (type in tcp_json_data) {
+        delete tcp_json_data[type];
+        update_tcp_scene();
+    }
+}
+
+function update_tcp_scene() {
+    if (tcp_tool_mesh) tcp_scene.remove(tcp_tool_mesh);
+    if (tcp_object_mesh) tcp_scene.remove(tcp_object_mesh);
+    
+    if (tcp_json_data.tool) {
+        tcp_tool_mesh = createCube(tcp_json_data.tool, 0xff0000);
+        tcp_scene.add(tcp_tool_mesh);
+    }
+    if (tcp_json_data.object) {
+        tcp_object_mesh = createCube(tcp_json_data.object, 0x0000ff);
+        tcp_scene.add(tcp_object_mesh);
+    }
+}
+
+function createCube(data, color) {
+    let geometry = new THREE.BoxGeometry(1, 1, 1);
+    let material = new THREE.MeshStandardMaterial({ color });
+    let cube = new THREE.Mesh(geometry, material);
+    cube.position.set(...data.pos);
+    cube.rotation.set(...data.rot.map(r => THREE.MathUtils.degToRad(r)));
+    cube.scale.set(...data.scale);
+    return cube;
+}
+
+function sync_Json_from_scene() {
+    if (tcp_tool_mesh && tcp_json_data.tool) {
+        tcp_json_data.tool.pos = [tcp_tool_mesh.position.x, tcp_tool_mesh.position.y, tcp_tool_mesh.position.z];
+        tcp_json_data.tool.rot = [tcp_tool_mesh.rotation.x, tcp_tool_mesh.rotation.y, tcp_tool_mesh.rotation.z].map(r => THREE.MathUtils.radToDeg(r));
+        tcp_json_data.tool.scale = [tcp_tool_mesh.scale.x, tcp_tool_mesh.scale.y, tcp_tool_mesh.scale.z];
+    }
+    if (tcp_object_mesh && tcp_json_data.object) {
+        tcp_json_data.object.pos = [tcp_object_mesh.position.x, tcp_object_mesh.position.y, tcp_object_mesh.position.z];
+        tcp_json_data.object.rot = [tcp_object_mesh.rotation.x, tcp_object_mesh.rotation.y, tcp_object_mesh.rotation.z].map(r => THREE.MathUtils.radToDeg(r));
+        tcp_json_data.object.scale = [tcp_object_mesh.scale.x, tcp_object_mesh.scale.y, tcp_object_mesh.scale.z];
+    }
+}
+
+function select_tcp_object(type) {
+    if (type === 'tool' && tcp_tool_mesh) {
+        tcp_transform_control.attach(tcp_tool_mesh);
+    } else if (type === 'object' && tcp_object_mesh) {
+        tcp_transform_control.attach(tcp_object_mesh);
+    } else {
+        tcp_transform_control.detach();
+    }
+}
+
+document.getElementById("tcp-tool-item").addEventListener("click", () => select_tcp_object('tool'));
+document.getElementById("tcp-object-item").addEventListener("click", () => select_tcp_object('object'));
+
+
+        
+$('.tcp-transform-mode-select-b').on("click", function(e){
+    e.preventDefault();
+
+    tcp_transform_control.setMode($(this).attr("type"))
+});
+
+
+$('.tcp-data-submit-b').on("click", function(e){
+    e.preventDefault();
+
+    send_message({
+        "_server":"cuda",
+        "cmd":"tcp_set",
+        "data":tcp_json_data
+    });
+});
