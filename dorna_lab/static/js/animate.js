@@ -31,6 +31,7 @@ function init_scene(){
   // scene
   scene = new THREE.Scene();
   scene.background = new THREE.Color( "#cccccc");
+  obj_scene_init();
 }
 
 

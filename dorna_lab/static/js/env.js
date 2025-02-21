@@ -47,38 +47,6 @@ function reset_env_scene(){
         }
 }
 
-/*
-document.getElementById('env_upload_b').addEventListener('click', async () => {
-    const fileInput = document.getElementById('env_upload');
-    if (fileInput.files.length === 0) {
-      alert('Please select an OBJ file.');
-      return;
-    }
-
-    const file = fileInput.files[0];
-    const formData = new FormData();
-    formData.append('file', file);
-
-    try {
-      const response = await fetch('/upload', {
-        method: 'POST',
-        body: formData,
-      });
-
-      if (response.ok) {
-        const objUrl = URL.createObjectURL(file);
-        load_obj_to_scene(objUrl); // Call your Three.js loader
-        alert('File uploaded successfully!');
-      } else {
-        alert('Failed to upload file.');
-      }
-    } catch (error) {
-      console.error('Error uploading file:', error);
-      alert('Error uploading file.');
-    }
-});
-*/
-
 
 
 
@@ -359,7 +327,7 @@ function tcp_setup_init() {
     tcp_transform_control.addEventListener('objectChange', sync_Json_from_scene);
     tcp_transform_control.addEventListener( 'dragging-changed', function ( event) {control_camera.enabled = ! event.value; });
     scene.add(tcp_transform_control);
-    tcp_transform_control.setSpace("local")
+    //tcp_transform_control.setSpace("local")
     original_robot.a7_g.add(tcp_scene);
 
     update_tcp_scene();
@@ -386,11 +354,11 @@ function update_tcp_scene() {
     
     if (tcp_json_data.tool) {
         tcp_tool_mesh = createCube(tcp_json_data.tool, 0xff0000);
-        tcp_scene.add(tcp_tool_mesh);
+        //tcp_scene.add(tcp_tool_mesh);
     }
     if (tcp_json_data.object) {
         tcp_object_mesh = createCube(tcp_json_data.object, 0x0000ff);
-        tcp_scene.add(tcp_object_mesh);
+        //tcp_scene.add(tcp_object_mesh);
     }
 }
 
@@ -447,4 +415,231 @@ $('.tcp-data-submit-b').on("click", function(e){
         "cmd":"tcp_set",
         "data":tcp_json_data
     });
+});
+
+
+///////////////////////////////////////////////////////////////////////
+
+
+function load_event(event, dest)  {
+    const file = event.target.files[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onload = function (e) {
+        const objLoader = new THREE.OBJLoader()
+        const object = objLoader.parse(e.target.result);
+        var id = `model-${Date.now()}`
+        object.user_id = id;
+        object.path = "/"+file.name;
+         // Customize object appearance if needed
+        object.position.set(0, 0, 0);
+        if(dest=="world")
+            env_scene.add(object); // Assume scene is already initialized
+        if(dest=="flange")
+            tcp_scene.add(object);
+
+
+        document.getElementById(dest + '_obj_list').innerHTML += `
+            <div class="list-group-item list-group-item scene_list_b d-flex p-0 rounded-0" data-id="`+id+`" dest = "`+dest+`"  >
+                <button type="button" class="btn btn-sm rounded-0 btn-txt scene_list_item_b" data-id="`+id+`" dest = "`+dest+`"  >
+                    `+file.name+`
+                </button>
+                <div class="flex-grow-1 "></div>
+                <button type="button" class="btn btn-sm scene_item_delete_b border-left rounded-0" data-id="`+id+`" dest = "`+dest+`" >
+                    <i class="far fa-trash-alt"></i>
+                </button>
+            </div>
+        `;
+
+
+        
+    };
+    
+    reader.readAsText(file);
+}
+
+
+
+
+var file_input_element_world;
+var file_input_element_flange;
+
+function obj_scene_init(){
+    file_input_element_world = document.createElement('input');
+    file_input_element_world.type = 'file';
+    file_input_element_world.dest = 'world';
+    file_input_element_world.class = 'input-scene-form';
+    file_input_element_world.accept = '.obj';
+    file_input_element_world.style.display = 'none';
+    document.body.appendChild(file_input_element_world);
+    file_input_element_world.addEventListener('change', (event) => load_event(event, 'world'));
+
+
+    file_input_element_flange = document.createElement('input');
+    file_input_element_flange.type = 'file';
+    file_input_element_flange.dest = 'flange'
+    file_input_element_flange.class = 'input-scene-form';
+    file_input_element_flange.accept = '.obj';
+    file_input_element_flange.style.display = 'none';
+    document.body.appendChild(file_input_element_flange);
+    file_input_element_flange.addEventListener('change', (event) => load_event(event, 'flange'));
+
+
+
+    scene.add(env_scene);
+    env_scene.matrixAutoUpdate = false;
+    env_scene.matrix.set(1   , 0     , 0     , 0 ,
+                        0     , 0     , 1   , 0 ,
+                        0     , 1   , 0     , 0 ,
+                        0     , 0     , 0     , 1 );
+    env_scene.matrixWorldNeedsUpdate = true;
+
+    for(dest of ["world","flange"]){
+         document.getElementById(dest + '_obj_list').addEventListener('click', function (event) {
+            
+            let button = event.target.closest('.scene_item_delete_b'); // Ensure we get the button, even if clicking inside it
+            
+            if (button) {
+                    let id_local =  button.getAttribute('data-id');
+                    let dest_local = button.getAttribute('dest');
+                    console.log(id_local, dest_local);
+
+                    if(dest_local=="world"){
+                        let delete_item;
+                        env_scene.traverse((obj) => {
+                            if (obj.user_id == id_local) {
+                                delete_item = obj;
+                            }
+                        });
+
+                        if (tcp_transform_control.object === delete_item) {
+                            tcp_transform_control.detach(); 
+                        }
+
+                        env_scene.remove(delete_item);
+
+                    }
+
+                    if(dest_local=="flange"){
+                        let delete_item;
+                        tcp_scene.traverse((obj) => {
+                            if (obj.user_id == id_local) {
+                                delete_item = obj;
+                            }
+                        });
+
+                        if (tcp_transform_control.object === delete_item) {
+                            tcp_transform_control.detach(); 
+                        }
+
+                        tcp_scene.remove(delete_item);
+                    }
+
+                    
+                    $('.list-group-item[data-id="' + id_local + '"]').remove();
+            }
+
+
+
+            button = event.target.closest('.scene_list_item_b');
+
+            if(button){
+                let dest_local = button.getAttribute('dest');
+                let id_local =  button.getAttribute('data-id');
+
+                let select_item;
+
+                if(dest_local=="world"){
+                    env_scene.traverse((obj) => {
+                        if (obj.user_id == id_local) {
+                            select_item = obj;
+                        }
+                    });
+                }
+
+                if(dest_local=="flange"){
+                    tcp_scene.traverse((obj) => {
+                        if (obj.user_id == id_local) {
+                            select_item = obj;
+                        }
+                    });
+                }
+                if(select_item)
+                    tcp_transform_control.attach(select_item);
+            }
+
+
+        });
+    }
+
+}
+
+
+$('.add_scene_b').on("click", function(e){
+    e.preventDefault();
+    let dest = $(this).attr("dest");//either "world" or "flange"
+    
+    //Load the file
+    if(dest == "world")
+        file_input_element_world.click();
+    else
+        file_input_element_flange.click();
+});
+
+
+function export_scene() {
+    let flange_count = 0;
+    let world_count = 0;
+
+    let str = ""
+
+    tcp_scene.traverse((obj) => {
+        if(obj.user_id){
+            pos = obj.position.toArray();
+            rot = original_robot.get_abc_from_mat(obj.matrix);
+            item = {
+                "rvec": [-rot[0],-rot[1],-rot[2]], // Rotation as [x, y, z]
+                "tvec": pos, // Translation as [x, y, z]
+                "file_path": obj.path
+            };
+
+            str += "\nflange_geometry"+String(flange_count)+" = " + JSON.stringify(item)
+            flange_count += 1;
+        }
+    });
+
+    env_scene.traverse((obj) => {
+        if(obj.user_id){
+            pos = obj.position.toArray();
+            rot = original_robot.get_abc_from_mat(obj.matrix);
+            item = {
+                "rvec": [rot[0],rot[2],rot[1]], // Rotation as [x, y, z]
+                "tvec": [pos[0],pos[2],pos[1]], // Translation as [x, y, z]
+                "file_path": obj.path
+            };
+
+            str += "\nworld_geometry"+String(world_count)+" = " + JSON.stringify(item)
+            world_count += 1;
+        }
+    });
+    
+    str += "\nscene = robot.motion.gen_scene(world = [";
+    for(i=0;i<world_count;i++){
+        str+="world_geometry"+String(i);
+        if(i<world_count-1)str+=", ";
+    }
+    str += "], flange = [";
+    for(i=0;i<flange_count;i++){
+        str+="flange_geometry"+String(i);
+        if(i<flange_count-1)str+=", ";
+    }
+    str+="])"
+    // Show in textarea
+    document.getElementById("scene-gen-export-output").value = str;
+}
+
+// Attach event listener to the button
+document.getElementById("scene-gen-export-button").addEventListener("click", function () {
+    export_scene(); // Assume `scene` is your Three.js scene
 });
