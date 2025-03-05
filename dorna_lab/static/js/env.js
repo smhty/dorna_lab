@@ -325,7 +325,7 @@ function tcp_setup_init() {
 
     tcp_transform_control = new THREE.TransformControls(camera, renderer.domElement);
     tcp_transform_control.addEventListener('objectChange', sync_Json_from_scene);
-    tcp_transform_control.addEventListener( 'dragging-changed', function ( event) {control_camera.enabled = ! event.value; });
+    tcp_transform_control.addEventListener( 'dragging-changed', function ( event) {control_camera.enabled = ! event.value; update_pose_transform(); });
     scene.add(tcp_transform_control);
     //tcp_transform_control.setSpace("local")
     original_robot.a7_g.add(tcp_scene);
@@ -421,44 +421,6 @@ $('.tcp-data-submit-b').on("click", function(e){
 ///////////////////////////////////////////////////////////////////////
 
 
-function load_event(event, dest)  {
-    const file = event.target.files[0];
-    if (!file) return;
-    
-    const reader = new FileReader();
-    reader.onload = function (e) {
-        const objLoader = new THREE.OBJLoader()
-        const object = objLoader.parse(e.target.result);
-        var id = `model-${Date.now()}`
-        object.user_id = id;
-        object.path = "/"+file.name;
-         // Customize object appearance if needed
-        object.position.set(0, 0, 0);
-        if(dest=="world")
-            env_scene.add(object); // Assume scene is already initialized
-        if(dest=="flange")
-            tcp_scene.add(object);
-
-
-        document.getElementById(dest + '_obj_list').innerHTML += `
-            <div class="list-group-item list-group-item scene_list_b d-flex p-0 rounded-0" data-id="`+id+`" dest = "`+dest+`"  >
-                <button type="button" class="btn btn-sm rounded-0 btn-txt scene_list_item_b" data-id="`+id+`" dest = "`+dest+`"  >
-                    `+file.name+`
-                </button>
-                <div class="flex-grow-1 "></div>
-                <button type="button" class="btn btn-sm scene_item_delete_b border-left rounded-0" data-id="`+id+`" dest = "`+dest+`" >
-                    <i class="far fa-trash-alt"></i>
-                </button>
-            </div>
-        `;
-
-
-        
-    };
-    
-    reader.readAsText(file);
-}
-
 
 
 
@@ -466,6 +428,7 @@ var file_input_element_world;
 var file_input_element_flange;
 
 function obj_scene_init(){
+    /*
     file_input_element_world = document.createElement('input');
     file_input_element_world.type = 'file';
     file_input_element_world.dest = 'world';
@@ -485,7 +448,7 @@ function obj_scene_init(){
     document.body.appendChild(file_input_element_flange);
     file_input_element_flange.addEventListener('change', (event) => load_event(event, 'flange'));
 
-
+*/
 
     scene.add(env_scene);
     env_scene.matrixAutoUpdate = false;
@@ -572,27 +535,73 @@ function obj_scene_init(){
 
         });
     }
-
+    pose_list_init();
 }
 
 
 $('.add_scene_b').on("click", function(e){
     e.preventDefault();
+
     let dest = $(this).attr("dest");//either "world" or "flange"
-    
+    open_dst = "scene_"+dest
+    open_mode();
+    /*
     //Load the file
     if(dest == "world")
         file_input_element_world.click();
     else
         file_input_element_flange.click();
+    */
 });
 
+
+function scene_set(data, file_name, file_path, open_dst){
+
+    const loader = new THREE.OBJLoader();
+    const object = loader.parse(data);
+
+    var id = `model-${Date.now()}`
+    object.user_id = id;
+    object.path = file_path + "/" + file_name;
+     // Customize object appearance if needed
+
+    dest = ""
+
+    object.position.set(0, 0, 0);
+    if(open_dst=="scene_world"){
+        env_scene.add(object); // Assume scene is already initialized
+        dest = "world"
+    }
+    if(open_dst=="scene_flange"){
+        tcp_scene.add(object);
+        dest = "flange"
+    }
+
+
+    document.getElementById(dest + '_obj_list').innerHTML += `
+        <div class="list-group-item list-group-item scene_list_b d-flex p-0 rounded-0" data-id="`+id+`" dest = "`+dest+`"  >
+            <button type="button" class="btn btn-sm rounded-0 btn-txt scene_list_item_b" data-id="`+id+`" dest = "`+dest+`"  >
+                `+file_name+`
+            </button>
+            <div class="flex-grow-1 "></div>
+            <button type="button" class="btn btn-sm scene_item_delete_b border-left rounded-0" data-id="`+id+`" dest = "`+dest+`" >
+                <i class="far fa-trash-alt"></i>
+            </button>
+        </div>
+    `;
+
+
+}
 
 function export_scene() {
     let flange_count = 0;
     let world_count = 0;
 
     let str = ""
+
+    for(let i = 0 ; i<pose_list.length; i++){
+        str+='\npose_'+String(i)+' = [' + String(pose_list[i]['pose']) +']'
+    }
 
     tcp_scene.traverse((obj) => {
         if(obj.user_id){
@@ -643,3 +652,111 @@ function export_scene() {
 document.getElementById("scene-gen-export-button").addEventListener("click", function () {
     export_scene(); // Assume `scene` is your Three.js scene
 });
+
+
+
+
+////pose list
+
+pose_list = []
+
+function add_pose_to_pose_list(){
+    
+    x = pose_list.length * 20;
+    pose = [x,0,0,0,0,0];
+
+    pose_list.push({"pose":pose,"target":"j6"});
+
+    update_pose_list();
+}
+
+var pose_scene = new THREE.Group();
+var pose_material, pose_geometry;
+
+function pose_list_init(){
+    pose_scene.matrixAutoUpdate = false;
+    pose_scene.matrix.set(1   , 0     , 0     , 0 ,
+                        0     , 0     , 1   , 0 ,
+                        0     , 1   , 0     , 0 ,
+                        0     , 0     , 0     , 1 );
+    pose_scene.matrixWorldNeedsUpdate = true;
+
+
+    const loader = new THREE.ColladaLoader();
+    loader.load("./static/assets/misc/arrows.dae", (obj) => {
+        pose_geometry = obj.scene.children[0];
+     });
+
+    scene.add(pose_scene);
+    pose_material = new THREE.MeshStandardMaterial({
+        vertexColors: true,
+        side: THREE.DoubleSide
+    });
+
+
+    document.getElementById('pose_list').addEventListener('click', function (event) {
+        let button = event.target.closest('.pose_item_delete_b'); // Ensure we get the button, even if clicking inside it
+        
+        if (button) {
+            let id = button.getAttribute('data-id');
+            pose_list.splice(id);
+            update_pose_list();
+        }
+
+        button = event.target.closest('.pose_item_b'); // Ensure we get the button, even if clicking inside it]
+        if (button) {
+            let id = button.getAttribute('data-id');
+            tcp_transform_control.attach(pose_scene.children[id]);
+        }
+    });
+}
+
+$('.add_pose_b').on("click", function(e){
+add_pose_to_pose_list();
+});
+
+function update_pose_list(){
+    pose_scene.children.forEach(child => {
+        pose_scene.remove(child);
+    });
+    document.getElementById('pose_list').innerHTML = ``;
+    for (let i = 0 ; i <pose_list.length ; i++){
+        document.getElementById('pose_list').innerHTML += `
+            <div class="list-group-item list-group-item pose_list_item_b d-flex p-0 rounded-0" data-id="`+i+`" >
+                <button type="button" class="btn btn-sm rounded-0 btn-txt pose_item_b" data-id="`+i+`" >
+                    `+i+`- pose
+                </button>
+                <div class="flex-grow-1 "></div>
+                <button type="button" class="btn btn-sm pose_item_delete_b border-left rounded-0" data-id="`+i+`">
+                    <i class="far fa-trash-alt"></i>
+                </button>
+            </div>
+        `;
+
+        let clone = pose_geometry.clone();
+        clone.material = pose_material;
+        clone.clone_id = i;
+
+        pose_scene.add(clone);
+
+
+        var mat = original_robot.xyzabc_to_matrix(pose_list[i]['pose']);
+        let matrix = new THREE.Matrix4();
+        matrix.fromArray(mat);
+        matrix = matrix.transpose();
+        console.log(matrix);
+        clone.applyMatrix4(matrix);
+
+    }
+
+}
+
+function update_pose_transform(){
+    var object = tcp_transform_control.object;
+    if(object.clone_id){
+        let id = object.clone_id;
+
+        let abc = original_robot.get_abc_from_mat(object.matrix);
+        pose_list[id]['pose'] = [0,0,0,abc[0],abc[1],abc[2]];
+    }
+}

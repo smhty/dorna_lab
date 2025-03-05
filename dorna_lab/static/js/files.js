@@ -609,8 +609,8 @@ function file_open_result(data){
         import_python_data(data);
   }
 
-  if(open_dst=="env"){
-    env_set(data, open_file_name);
+  if(open_dst=="scene_world" || open_dst == "scene_flange"){
+    scene_set(data, open_file_name,$("#path_b").attr("data-key"), open_dst);
   }
 }
 
