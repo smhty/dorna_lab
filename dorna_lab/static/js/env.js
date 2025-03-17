@@ -325,7 +325,8 @@ function tcp_setup_init() {
 
     tcp_transform_control = new THREE.TransformControls(camera, renderer.domElement);
     tcp_transform_control.addEventListener('objectChange', sync_Json_from_scene);
-    tcp_transform_control.addEventListener( 'dragging-changed', function ( event) {control_camera.enabled = ! event.value; update_pose_transform(); });
+    tcp_transform_control.addEventListener( 'dragging-changed', function ( event) { set_scene_input_values(); control_camera.enabled = ! event.value; update_pose_transform(); });
+    tcp_transform_control.addEventListener('')
     scene.add(tcp_transform_control);
     //tcp_transform_control.setSpace("local")
     original_robot.a7_g.add(tcp_scene);
@@ -428,27 +429,7 @@ var file_input_element_world;
 var file_input_element_flange;
 
 function obj_scene_init(){
-    /*
-    file_input_element_world = document.createElement('input');
-    file_input_element_world.type = 'file';
-    file_input_element_world.dest = 'world';
-    file_input_element_world.class = 'input-scene-form';
-    file_input_element_world.accept = '.obj';
-    file_input_element_world.style.display = 'none';
-    document.body.appendChild(file_input_element_world);
-    file_input_element_world.addEventListener('change', (event) => load_event(event, 'world'));
 
-
-    file_input_element_flange = document.createElement('input');
-    file_input_element_flange.type = 'file';
-    file_input_element_flange.dest = 'flange'
-    file_input_element_flange.class = 'input-scene-form';
-    file_input_element_flange.accept = '.obj';
-    file_input_element_flange.style.display = 'none';
-    document.body.appendChild(file_input_element_flange);
-    file_input_element_flange.addEventListener('change', (event) => load_event(event, 'flange'));
-
-*/
 
     scene.add(env_scene);
     env_scene.matrixAutoUpdate = false;
@@ -464,9 +445,10 @@ function obj_scene_init(){
             let button = event.target.closest('.scene_item_delete_b'); // Ensure we get the button, even if clicking inside it
             
             if (button) {
+                    tcp_transform_control.detach();
                     let id_local =  button.getAttribute('data-id');
                     let dest_local = button.getAttribute('dest');
-                    console.log(id_local, dest_local);
+
 
                     if(dest_local=="world"){
                         let delete_item;
@@ -600,7 +582,7 @@ function export_scene() {
     let str = ""
 
     for(let i = 0 ; i<pose_list.length; i++){
-        str+='\npose_'+String(i)+' = [' + String(pose_list[i]['pose']) +']'
+        str+='\npose_'+String(i)+' = [' + String([pose_list[i]['pose'][0].toFixed(2),pose_list[i]['pose'][1].toFixed(2),pose_list[i]['pose'][2].toFixed(2)]) +']'
     }
 
     tcp_scene.traverse((obj) => {
@@ -609,7 +591,7 @@ function export_scene() {
             rot = original_robot.get_abc_from_mat(obj.matrix);
             item = {
                 "rvec": [-rot[0],-rot[1],-rot[2]], // Rotation as [x, y, z]
-                "tvec": pos, // Translation as [x, y, z]
+                "tvec": [pos[0],pos[1],pos[2]], // Translation as [x, y, z]
                 "file_path": obj.path
             };
 
@@ -623,8 +605,8 @@ function export_scene() {
             pos = obj.position.toArray();
             rot = original_robot.get_abc_from_mat(obj.matrix);
             item = {
-                "rvec": [rot[0],rot[2],rot[1]], // Rotation as [x, y, z]
-                "tvec": [pos[0],pos[2],pos[1]], // Translation as [x, y, z]
+                "rvec": [rot[0], rot[2], rot[1]], // Rotation as [x, y, z]
+                "tvec": [pos[0], pos[2], pos[1]], // Translation as [x, y, z]
                 "file_path": obj.path
             };
 
@@ -663,7 +645,7 @@ pose_list = []
 function add_pose_to_pose_list(){
     
     x = pose_list.length * 20;
-    pose = [x,0,0,0,0,0];
+    pose = [300,100,x,0,0,0];
 
     pose_list.push({"pose":pose,"target":"j6"});
 
@@ -698,8 +680,9 @@ function pose_list_init(){
         let button = event.target.closest('.pose_item_delete_b'); // Ensure we get the button, even if clicking inside it
         
         if (button) {
+            tcp_transform_control.detach();
             let id = button.getAttribute('data-id');
-            pose_list.splice(id);
+            pose_list.splice(id, 1);
             update_pose_list();
         }
 
@@ -712,13 +695,16 @@ function pose_list_init(){
 }
 
 $('.add_pose_b').on("click", function(e){
-add_pose_to_pose_list();
+    add_pose_to_pose_list();
 });
 
 function update_pose_list(){
-    pose_scene.children.forEach(child => {
-        pose_scene.remove(child);
-    });
+    
+    tcp_transform_control.detach();
+
+    while (pose_scene.children.length > 0) {
+        pose_scene.remove(pose_scene.children[0]);
+    }
     document.getElementById('pose_list').innerHTML = ``;
     for (let i = 0 ; i <pose_list.length ; i++){
         document.getElementById('pose_list').innerHTML += `
@@ -738,25 +724,55 @@ function update_pose_list(){
         clone.clone_id = i;
 
         pose_scene.add(clone);
+        var pose = [pose_list[i]['pose'][0],pose_list[i]['pose'][2],pose_list[i]['pose'][1],
+                    pose_list[i]['pose'][3],pose_list[i]['pose'][5],pose_list[i]['pose'][4]];
 
+        var mat = original_robot.xyzabc_to_matrix(pose);
 
-        var mat = original_robot.xyzabc_to_matrix(pose_list[i]['pose']);
         let matrix = new THREE.Matrix4();
         matrix.fromArray(mat);
         matrix = matrix.transpose();
-        console.log(matrix);
-        clone.applyMatrix4(matrix);
 
+        let position = new THREE.Vector3();
+        let quaternion = new THREE.Quaternion();
+        let scale = new THREE.Vector3();
+
+        matrix.decompose(position, quaternion, scale);
+
+        // Apply to the object
+        clone.position.copy(position);
+        clone.quaternion.copy(quaternion);
+        clone.scale.copy(scale);
+
+        clone.matrixAutoUpdate = true; // Keep auto-update enabled for TransformControls
+        clone.updateMatrix();
+         
     }
 
 }
 
 function update_pose_transform(){
     var object = tcp_transform_control.object;
-    if(object.clone_id){
+
+    if("clone_id" in object){
         let id = object.clone_id;
 
-        let abc = original_robot.get_abc_from_mat(object.matrix);
-        pose_list[id]['pose'] = [0,0,0,abc[0],abc[1],abc[2]];
+        let abc = original_robot.get_abc_from_mat(object.matrix.transpose());
+        pose_list[id]['pose'] = [object.position.x,object.position.z,object.position.y,abc[0],abc[2],abc[1]];
     }
+}
+
+function set_scene_input_values(){
+    let matrix = tcp_transform_control.object.matrix;
+    let abc = original_robot.get_abc_from_mat(matrix.transpose());
+    let s = [tcp_transform_control.object.position.x,tcp_transform_control.object.position.z,tcp_transform_control.object.position.y,
+        abc[0],abc[2],abc[1]];
+
+    $("input.form-control.scene-input[data='x']").val(s[0].toFixed(2));
+    $("input.form-control.scene-input[data='y']").val(s[1].toFixed(2));
+    $("input.form-control.scene-input[data='z']").val(s[2].toFixed(2));
+    $("input.form-control.scene-input[data='a']").val(s[3].toFixed(2));
+    $("input.form-control.scene-input[data='b']").val(s[4].toFixed(2));
+    $("input.form-control.scene-input[data='c']").val(s[5].toFixed(2));
+
 }

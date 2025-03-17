@@ -115,25 +115,7 @@ class DornaConnection(object):
 
 DORNA = DornaConnection()
 
-"""
-class UploadHandler(RequestHandler):
-    def post(self):
-        # Access the uploaded file
-        file_info = self.request.files['file'][0]
-        file_name = file_info['filename']
-        file_body = file_info['body']
 
-        # Save the file to the server
-        if not os.path.exists(ENV_UPLOAD_DIR):
-            os.makedirs(ENV_UPLOAD_DIR)
-
-        file_path = os.path.join(ENV_UPLOAD_DIR, file_name)
-        with open(file_path, 'wb') as f:
-            f.write(file_body)
-
-        self.write({"status": "success", "path": file_path})
-        DORNA.robot.cu_client.upload_file(file_path)
-"""
 
 class WebSocket(tornado.websocket.WebSocketHandler):
     async def open(self):
