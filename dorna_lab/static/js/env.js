@@ -641,6 +641,7 @@ document.getElementById("scene-gen-export-button").addEventListener("click", fun
 ////pose list
 
 pose_list = []
+tcp_list = []
 
 function add_pose_to_pose_list(){
     
@@ -725,7 +726,7 @@ function update_pose_list(){
 
         pose_scene.add(clone);
         var pose = [pose_list[i]['pose'][0],pose_list[i]['pose'][2],pose_list[i]['pose'][1],
-                    pose_list[i]['pose'][3],pose_list[i]['pose'][5],pose_list[i]['pose'][4]];
+                    -pose_list[i]['pose'][3],-pose_list[i]['pose'][5],-pose_list[i]['pose'][4]];
 
         var mat = original_robot.xyzabc_to_matrix(pose);
 
