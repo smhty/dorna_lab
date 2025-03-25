@@ -319,14 +319,14 @@ $('.cu_connect_b').on("click", function(e){
 
 var tcp_json_data = {};//"tool":{"pos":[0,0,0], "rot":[0,0,0], "scale":[100,100,100]}}; 
 var  tcp_scene, tcp_transform_control ,  tcp_tool_mesh, tcp_object_mesh;
-
+var tcp_dragging = false;
 function tcp_setup_init() {
     tcp_scene = new THREE.Scene();
 
     tcp_transform_control = new THREE.TransformControls(camera, renderer.domElement);
-    tcp_transform_control.addEventListener('objectChange', sync_Json_from_scene);
-    tcp_transform_control.addEventListener( 'dragging-changed', function ( event) { set_scene_input_values(); control_camera.enabled = ! event.value; update_pose_transform(); });
-    tcp_transform_control.addEventListener('')
+    tcp_transform_control.addEventListener('objectChange', function(event){ sync_Json_from_scene(event); });
+    tcp_transform_control.addEventListener( 'dragging-changed', function ( event) { set_scene_input_values(); control_camera.enabled = ! event.value; tcp_dragging = event.value; update_pose_transform(); });
+
     scene.add(tcp_transform_control);
     //tcp_transform_control.setSpace("local")
     original_robot.a7_g.add(tcp_scene);
@@ -388,11 +388,11 @@ function sync_Json_from_scene() {
 
 function select_tcp_object(type) {
     if (type === 'tool' && tcp_tool_mesh) {
-        tcp_transform_control.attach(tcp_tool_mesh);
+        attach_tcp_control(tcp_tool_mesh);
     } else if (type === 'object' && tcp_object_mesh) {
-        tcp_transform_control.attach(tcp_object_mesh);
+        attach_tcp_control(tcp_object_mesh);
     } else {
-        tcp_transform_control.detach();
+        attach_tcp_control();
     }
 }
 
@@ -445,7 +445,7 @@ function obj_scene_init(){
             let button = event.target.closest('.scene_item_delete_b'); // Ensure we get the button, even if clicking inside it
             
             if (button) {
-                    tcp_transform_control.detach();
+                    attach_tcp_control();
                     let id_local =  button.getAttribute('data-id');
                     let dest_local = button.getAttribute('dest');
 
@@ -459,7 +459,7 @@ function obj_scene_init(){
                         });
 
                         if (tcp_transform_control.object === delete_item) {
-                            tcp_transform_control.detach(); 
+                            attach_tcp_control(); 
                         }
 
                         env_scene.remove(delete_item);
@@ -475,7 +475,7 @@ function obj_scene_init(){
                         });
 
                         if (tcp_transform_control.object === delete_item) {
-                            tcp_transform_control.detach(); 
+                            attach_tcp_control(); 
                         }
 
                         tcp_scene.remove(delete_item);
@@ -511,7 +511,7 @@ function obj_scene_init(){
                     });
                 }
                 if(select_item)
-                    tcp_transform_control.attach(select_item);
+                    attach_tcp_control(select_item);
             }
 
 
@@ -582,8 +582,12 @@ function export_scene() {
     let str = ""
 
     for(let i = 0 ; i<pose_list.length; i++){
-        str+='\npose_'+String(i)+' = [' + String([pose_list[i]['pose'][0].toFixed(2),pose_list[i]['pose'][1].toFixed(2),pose_list[i]['pose'][2].toFixed(2)]) +']'
+        str+='\npose_'+String(i)+' = [' + String([pose_list[i]['pose'][0].toFixed(2),pose_list[i]['pose'][1].toFixed(2),pose_list[i]['pose'][2].toFixed(2),pose_list[i]['pose'][3].toFixed(2),pose_list[i]['pose'][4].toFixed(2),pose_list[i]['pose'][5].toFixed(2)]) +']'
     }
+    for(let i = 0 ; i<tcp_list.length; i++){
+        str+='\ntcp_'+String(i)+' = [' + String([tcp_list[i]['pose'][0].toFixed(2),tcp_list[i]['pose'][1].toFixed(2),tcp_list[i]['pose'][2].toFixed(2),tcp_list[i]['pose'][3].toFixed(2),tcp_list[i]['pose'][4].toFixed(2),tcp_list[i]['pose'][5].toFixed(2)]) +']'
+    }
+
 
     tcp_scene.traverse((obj) => {
         if(obj.user_id){
@@ -653,8 +657,20 @@ function add_pose_to_pose_list(){
     update_pose_list();
 }
 
+function add_pose_to_tcp_list(){
+    
+    x = tcp_list.length * 20;
+    pose = [0,0,x,0,0,0];
+
+    tcp_list.push({"pose":pose});
+
+    update_tcp_list();
+}
+
+
 var pose_scene = new THREE.Group();
-var pose_material, pose_geometry;
+var pose_scene_tcp = new THREE.Group();
+var pose_material, pose_geometry, tcp_geometry;
 
 function pose_list_init(){
     pose_scene.matrixAutoUpdate = false;
@@ -669,8 +685,14 @@ function pose_list_init(){
     loader.load("./static/assets/misc/arrows.dae", (obj) => {
         pose_geometry = obj.scene.children[0];
      });
+    const loader_tcp = new THREE.ColladaLoader();
+    loader_tcp.load("./static/assets/misc/tcp-arrows.dae", (obj) => {
+        tcp_geometry = obj.scene.children[0];
+     });
 
     scene.add(pose_scene);
+    original_robot.a7_g.add(pose_scene_tcp);
+
     pose_material = new THREE.MeshStandardMaterial({
         vertexColors: true,
         side: THREE.DoubleSide
@@ -681,7 +703,7 @@ function pose_list_init(){
         let button = event.target.closest('.pose_item_delete_b'); // Ensure we get the button, even if clicking inside it
         
         if (button) {
-            tcp_transform_control.detach();
+            attach_tcp_control();
             let id = button.getAttribute('data-id');
             pose_list.splice(id, 1);
             update_pose_list();
@@ -690,7 +712,23 @@ function pose_list_init(){
         button = event.target.closest('.pose_item_b'); // Ensure we get the button, even if clicking inside it]
         if (button) {
             let id = button.getAttribute('data-id');
-            tcp_transform_control.attach(pose_scene.children[id]);
+            attach_tcp_control(pose_scene.children[id]);
+        }
+    });
+    document.getElementById('tcp_list').addEventListener('click', function (event) {
+        let button = event.target.closest('.pose_item_delete_b'); // Ensure we get the button, even if clicking inside it
+        
+        if (button) {
+            attach_tcp_control();
+            let id = button.getAttribute('data-id');
+            tcp_list.splice(id, 1);
+            update_tcp_list();
+        }
+
+        button = event.target.closest('.pose_item_b'); // Ensure we get the button, even if clicking inside it]
+        if (button) {
+            let id = button.getAttribute('data-id');
+            attach_tcp_control(pose_scene_tcp.children[id]);
         }
     });
 }
@@ -698,10 +736,13 @@ function pose_list_init(){
 $('.add_pose_b').on("click", function(e){
     add_pose_to_pose_list();
 });
+$('.add_tcp_b').on("click", function(e){
+    add_pose_to_tcp_list();
+});
 
 function update_pose_list(){
     
-    tcp_transform_control.detach();
+    attach_tcp_control();
 
     while (pose_scene.children.length > 0) {
         pose_scene.remove(pose_scene.children[0]);
@@ -752,6 +793,59 @@ function update_pose_list(){
 
 }
 
+function update_tcp_list(){
+    
+    attach_tcp_control();
+
+    while (pose_scene_tcp.children.length > 0) {
+        pose_scene_tcp.remove(pose_scene_tcp.children[0]);
+    }
+    document.getElementById('tcp_list').innerHTML = ``;
+    for (let i = 0 ; i <tcp_list.length ; i++){
+        document.getElementById('tcp_list').innerHTML += `
+            <div class="list-group-item list-group-item pose_list_item_b d-flex p-0 rounded-0" data-id="`+i+`" >
+                <button type="button" class="btn btn-sm rounded-0 btn-txt pose_item_b" data-id="`+i+`" >
+                    `+i+`- pose
+                </button>
+                <div class="flex-grow-1 "></div>
+                <button type="button" class="btn btn-sm pose_item_delete_b border-left rounded-0" data-id="`+i+`">
+                    <i class="far fa-trash-alt"></i>
+                </button>
+            </div>
+        `;
+
+        let clone = tcp_geometry.clone();
+        clone.material = pose_material;
+        clone.clone_id = i;
+
+        pose_scene_tcp.add(clone);
+        var pose = [tcp_list[i]['pose'][0],tcp_list[i]['pose'][1],tcp_list[i]['pose'][2],
+                    tcp_list[i]['pose'][3],tcp_list[i]['pose'][4],tcp_list[i]['pose'][5]];
+
+        var mat = original_robot.xyzabc_to_matrix(pose);
+
+        let matrix = new THREE.Matrix4();
+        matrix.fromArray(mat);
+        matrix = matrix.transpose();
+
+        let position = new THREE.Vector3();
+        let quaternion = new THREE.Quaternion();
+        let scale = new THREE.Vector3();
+
+        matrix.decompose(position, quaternion, scale);
+
+        // Apply to the object
+        clone.position.copy(position);
+        clone.quaternion.copy(quaternion);
+        clone.scale.copy(scale);
+
+        clone.matrixAutoUpdate = true; // Keep auto-update enabled for TransformControls
+        clone.updateMatrix();
+         
+    }
+
+}
+
 function update_pose_transform(){
     var object = tcp_transform_control.object;
 
@@ -759,21 +853,125 @@ function update_pose_transform(){
         let id = object.clone_id;
 
         let abc = original_robot.get_abc_from_mat(object.matrix.transpose());
-        pose_list[id]['pose'] = [object.position.x,object.position.z,object.position.y,abc[0],abc[2],abc[1]];
+
+        if(object.parent==pose_scene){
+            console.log("here 1");
+            pose_list[id]['pose'] = [object.position.x,object.position.z,object.position.y,abc[0],abc[2],abc[1]];
+
+        }
+        else{
+            console.log("here 2");
+            tcp_list[id]['pose'] = [object.position.x,object.position.z,object.position.y,abc[0],abc[1],abc[2]];
+        }
     }
 }
 
 function set_scene_input_values(){
-    let matrix = tcp_transform_control.object.matrix;
-    let abc = original_robot.get_abc_from_mat(matrix.transpose());
-    let s = [tcp_transform_control.object.position.x,tcp_transform_control.object.position.z,tcp_transform_control.object.position.y,
-        abc[0],abc[2],abc[1]];
+    if(tcp_transform_control.object){
+        let matrix = tcp_transform_control.object.matrix;
+        let abc = original_robot.get_abc_from_mat(matrix.transpose());
 
-    $("input.form-control.scene-input[data='x']").val(s[0].toFixed(2));
-    $("input.form-control.scene-input[data='y']").val(s[1].toFixed(2));
-    $("input.form-control.scene-input[data='z']").val(s[2].toFixed(2));
-    $("input.form-control.scene-input[data='a']").val(s[3].toFixed(2));
-    $("input.form-control.scene-input[data='b']").val(s[4].toFixed(2));
-    $("input.form-control.scene-input[data='c']").val(s[5].toFixed(2));
+        let s =[]
 
+        
+        s = [tcp_transform_control.object.position.x,tcp_transform_control.object.position.z,tcp_transform_control.object.position.y,
+            -abc[0],-abc[2],-abc[1]];
+        
+        if(tcp_transform_control.object.parent==pose_scene_tcp){
+            s = [tcp_transform_control.object.position.x,tcp_transform_control.object.position.y,tcp_transform_control.object.position.z,
+                abc[0],abc[1],abc[2]];
+        }
+
+        $("input.form-control.scene-input[data='x']").val(Number(s[0]).toFixed(2));
+        $("input.form-control.scene-input[data='y']").val(Number(s[1]).toFixed(2));
+        $("input.form-control.scene-input[data='z']").val(Number(s[2]).toFixed(2));
+        $("input.form-control.scene-input[data='a']").val(Number(s[3]).toFixed(2));
+        $("input.form-control.scene-input[data='b']").val(Number(s[4]).toFixed(2));
+        $("input.form-control.scene-input[data='c']").val(Number(s[5]).toFixed(2));
+    }
+    else{
+
+        $("input.form-control.scene-input[data='x']").val("");
+        $("input.form-control.scene-input[data='y']").val("");
+        $("input.form-control.scene-input[data='z']").val("");
+        $("input.form-control.scene-input[data='a']").val("");
+        $("input.form-control.scene-input[data='b']").val("");
+        $("input.form-control.scene-input[data='c']").val("");
+    }
+}
+
+
+$( ".scene-input" ).on("change", function(e) {
+    
+    let data = $(this).attr("data"); 
+
+    if(tcp_dragging)return;
+
+    if(tcp_transform_control.object){
+        //pass
+    }
+    else{
+        return;
+    }
+
+    let xyzabc = []
+
+    if(tcp_transform_control.object.parent == pose_scene){
+        xyzabc = [
+            Number($("input.form-control.scene-input[data='x']").val()),
+            Number($("input.form-control.scene-input[data='z']").val()),
+            Number($("input.form-control.scene-input[data='y']").val()),
+            Number($("input.form-control.scene-input[data='a']").val()),
+            Number($("input.form-control.scene-input[data='c']").val()),
+            Number($("input.form-control.scene-input[data='b']").val())];
+        if("clone_id" in tcp_transform_control.object){
+            pose_list[tcp_transform_control.object.clone_id].pose = [xyzabc[0],xyzabc[2],xyzabc[1],xyzabc[3],xyzabc[5],xyzabc[4]];
+        }
+        xyzabc = [xyzabc[0],xyzabc[1],xyzabc[2],-xyzabc[3],-xyzabc[4],-xyzabc[5]];
+    }
+    else{
+        xyzabc = [
+            Number($("input.form-control.scene-input[data='x']").val()),
+            Number($("input.form-control.scene-input[data='y']").val()),
+            Number($("input.form-control.scene-input[data='z']").val()),
+            Number($("input.form-control.scene-input[data='a']").val()),
+            Number($("input.form-control.scene-input[data='b']").val()),
+            Number($("input.form-control.scene-input[data='c']").val())];
+        if("clone_id" in tcp_transform_control.object){
+            tcp_list[tcp_transform_control.object.clone_id].pose = xyzabc;
+        }
+    }
+    var mat = original_robot.xyzabc_to_matrix(xyzabc);
+
+    let matrix = new THREE.Matrix4();
+    matrix.fromArray(mat);
+    matrix = matrix.transpose();
+
+    let position = new THREE.Vector3();
+    let quaternion = new THREE.Quaternion();
+    let scale = new THREE.Vector3();
+
+    matrix.decompose(position, quaternion, scale);
+
+    // Apply to the object
+    let obj = tcp_transform_control.object;
+    //tcp_transform_control.detach();
+    obj.position.copy(position);
+    obj.quaternion.copy(quaternion);
+    obj.matrixAutoUpdate = true; // Keep auto-update enabled for TransformControls
+    obj.updateMatrix();
+    obj.updateMatrixWorld(true);
+
+    //tcp_transform_control.attach(obj);
+});
+
+
+function attach_tcp_control(object=null){
+    if(object){
+        tcp_transform_control.attach(object);
+    }
+    else{
+        tcp_transform_control.detach();
+    }
+    set_scene_input_values();
 }

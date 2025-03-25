@@ -31,7 +31,7 @@ function init_scene(){
   // scene
   scene = new THREE.Scene();
   scene.background = new THREE.Color( "#cccccc");
-  obj_scene_init();
+  
 }
 
 
@@ -47,7 +47,6 @@ function init_collada(){
   let track = new Trail(0xab2800,original_robot,100,0.05,scene);
 
   f_dsp = setInterval(frame_display, 1000/frame["fps"])
-
 
 
 }

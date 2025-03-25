@@ -328,7 +328,9 @@ class Robot{
 		this.set_joints([0,0,0,0,0,0])
 
 		if(!this.being_controlled){
-			  tcp_setup_init();
+		  	tcp_setup_init();
+		    obj_scene_init();
+
 		}
 		
 	}
