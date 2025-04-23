@@ -253,6 +253,9 @@ class WebSocket(tornado.websocket.WebSocketHandler):
                         DORNA.robot.cu_client.cuda_run_motion(msg["points"],msg["init"])
                     if msg["cmd"] == "connect":
                         DORNA.robot.cu_client.connect(msg["add"])
+                    if msg["cmd"] == "tcp_set":
+                        DORNA.robot.cu_client.tcp_set(msg["data"])
+
                 except Exception as ex:
                     DORNA.robot.log("error running cuda command: "+ str(ex))
 
