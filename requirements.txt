@@ -1,3 +1,4 @@
+pyzmq
 Jinja2
 tornado
 requests
