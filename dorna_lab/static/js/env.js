@@ -20,10 +20,10 @@ function reset_env_scene(){
         else{
             scene.add(env_scene);
             env_scene.matrixAutoUpdate = false;
-            env_scene.matrix.set(1   , 0     , 0     , 0 ,
-                                0     , 0     , 1   , 0 ,
-                                0     , 1   , 0     , 0 ,
-                                0     , 0     , 0     , 1 );
+            env_scene.matrix.set(1, 0, 0, 0,
+                                 0, 0, 1, 0,
+                                 0, 1, 0, 0,
+                                 0, 0, 0, 1);
             env_scene.matrixWorldNeedsUpdate = true;
         }
 
