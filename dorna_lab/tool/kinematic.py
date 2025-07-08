@@ -85,7 +85,7 @@ class kinematic_class(object):
                     "delta":self.knmtc.delta,
                     "a":self.knmtc.a,
                     "d":self.knmtc.d,
-                    "rail_vec":self.knmtc.rail_vec_r_base,
+                    "rail_vec":self.knmtc.rail_dir_r_base,
                     "rail_limit":self.knmtc.rail_limit,
                     "rail_mat": np.array(self.knmtc.T_rail_r_world).ravel().tolist(),
                     "tcp_mat":np.array(self.knmtc.T_tcp_r_flange).ravel().tolist(),
