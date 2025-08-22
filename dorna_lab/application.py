@@ -119,11 +119,12 @@ class WebSocket(tornado.websocket.WebSocketHandler):
                     "delta":kin.knmtc.delta,
                     "a":kin.knmtc.a,
                     "d":kin.knmtc.d,
-                    "rail_vec":kin.knmtc.rail_vec_r_base,
+                    "rail_vec":kin.knmtc.rail_dir_r_base,
                     "rail_limit":kin.knmtc.rail_limit,
                     "rail_mat": np.array(kin.knmtc.T_rail_r_world).ravel().tolist(),
                     "tcp_mat":np.array(kin.knmtc.T_tcp_r_flange).ravel().tolist()
                 }))
+                
 
                 if("startup" in config_data):
                     loop.add_callback(self.emit_message, json.dumps({"to":"startup" ,
@@ -200,9 +201,9 @@ class WebSocket(tornado.websocket.WebSocketHandler):
                     kin.knmtc.rail_limit[0] = prms["rail_limit"][0]
                     kin.knmtc.rail_limit[1] = prms["rail_limit"][1]
                 if("rail_vec" in prms):    
-                    kin.knmtc.rail_vec_r_base[0]  = prms["rail_vec"][0]
-                    kin.knmtc.rail_vec_r_base[1]  = prms["rail_vec"][1]
-                    kin.knmtc.rail_vec_r_base[2]  = prms["rail_vec"][2]
+                    kin.knmtc.rail_dir_r_base[0]  = prms["rail_vec"][0]
+                    kin.knmtc.rail_dir_r_base[1]  = prms["rail_vec"][1]
+                    kin.knmtc.rail_dir_r_base[2]  = prms["rail_vec"][2]
                 if("rail_mat" in prms):  
                     kin.knmtc.T_rail_r_world = np.array(prms["rail_mat"]).reshape((4, 4))
                 if("tcp_mat" in prms):  
@@ -217,7 +218,7 @@ class WebSocket(tornado.websocket.WebSocketHandler):
                     "delta":kin.knmtc.delta,
                     "a":kin.knmtc.a,
                     "d":kin.knmtc.d,
-                    "rail_vec":kin.knmtc.rail_vec_r_base,
+                    "rail_vec":kin.knmtc.rail_dir_r_base,
                     "rail_limit":kin.knmtc.rail_limit,
                     "rail_mat": np.array(kin.knmtc.T_rail_r_world).ravel().tolist(),
                     "tcp_mat":np.array(kin.knmtc.T_tcp_r_flange).ravel().tolist(),
