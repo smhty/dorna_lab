@@ -1,12 +1,14 @@
 import os
 import time
 import json
+import socket
 import asyncio
 import numpy as np
 
 import tornado.ioloop
 import tornado.web
 import tornado.websocket
+import tornado.iostream
 
 from tornado.web import  RequestHandler
 
@@ -97,7 +99,10 @@ class DornaConnection(object):
         self.ws_list.append(ws)
 
     def deregister_ws(self, ws):
-        self.ws_list.remove(ws)
+        try:
+            self.ws_list.remove(ws)
+        except ValueError:
+            pass
 
     def send_message_to_robot(self, msg):
         try:
@@ -136,7 +141,24 @@ class UploadHandler(RequestHandler):
 """
 
 class WebSocket(tornado.websocket.WebSocketHandler):
+    def check_origin(self, origin):
+        return True
+
+    def get_compression_options(self):
+        return {}
+
     async def open(self):
+        self.set_nodelay(True)
+        self._pending_writes = 0
+        try:
+            sock = self.stream.socket
+            sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
+            if hasattr(socket, 'TCP_KEEPIDLE'):
+                sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_KEEPIDLE, 10)
+                sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_KEEPINTVL, 5)
+                sock.setsockopt(socket.IPPROTO_TCP, socket.TCP_KEEPCNT, 3)
+        except Exception:
+            pass
         DORNA.register_ws(self)
 
     def on_message(self, msg):
@@ -391,12 +413,31 @@ class WebSocket(tornado.websocket.WebSocketHandler):
         except Exception as ex:
             pass
 
-    def emit_message(self,msg):
+    def emit_message(self, msg, droppable=True):
+        if self.ws_connection is None:
+            return
+        if droppable and getattr(self, '_pending_writes', 0) >= 2:
+            return
         try:
-            self.write_message(msg)
+            fut = self.write_message(msg)
+        except tornado.websocket.WebSocketClosedError:
+            return
         except Exception as ex:
-            DORNA.robot.log('error9'+ str(ex))
-            #print('error9'+ str(ex))
+            DORNA.robot.log('error9' + str(ex))
+            return
+        if fut is not None:
+            self._pending_writes = getattr(self, '_pending_writes', 0) + 1
+
+            def _done(f):
+                self._pending_writes = max(0, getattr(self, '_pending_writes', 1) - 1)
+                try:
+                    f.result()
+                except (tornado.websocket.WebSocketClosedError,
+                        tornado.iostream.StreamClosedError):
+                    pass
+                except Exception as ex:
+                    DORNA.robot.log('error9' + str(ex))
+            fut.add_done_callback(_done)
 
     def set_cuda_env(self,msg):
         try:
@@ -416,8 +457,13 @@ if __name__ == '__main__':
         (r'/static/(.*)', tornado.web.StaticFileHandler,
          {'path': STATIC_PATH_DIR}),
     ]
-    app = tornado.web.Application(app, debug=CONFIG["server"]["debug"]) 
-    app.listen(CONFIG["server"]["port"]) 
+    app = tornado.web.Application(
+        app,
+        debug=CONFIG["server"]["debug"],
+        websocket_ping_interval=20,
+        websocket_ping_timeout=30,
+    )
+    app.listen(CONFIG["server"]["port"])
     
     def startup_function():
         if "startup" in config_data:
