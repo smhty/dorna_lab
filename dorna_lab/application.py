@@ -116,7 +116,7 @@ class DornaConnection(object):
 
     def emit_all(self, msg):
         for ws in self.ws_list:
-            ws.emit_message(msg)
+            ws.emit_message(msg, droppable=True)
 
 DORNA = DornaConnection()
 
@@ -143,9 +143,6 @@ class UploadHandler(RequestHandler):
 class WebSocket(tornado.websocket.WebSocketHandler):
     def check_origin(self, origin):
         return True
-
-    def get_compression_options(self):
-        return {}
 
     async def open(self):
         self.set_nodelay(True)
@@ -413,31 +410,15 @@ class WebSocket(tornado.websocket.WebSocketHandler):
         except Exception as ex:
             pass
 
-    def emit_message(self, msg, droppable=True):
+    def emit_message(self, msg, droppable=False):
         if self.ws_connection is None:
             return
-        if droppable and getattr(self, '_pending_writes', 0) >= 2:
-            return
         try:
-            fut = self.write_message(msg)
+            self.write_message(msg)
         except tornado.websocket.WebSocketClosedError:
             return
         except Exception as ex:
             DORNA.robot.log('error9' + str(ex))
-            return
-        if fut is not None:
-            self._pending_writes = getattr(self, '_pending_writes', 0) + 1
-
-            def _done(f):
-                self._pending_writes = max(0, getattr(self, '_pending_writes', 1) - 1)
-                try:
-                    f.result()
-                except (tornado.websocket.WebSocketClosedError,
-                        tornado.iostream.StreamClosedError):
-                    pass
-                except Exception as ex:
-                    DORNA.robot.log('error9' + str(ex))
-            fut.add_done_callback(_done)
 
     def set_cuda_env(self,msg):
         try:
@@ -464,7 +445,16 @@ if __name__ == '__main__':
         websocket_ping_timeout=30,
     )
     app.listen(CONFIG["server"]["port"])
-    
+
+    def _silent_ws_exceptions(loop_, context):
+        exc = context.get('exception')
+        if isinstance(exc, (tornado.websocket.WebSocketClosedError,
+                            tornado.iostream.StreamClosedError)):
+            return
+        loop_.default_exception_handler(context)
+
+    loop.asyncio_loop.set_exception_handler(_silent_ws_exceptions)
+
     def startup_function():
         if "startup" in config_data:
             for line in config_data["startup"].splitlines():
