@@ -24,6 +24,7 @@ $(".connect_b").on("click", function(e) {
   let url = $(".robot_url").prop("value");
   socket = new WebSocket(url);
   socket.onopen = function(e) {
+    window._ws_retry_count = 0;
     $(".ws_stat_v").prop("value","Connected")
     $(".connect_stat_connected").show()
     $(".connect_stat_disconnected").hide()
@@ -48,6 +49,13 @@ $(".connect_b").on("click", function(e) {
     $(".connect_stat_connected").hide()
     $(".connect_stat_disconnected").show()
 
+    if(!window._ws_manual_close){
+      window._ws_retry_count = (window._ws_retry_count || 0) + 1;
+      if(window._ws_retry_count <= 5){
+        setTimeout(function(){ $(".connect_b").trigger("click"); }, 1000);
+      }
+    }
+    window._ws_manual_close = false;
   };
 
   socket.onmessage = function(e){
@@ -62,6 +70,7 @@ $(".connect_b").on("click", function(e) {
 // disconnect from WebSocket
 $(".disconnect_b").on("click", function(e) {
   e.preventDefault();
+  window._ws_manual_close = true;
   socket.close()
 });
 
