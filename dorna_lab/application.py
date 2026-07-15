@@ -462,8 +462,14 @@ if __name__ == '__main__':
                     continue
                 if line[0]=="#":
                     continue
-                file_path_and_name = os.path.split(os.path.abspath(line))
-                startup_process = shell.Shell("cd "+file_path_and_name[0]+" && sudo python3 " + file_path_and_name[1].split(".")[0] + ".py")
+                parts = line.split(" ", 1)
+                script_path = parts[0]
+                args = parts[1] if len(parts) > 1 else ""
+                file_path_and_name = os.path.split(os.path.abspath(script_path))
+                cmd = "cd " + file_path_and_name[0] + " && sudo python3 " + file_path_and_name[1]
+                if args:
+                    cmd += " " + args
+                startup_process = shell.Shell(cmd)
                 asyncio.create_task(startup_process.run(DORNA, None, loop, DATABASE, None))
                 PROCESSES.append(startup_process)
 
