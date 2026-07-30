@@ -115,8 +115,21 @@ class DornaConnection(object):
         loop.add_callback(self.emit_all, msg)
 
     def emit_all(self, msg):
+        if not self.ws_list:
+            return
+        if isinstance(msg, str):
+            payload = msg
+        elif isinstance(msg, dict):
+            try:
+                payload = json.dumps(msg)
+            except (TypeError, ValueError) as ex:
+                self.robot.log('emit_all encode failed: ' + str(ex))
+                return
+        else:
+            self.robot.log('emit_all unexpected type: ' + type(msg).__name__)
+            return
         for ws in self.ws_list:
-            ws.emit_message(msg, droppable=True)
+            ws.emit_message(payload, droppable=True)
 
 DORNA = DornaConnection()
 
